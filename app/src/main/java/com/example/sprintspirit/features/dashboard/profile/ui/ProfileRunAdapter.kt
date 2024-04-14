@@ -31,16 +31,23 @@ class ProfileRunAdapter(var runlist:List<RunData>) : RecyclerView.Adapter<Profil
         }
 
         fun bind(get: RunData){
+            //Path
             path = mutableListOf()
             for(pos in get.points!!){
                 for((date, geoPoint) in pos){
-                    Log.d("A", geoPoint.toString())
                     path.add(LatLng(geoPoint.latitude, geoPoint.longitude))
                 }
             }
-            binding.tvDistanceValue.text = "N.I km"
-            binding.tvTimeValue.text = "N.I min"
-            binding.tvPaceValue.text = "N.I"
+
+            //Time
+            val firstTime = get.points.first().keys.first().toLong()
+            val lastTime = get.points.last().keys.first().toLong()
+            val time: Double = (lastTime - firstTime) / 60000.0 //ms to min
+
+            binding.tvDistanceValue.text = get.distance.toString() + " km"
+            val timeString = String.format("%d:%02d", (time*60).toInt()/60, (time*60).toInt()%60)
+            binding.tvTimeValue.text = timeString + " min"
+            binding.tvPaceValue.text = String.format("%.2f", (get.distance / time)) + " min/km"
         }
 
         fun setMapLocation(){
@@ -61,7 +68,7 @@ class ProfileRunAdapter(var runlist:List<RunData>) : RecyclerView.Adapter<Profil
                     Log.d("ProfileRunAdapter", "Map loaded, adding marker...")
                     val location = LatLng(latitude, longitude)
                     googleMap.addMarker(MarkerOptions().position(location).title("Your Location"))
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15f))
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 20f))
                     Log.d("ProfileRunAdapter", "Map loaded.")
                 }
             }
