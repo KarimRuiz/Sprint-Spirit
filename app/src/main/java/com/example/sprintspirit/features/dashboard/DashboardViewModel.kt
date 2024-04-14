@@ -1,5 +1,6 @@
 package com.example.sprintspirit.features.dashboard
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.liveData
 import com.example.sprintspirit.database.DBManager
@@ -14,6 +15,8 @@ class DashboardViewModel(
     private val repository: UsersRepository = UsersRepository()
 ) : BaseViewModel() {
 
+    var userId: String? = null
+
     private val dbManager: DBManager = DBManager.getCurrentDBManager()
 
     private val user = dbManager.getAuthUser()
@@ -26,13 +29,22 @@ class DashboardViewModel(
         emit(repository.getAllRuns())
     }
 
+    val profilePicture = liveData(Dispatchers.IO) {
+        emit(repository.getProfilePicture(userId))
+    }
+
+    fun uploadProfilePicture(image: Uri, user: String, callback: (Boolean) -> Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val success = repository.saveProfilePicture(image, user)
+            callback(success)
+        }
+    }
+
     //TODO: this goes into the run activity
     fun saveRun(runResponse: RunResponse){
         CoroutineScope(Dispatchers.IO).launch {
             repository.saveRun(runResponse)
         }
     }
-
-    fun getPictureUri() = user?.photoUrl
 
 }

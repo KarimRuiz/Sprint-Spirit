@@ -5,5 +5,6 @@ import java.util.Date
 
 data class RunData(
     val user: String = "",
+    val distance: Double = 0.0, //in km
     val points: List<Map<String, GeoPoint>>? = null
 )

@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.sprintspirit"
-        minSdk = 28
+        minSdk = 30
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -51,6 +51,10 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
     implementation("com.firebaseui:firebase-ui-auth:7.2.0")
     implementation("com.google.firebase:firebase-firestore:24.11.1")
+    implementation("com.google.firebase:firebase-storage")
+
+    //Glide
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 
     //Gson
     implementation("com.google.code.gson:gson:2.8.8")
