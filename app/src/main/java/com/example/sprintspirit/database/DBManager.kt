@@ -1,6 +1,8 @@
 package com.example.sprintspirit.database
 
 import android.content.Context
+import android.net.Uri
+import com.example.sprintspirit.features.dashboard.profile.data.ProfilePictureResponse
 import com.example.sprintspirit.features.dashboard.profile.data.UserResponse
 import com.example.sprintspirit.features.run.data.RunResponse
 import com.example.sprintspirit.features.run.data.RunsResponse
@@ -36,6 +38,10 @@ interface DBManager {
         height: Double,
         onSuccess: () -> Unit,
         onFailure: () -> Unit)
+
+    suspend fun getProfilePicture(user: String): ProfilePictureResponse
+
+    suspend fun saveProfilePicture(image: Uri, user: String): Boolean
 
     /* RUNS */
 

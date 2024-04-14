@@ -1,22 +1,31 @@
 package com.example.sprintspirit.database
 
-import android.content.Context
+
+import android.net.Uri
 import android.util.Log
+import androidx.core.graphics.drawable.toIcon
+import com.example.sprintspirit.features.dashboard.profile.data.ProfilePictureResponse
 import com.example.sprintspirit.features.dashboard.profile.data.UserResponse
 import com.example.sprintspirit.features.run.data.RunData
 import com.example.sprintspirit.features.run.data.RunResponse
 import com.example.sprintspirit.features.run.data.RunsResponse
 import com.example.sprintspirit.features.signin.data.User
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageException
+import com.google.firebase.storage.storage
 import kotlinx.coroutines.tasks.await
+import java.io.IOException
 import kotlin.system.exitProcess
 
 class FirebaseManager() : DBManager {
 
     private val auth = FirebaseAuth.getInstance()
     private val firestore = FirebaseFirestore.getInstance()
+    private val storage = FirebaseStorage.getInstance().getReferenceFromUrl("gs://sprint-spirit.appspot.com")
 
     companion object{
         val USERS = "users"
@@ -25,6 +34,8 @@ class FirebaseManager() : DBManager {
         val WEIGHT = "weight"
         val USERNAME = "username"
         val RUNS = "sessions"
+
+        val IMAGES = "profilePictures"
     }
 
     /* USER */
@@ -109,6 +120,32 @@ class FirebaseManager() : DBManager {
         }
     }
 
+    override suspend fun getProfilePicture(user: String): ProfilePictureResponse {
+        val response = ProfilePictureResponse()
+
+        try {
+            val ref = storage.child(IMAGES).child("$user.jpg")
+            val url = ref.downloadUrl.await()
+            response.picture = url.toIcon()
+        }catch (e: Exception){
+            response.exception = e
+        }
+
+        return response
+    }
+
+    override suspend fun saveProfilePicture(image: Uri, user: String): Boolean {
+        var response = false
+
+        val filename = "$user.jpg"
+
+        val imageRef = storage.child(IMAGES).child(filename)
+        imageRef.putFile(image).addOnSuccessListener {
+            response = true
+        }.await()
+
+        return response
+    }
 
     /* RUNS */
 
