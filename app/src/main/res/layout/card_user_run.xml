@@ -30,7 +30,26 @@
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toBottomOf="@+id/tableLayout"
             card_view:liteMode="true"
-            card_view:mapType="hybrid"/>
+            card_view:mapType="hybrid" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+            <TextView
+                android:id="@+id/tv_date_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="48dp"
+                android:background="@drawable/card_user_run_corner"
+                android:padding="@dimen/margin_small"
+                android:text="12/5/2024"
+                android:textColor="@color/black"
+                card_view:layout_constraintBottom_toBottomOf="parent"
+                card_view:layout_constraintEnd_toEndOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TableLayout
             android:id="@+id/tableLayout"
@@ -99,6 +118,10 @@
                     android:textColor="@color/black"/>
             </TableRow>
         </TableLayout>
+
+
+
+
 
     </RelativeLayout>
 
