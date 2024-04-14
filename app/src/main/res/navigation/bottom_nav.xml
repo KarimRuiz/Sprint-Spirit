@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_nav"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.sprintspirit.features.dashboard.home.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home" />
+    <activity
+        android:id="@+id/runActivity"
+        android:name="com.example.sprintspirit.features.run.ui.RunActivity"
+        android:label="Run"
+        tools:layout="@layout/activity_run" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.sprintspirit.features.dashboard.profile.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile" />
+</navigation>

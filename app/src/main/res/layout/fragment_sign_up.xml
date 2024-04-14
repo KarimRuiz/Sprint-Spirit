@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="signUpWithEmail"
+            type="android.view.View.OnClickListener"
+            />
+        <variable
+            name="goToLogIn"
+            type="android.view.View.OnClickListener" />
+        <variable
+            name="writeText"
+            type="androidx.databinding.adapters.TextViewBindingAdapter.AfterTextChanged"
+            />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="@style/background"
+        tools:context=".MainActivity">
+
+        <ImageView
+            android:id="@+id/imageView3"
+            style="@style/loginLogo"
+            android:layout_width="183dp"
+            android:layout_height="165dp"
+            android:layout_marginTop="16dp"
+            android:scaleX="1.75"
+            android:scaleY="1.75"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.07"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/edt_email"
+            style="@style/loginEditText"
+            android:layout_width="344dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:drawableLeft="@drawable/ic_account"
+            android:hint="@string/Email"
+            android:inputType="textEmailAddress"
+            android:afterTextChanged="@{writeText}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.028"
+            app:layout_constraintStart_toStartOf="@+id/tv_signin"
+            app:layout_constraintTop_toBottomOf="@+id/tv_signin" />
+
+        <EditText
+            android:id="@+id/edt_username"
+            style="@style/loginEditText"
+            android:layout_width="344dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="88dp"
+            android:afterTextChanged="@{writeText}"
+            android:drawableLeft="@drawable/ic_account"
+            android:hint="@string/Username"
+            android:inputType="text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/tv_signin"
+            app:layout_constraintTop_toBottomOf="@+id/tv_signin" />
+
+        <EditText
+            android:id="@+id/edt_weight"
+            style="@style/loginEditText"
+            android:layout_width="167dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:afterTextChanged="@{writeText}"
+            android:drawableLeft="@drawable/ic_account"
+            android:hint="@string/Weight"
+            android:inputType="numberDecimal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/tv_signin"
+            app:layout_constraintTop_toBottomOf="@+id/edt_username" />
+
+        <EditText
+            android:id="@+id/edt_height"
+            style="@style/loginEditText"
+            android:layout_width="164dp"
+            android:layout_height="51dp"
+            android:layout_marginTop="20dp"
+            android:afterTextChanged="@{writeText}"
+            android:drawableLeft="@drawable/ic_account"
+            android:hint="@string/Height"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="@+id/edt_username"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/edt_weight"
+            app:layout_constraintTop_toBottomOf="@+id/edt_username" />
+
+        <EditText
+            android:id="@+id/edt_password"
+            style="@style/loginEditText"
+            android:layout_width="344dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="16dp"
+            android:afterTextChanged="@{writeText}"
+            android:drawableLeft="@drawable/ic_arrow"
+            android:hint="@string/Password"
+            android:inputType="textPassword"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/tv_signin"
+            app:layout_constraintTop_toBottomOf="@+id/edt_weight" />
+
+        <EditText
+            android:id="@+id/edt_confirm_password"
+            style="@style/loginEditText"
+            android:layout_width="344dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="16dp"
+            android:afterTextChanged="@{writeText}"
+            android:drawableLeft="@drawable/ic_arrow"
+            android:hint="@string/Confirm_password"
+            android:inputType="textPassword"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/tv_signin"
+            app:layout_constraintTop_toBottomOf="@+id/edt_password" />
+
+        <TextView
+            android:id="@+id/tv_signin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/Sign_up"
+            android:textColor="#78BC7B"
+            android:textSize="@dimen/font_title"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+        <Button
+            android:id="@+id/bt_Login"
+            android:layout_width="159dp"
+            android:layout_height="55dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="32dp"
+            android:enabled="false"
+            android:onClick="@{signUpWithEmail}"
+            android:text="@string/Sign_up"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edt_confirm_password" />
+
+        <TextView
+            android:id="@+id/tv_log_in"
+            style="@style/accentMessage"
+            android:layout_width="424dp"
+            android:layout_height="35dp"
+            android:gravity="center"
+            android:onClick="@{goToLogIn}"
+            android:text="@string/Do_You_Have_An_Account"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.538"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name" translatable="false">SprintSpirit</string>
+    <string name="Email" translatable="false">Email</string>
+    <string name="Password">Password</string>
+    <string name="Log_in">Log in</string>
+    <string name="sprint_spirit_user_email" translatable="false">sprint_spirit_user_email</string>
+    <string name="sprint_spirit_user_data" translatable="false">sprint_spirit_user_data</string>
+    <string name="Error">Error</string>
+    <string name="Accept">Accept</string>
+    <string name="Sign_in_error">An error ocurred while singing in</string>
+    <string name="You_Dont_Have_An_Account">You dont have an account? Create one.</string>
+    <string name="Sign_up">Sign up</string>
+    <string name="Confirm_password">Confirm password</string>
+    <string name="Do_You_Have_An_Account">Do you have an account? Log in.</string>
+    <string name="Sign_up_error">An error ocurred while signing up</string>
+    <string name="sprint_spirit_user_id" translatable="false">sprint_spirit_user_id</string>
+    <string name="Home">Home</string>
+    <string name="Run">Run</string>
+    <string name="Profile">Profile</string>
+    <string name="Distance">Distance</string>
+    <string name="Time">Time</string>
+    <string name="Pace">Pace</string>
+    <string name="Height">Height</string>
+    <string name="Weight">Weight</string>
+    <string name="Username">Username</string>
+    <string name="Weight_low_limit">Weight must be less than </string>
+    <string name="Weight_high_limit">"Weight must be greater than "</string>
+    <string name="Height_high_limit">Height must be greater than </string>
+    <string name="Height_low_limit">"Height must be less than "</string>
+    <string name="Password_min_characters">Password has to be of at least 7 characters long.</string>
+    <string name="Email_not_valid">Email is not valid.</string>
+    <string name="Username_min_characters">Username has to be at least 5 characters long.</string>
+</resources>

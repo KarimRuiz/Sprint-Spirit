@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_user_run"
+    android:layout_margin="12dp"
+    card_view:cardBackgroundColor="?attr/colorPrimary"
+    card_view:cardCornerRadius="15dp"
+    card_view:cardElevation="6dp"
+    card_view:contentPadding="1dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="4dp">
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapView"
+            xmlns:map="http://schemas.android.com/apk/res-auto"
+            android:layout_width="232dp"
+            android:layout_height="80dp"
+            android:contentDescription="Run map"
+            android:outlineAmbientShadowColor="#C13B3B"
+            android:outlineSpotShadowColor="#7B3A3A"
+            map:liteMode="true"
+            map:cameraZoom="8"
+            map:mapType="hybrid"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintHorizontal_bias="0.0"
+            card_view:layout_constraintStart_toEndOf="@+id/tableLayout"
+            card_view:layout_constraintTop_toTopOf="parent"
+            card_view:layout_constraintVertical_bias="0.333" />
+
+        <TableLayout
+            android:id="@+id/tableLayout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:padding="@dimen/margin_normal"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toTopOf="parent">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/margin_small">
+
+                <TextView
+                    android:id="@+id/tv_distance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:text="@string/Distance" />
+
+                <TextView
+                    android:id="@+id/tv_distance_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="5 km" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/margin_small">
+
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Time" />
+
+                <TextView
+                    android:id="@+id/tv_time_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="25 min" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tv_pace"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Pace" />
+
+                <TextView
+                    android:id="@+id/tv_pace_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="5 min/km" />
+            </TableRow>
+        </TableLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

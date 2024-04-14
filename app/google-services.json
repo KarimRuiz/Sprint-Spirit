@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "760394822149",
+    "project_id": "sprint-spirit",
+    "storage_bucket": "sprint-spirit.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:760394822149:android:c1fd1471ac0b0248c5e26c",
+        "android_client_info": {
+          "package_name": "com.example.sprintspirit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWdXznz-fyRDmHSAFqj_S6zCyoDGVUkvg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

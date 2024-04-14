@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="logInWithEmail"
+            type="android.view.View.OnClickListener"
+            />
+        <variable
+            name="goToSignUp"
+            type="android.view.View.OnClickListener" />
+        <variable
+            name="writeText"
+            type="androidx.databinding.adapters.TextViewBindingAdapter.AfterTextChanged"
+            />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="@style/background"
+        tools:context=".MainActivity">
+
+        <ImageView
+            android:id="@+id/imageView3"
+            style="@style/loginLogo"
+            android:layout_width="183dp"
+            android:layout_height="165dp"
+            android:layout_marginTop="16dp"
+            android:scaleX="1.75"
+            android:scaleY="1.75"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.07"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/edt_email"
+            style="@style/loginEditText"
+            android:layout_width="344dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:drawableLeft="@drawable/ic_account"
+            android:hint="@string/Email"
+            android:inputType="textEmailAddress"
+            android:afterTextChanged="@{writeText}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.028"
+            app:layout_constraintStart_toStartOf="@+id/tv_signin"
+            app:layout_constraintTop_toBottomOf="@+id/tv_signin" />
+
+        <EditText
+            android:id="@+id/edt_password"
+            style="@style/loginEditText"
+            android:layout_width="344dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="24dp"
+            android:drawableLeft="@drawable/ic_arrow"
+            android:hint="@string/Password"
+            android:inputType="textPassword"
+            android:afterTextChanged="@{writeText}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/tv_signin"
+            app:layout_constraintTop_toBottomOf="@+id/edt_email" />
+
+        <TextView
+            android:id="@+id/tv_signin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/Log_in"
+            android:textColor="#78BC7B"
+            android:textSize="@dimen/font_title"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+        <Button
+            android:id="@+id/bt_Login"
+            android:layout_width="165dp"
+            android:layout_height="59dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="32dp"
+            android:enabled="false"
+            android:onClick="@{logInWithEmail}"
+            android:text="@string/Log_in"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edt_password" />
+
+        <TextView
+            android:id="@+id/tv_log_in"
+            style="@style/accentMessage"
+            android:layout_width="424dp"
+            android:layout_height="35dp"
+            android:gravity="center"
+            android:text="@string/You_Dont_Have_An_Account"
+            android:onClick="@{goToSignUp}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.538"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,0 +1,51 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.SprintSpirit" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your dark theme here. -->
+        <item name="colorPrimary">@color/primary_night</item>
+        <item name="colorPrimaryVariant">@color/primary_dark_night</item>
+        <item name="colorOnPrimary">@color/on_primary_night</item>
+
+        <item name="colorSecondary">@color/accent_night</item>
+        <item name="colorSecondaryVariant">@color/accent_night</item>
+        <item name="colorOnSecondary">@color/on_secondary_night</item>
+
+        <item name="android:statusBarColor">@color/primary_dark_night</item>
+    </style>
+
+    <style name="background">
+        <item name="android:background">@drawable/background_dark</item>
+    </style>
+
+    <style name="loginLogo">
+        <item name="srcCompat">@mipmap/ic_launcher_night_foreground</item>
+    </style>
+
+    <style name="loginEditText" parent="ThemeOverlay.Material3.TextInputEditText">
+        <item name="backgroundTint">@color/primary_night</item>
+        <item name="drawableTint">@color/white</item>
+        <item name="android:ems">10</item>
+        <item name="android:drawablePadding">10dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/edit_view_border</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
+    <style name="accentMessage">
+        <item name="android:textSize">@dimen/font_normal</item>
+        <item name="android:textColor">@color/accent_night</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">#61000000</item>
+    </style>
+
+    <style name="bottomNavStyle">
+        <item name="itemIconTint">@color/primary_night</item>
+        <item name="itemRippleColor">@color/on_primary_night</item>
+    </style>
+
+    <style name="topToolbar">
+        <item name="android:background">@color/primary_night</item>
+    </style>
+
+    <style name="Theme.SprintSpirit" parent="Base.Theme.SprintSpirit" />
+</resources>
