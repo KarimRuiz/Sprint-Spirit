@@ -4,6 +4,8 @@ package com.example.sprintspirit.database
 import android.net.Uri
 import android.util.Log
 import androidx.core.graphics.drawable.toIcon
+import com.example.sprintspirit.features.dashboard.home.data.Stats
+import com.example.sprintspirit.features.dashboard.home.data.StatsResponse
 import com.example.sprintspirit.features.dashboard.profile.data.ProfilePictureResponse
 import com.example.sprintspirit.features.dashboard.profile.data.UserResponse
 import com.example.sprintspirit.features.run.data.RunData
@@ -29,6 +31,7 @@ class FirebaseManager() : DBManager {
 
     companion object{
         val USERS = "users"
+        val USER = "user"
         val PROVIDER = "provider"
         val HEIGHT = "height"
         val WEIGHT = "weight"
@@ -171,6 +174,39 @@ class FirebaseManager() : DBManager {
         }catch(e: Exception){
             Log.e("FirebaseManager", "ERROR SAVING RUN: ${e.toString()}")
         }
+    }
+
+    /* STATS */
+
+    override suspend fun getWeeklyStats(user: String): StatsResponse {
+        val response = StatsResponse()
+
+        try{
+            var time = 0.0
+            var distance = 0.0
+
+            //get all runs
+            val runsQuery = firestore.collection(RUNS).whereEqualTo(USER, "/users/$user").get().await()
+            val runs = runsQuery.documents.mapNotNull {
+                it.toObject(RunData::class.java)
+            }
+
+            runs.forEach{run ->
+                time += run.getMinutes()
+                distance += run.distance
+            }
+            val pace = if (distance > 0 && time > 0) {
+                time/60.0 / distance
+            } else {
+                0.0
+            }
+            Log.d("TOTAL DISTANCE: ", distance.toString())
+            response.stats = Stats(time/60.0, distance, pace)
+        }catch(e:Exception){
+            response.exception = e
+        }
+
+        return response
     }
 
 }

@@ -28,4 +28,6 @@
     <string name="Username_min_characters">El usuario debe tener al menos 7 caracteres de largo.</string>
     <string name="Failed_to_upload_picture">No se pudo cargar la foto de perfil. Comprueba tu conexión a internet.</string>
     <string name="Internet_will_be_uploaded">No tienes conexión a internet. Se subirá cuando la conexión vuelva.</string>
+    <string name="Your_stats">Tus estadísticas</string>
+    <string name="Order_by">Ordenar por</string>
 </resources>

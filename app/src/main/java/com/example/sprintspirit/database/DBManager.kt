@@ -2,6 +2,7 @@ package com.example.sprintspirit.database
 
 import android.content.Context
 import android.net.Uri
+import com.example.sprintspirit.features.dashboard.home.data.StatsResponse
 import com.example.sprintspirit.features.dashboard.profile.data.ProfilePictureResponse
 import com.example.sprintspirit.features.dashboard.profile.data.UserResponse
 import com.example.sprintspirit.features.run.data.RunResponse
@@ -48,5 +49,9 @@ interface DBManager {
     suspend fun getAllRuns(): RunsResponse
 
     suspend fun saveRun(runResponse: RunResponse)
+
+    /* STATS */
+
+    suspend fun getWeeklyStats(user: String): StatsResponse
 
 }
