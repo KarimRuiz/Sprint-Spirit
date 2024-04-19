@@ -30,4 +30,13 @@
     <string name="Password_min_characters">Password has to be of at least 7 characters long.</string>
     <string name="Email_not_valid">Email is not valid.</string>
     <string name="Username_min_characters">Username has to be at least 5 characters long.</string>
+    <string name="Failed_to_upload_picture">Failed to upload profile picture. Check your internet connection.</string>
+    <string name="Internet_will_be_uploaded">You dont have internet connection. It will be uploaded when connection is restored.</string>
+    <string name="Your_stats">Your stats</string>
+    <string name="Order_by">Order by</string>
+
+    <string-array name="order_filter_array">
+        <item>New</item>
+        <item>Distance</item>
+    </string-array>
 </resources>

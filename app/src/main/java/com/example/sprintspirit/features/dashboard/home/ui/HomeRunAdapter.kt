@@ -1,13 +1,11 @@
-package com.example.sprintspirit.features.dashboard.profile.ui
+package com.example.sprintspirit.features.dashboard.home.ui
 
-import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sprintspirit.R
-import com.example.sprintspirit.databinding.CardUserRunBinding
+import com.example.sprintspirit.databinding.CardHomeRunBinding
 import com.example.sprintspirit.features.run.data.RunData
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -15,23 +13,21 @@ import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import java.text.SimpleDateFormat
 import java.util.Date
 
-class ProfileRunAdapter(var runlist:List<RunData>) : RecyclerView.Adapter<ProfileRunAdapter.ProfileRunHolder>(){
+class HomeRunAdapter(var runlist:List<RunData>) : RecyclerView.Adapter<HomeRunAdapter.HomeRunHolder>() {
 
-    class ProfileRunHolder(val binding: CardUserRunBinding) : RecyclerView.ViewHolder(binding.root), OnMapReadyCallback{
-
-        private val mapView: MapView = binding.mapView
+    class HomeRunHolder(val binding: CardHomeRunBinding) : RecyclerView.ViewHolder(binding.root), OnMapReadyCallback{
+        private val mapView: MapView = binding.cardHomeRunMap
         private lateinit var map: GoogleMap
         private lateinit var path: MutableList<LatLng>
 
         init{
             with(mapView){
                 onCreate(null)
-                getMapAsync(this@ProfileRunHolder)
+                getMapAsync(this@HomeRunHolder)
             }
         }
 
@@ -49,6 +45,7 @@ class ProfileRunAdapter(var runlist:List<RunData>) : RecyclerView.Adapter<Profil
             val lastTime = get.points.last().keys.first().toLong()
             val time: Double = (lastTime - firstTime) / 60000.0 //ms to min
 
+            binding.tvUsername.text = get.user.removePrefix("/users/")
             binding.tvDistanceValue.text = get.distance.toString() + " km"
             val timeString = String.format("%d:%02d", (time*60).toInt()/60, (time*60).toInt()%60)
             binding.tvTimeValue.text = timeString + " min"
@@ -67,7 +64,6 @@ class ProfileRunAdapter(var runlist:List<RunData>) : RecyclerView.Adapter<Profil
             val padding = 75
 
             with(map){
-                //moveCamera(CameraUpdateFactory.newLatLngZoom(path[0], 13f))
                 moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding))
                 mapType = GoogleMap.MAP_TYPE_HYBRID
 
@@ -78,37 +74,25 @@ class ProfileRunAdapter(var runlist:List<RunData>) : RecyclerView.Adapter<Profil
             }
         }
 
-        fun setMapLocation(latitude: Double, longitude: Double) {
-            Log.d("ProfileRunAdapter", "Map loading...")
-            binding.mapView.getMapAsync { googleMap ->
-                googleMap.setOnMapLoadedCallback {
-                    Log.d("ProfileRunAdapter", "Map loaded, adding marker...")
-                    val location = LatLng(latitude, longitude)
-                    googleMap.addMarker(MarkerOptions().position(location).title("Your Location"))
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 20f))
-                    Log.d("ProfileRunAdapter", "Map loaded.")
-                }
-            }
-        }
-
         override fun onMapReady(googleMap: GoogleMap) {
-            map = googleMap ?: return
+            map = googleMap
             setMapLocation()
         }
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileRunHolder {
-        val binding = CardUserRunBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ProfileRunHolder(binding)
-    }
-
-    override fun onBindViewHolder(holder: ProfileRunHolder, position: Int) {
-        holder.bind(runlist.get(position))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeRunHolder {
+        val binding = CardHomeRunBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return HomeRunHolder(binding)
     }
 
     override fun getItemCount(): Int {
         return runlist.size
     }
+
+    override fun onBindViewHolder(holder: HomeRunHolder, position: Int) {
+        holder.bind(runlist.get(position))
+    }
+
 
 }
