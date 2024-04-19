@@ -1,4 +1,98 @@
 package com.example.sprintspirit.features.dashboard.home.ui
 
-class HomeRunAdapter {
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
+import com.example.sprintspirit.R
+import com.example.sprintspirit.databinding.CardHomeRunBinding
+import com.example.sprintspirit.features.run.data.RunData
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.PolylineOptions
+import java.text.SimpleDateFormat
+import java.util.Date
+
+class HomeRunAdapter(var runlist:List<RunData>) : RecyclerView.Adapter<HomeRunAdapter.HomeRunHolder>() {
+
+    class HomeRunHolder(val binding: CardHomeRunBinding) : RecyclerView.ViewHolder(binding.root), OnMapReadyCallback{
+        private val mapView: MapView = binding.cardHomeRunMap
+        private lateinit var map: GoogleMap
+        private lateinit var path: MutableList<LatLng>
+
+        init{
+            with(mapView){
+                onCreate(null)
+                getMapAsync(this@HomeRunHolder)
+            }
+        }
+
+        fun bind(get: RunData){
+            //Path
+            path = mutableListOf()
+            for(pos in get.points!!){
+                for((date, geoPoint) in pos){
+                    path.add(LatLng(geoPoint.latitude, geoPoint.longitude))
+                }
+            }
+
+            //Time
+            val firstTime = get.points.first().keys.first().toLong()
+            val lastTime = get.points.last().keys.first().toLong()
+            val time: Double = (lastTime - firstTime) / 60000.0 //ms to min
+
+            binding.tvUsername.text = get.user.removePrefix("/users/")
+            binding.tvDistanceValue.text = get.distance.toString() + " km"
+            val timeString = String.format("%d:%02d", (time*60).toInt()/60, (time*60).toInt()%60)
+            binding.tvTimeValue.text = timeString + " min"
+            binding.tvPaceValue.text = String.format("%.2f", (get.distance / time)) + " min/km"
+            binding.tvDateValue.text = SimpleDateFormat("dd-MM-yy").format(Date(firstTime))
+        }
+
+        fun setMapLocation(){
+            if(!::map.isInitialized) return
+
+            //Build zoom level
+            val builder = LatLngBounds.builder()
+            builder.include(path.first())
+            builder.include(path.last())
+            val bounds = builder.build()
+            val padding = 75
+
+            with(map){
+                moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding))
+                mapType = GoogleMap.MAP_TYPE_HYBRID
+
+                val pathColor = ContextCompat.getColor(binding.root.context, R.color.run_path)
+                val options = PolylineOptions().addAll(path).color(pathColor)
+                map.addPolyline(options)
+                // setOnMapClickListener {}
+            }
+        }
+
+        override fun onMapReady(googleMap: GoogleMap) {
+            map = googleMap
+            setMapLocation()
+        }
+
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeRunHolder {
+        val binding = CardHomeRunBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return HomeRunHolder(binding)
+    }
+
+    override fun getItemCount(): Int {
+        return runlist.size
+    }
+
+    override fun onBindViewHolder(holder: HomeRunHolder, position: Int) {
+        holder.bind(runlist.get(position))
+    }
+
+
 }

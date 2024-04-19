@@ -23,17 +23,22 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/margin_normal">
+            >
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end" >
+                android:layout_gravity="end"
+                android:background="@drawable/card_user_run_corner"
+                android:translationZ="1dp"
+                android:layout_margin="@dimen/margin_small"
+                >
 
                 <TextView
                     android:id="@+id/textView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_small"
                     android:text="@string/Order_by" />
 
                 <Spinner
@@ -49,7 +54,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingLeft="@dimen/margin_big"
-                android:paddingEnd="@dimen/margin_big" />
+                android:paddingEnd="@dimen/margin_big"
+                android:translationZ="0dp"
+                android:layout_margin="@dimen/margin_small"
+                />
 
         </FrameLayout>
 

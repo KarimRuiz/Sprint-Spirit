@@ -7,6 +7,9 @@ import java.util.Date
 data class RunData(
     val user: String = "",
     val distance: Double = 0.0, //in km
+    val startTime: Date = Date(),
+    val isPublic: Boolean = false,
+    val description: String = "",
     val points: List<Map<String, GeoPoint>>? = null
 ){
     fun getMinutes(): Double{
