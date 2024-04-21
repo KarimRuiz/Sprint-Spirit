@@ -62,12 +62,30 @@
             android:text="Tus carreras"
             android:textSize="@dimen/font_big" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/run_profile_rv"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingLeft="@dimen/margin_big"
-            android:paddingEnd="@dimen/margin_big" />
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_profile_no_runs"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="@dimen/font_normal"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="@dimen/margin_godzilla"
+                android:text="@string/You_dont_have_runs"
+                android:visibility="gone"
+                />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/run_profile_rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/margin_big"
+                android:paddingEnd="@dimen/margin_big" />
+
+        </FrameLayout>
+
 
     </LinearLayout>
 

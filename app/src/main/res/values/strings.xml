@@ -40,4 +40,5 @@
         <item>Distance</item>
         <item>Pace</item>
     </string-array>
+    <string name="You_dont_have_runs">You don\'t have runs yet.</string>
 </resources>

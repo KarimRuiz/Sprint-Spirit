@@ -49,6 +49,8 @@ interface DBManager {
 
     suspend fun getAllRuns(): RunsResponse
 
+    suspend fun getRunsByUser(usermail: String): RunsResponse
+
     suspend fun saveRun(runResponse: RunResponse)
 
     suspend fun getPostsByTime(time: TimeFilter): PostsResponse

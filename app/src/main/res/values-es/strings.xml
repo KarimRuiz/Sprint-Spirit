@@ -30,4 +30,5 @@
     <string name="Internet_will_be_uploaded">No tienes conexión a internet. Se subirá cuando la conexión vuelva.</string>
     <string name="Your_stats">Tus estadísticas</string>
     <string name="Order_by">Ordenar por</string>
+    <string name="You_dont_have_runs">Todav\'ia no has grabado ninguna actividad.</string>
 </resources>

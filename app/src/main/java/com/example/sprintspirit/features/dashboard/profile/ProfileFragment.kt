@@ -115,7 +115,6 @@ class ProfileFragment : BaseFragment() {
     private fun fillProfileData(user: UserResponse?) {
         if(user != null){
             (binding as FragmentProfileBinding).tvName.text = user.user?.username ?: user.user?.email ?: ""
-            //viewModel.userId = user.user?.email
             getProfilePicture()
         }else{
             Log.e(TAG, "fillProfileData: COULDN'T GET USER'S DATA")
@@ -126,6 +125,8 @@ class ProfileFragment : BaseFragment() {
         if((runs != null) and (runs!!.runs != null)){
             adapter = ProfileRunAdapter(runs.runs!!)
             (binding as FragmentProfileBinding).runProfileRv.adapter = adapter
+            if(runs.runs!!.isEmpty())
+                    (binding as FragmentProfileBinding).tvProfileNoRuns.visibility = View.VISIBLE
         }else{
             Log.e(TAG, "fillRuns: COULDN'T GET RUNS")
         }

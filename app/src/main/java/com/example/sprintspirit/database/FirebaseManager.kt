@@ -170,6 +170,20 @@ class FirebaseManager() : DBManager {
         return response
     }
 
+    override suspend fun getRunsByUser(usermail: String): RunsResponse {
+        val response = RunsResponse()
+
+        try{
+            response.runs = firestore.collection(RUNS).whereEqualTo(USER, "/${USERS}/${usermail}").get().await().documents.mapNotNull { snapShot ->
+                snapShot.toObject(RunData::class.java)
+            }
+        }catch (e: Exception){
+            response.exception = e
+        }
+
+        return response
+    }
+
     override suspend fun saveRun(runResponse: RunResponse) {
         try{
             if(runResponse.run != null){

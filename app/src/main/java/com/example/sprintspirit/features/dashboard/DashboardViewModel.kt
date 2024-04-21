@@ -25,7 +25,7 @@ class DashboardViewModel(
     }
 
     val runs = liveData(Dispatchers.IO){
-        emit(repository.getAllRuns())
+        emit(repository.getUserRuns(email!!))
     }
 
     val profilePicture = liveData(Dispatchers.IO) {
