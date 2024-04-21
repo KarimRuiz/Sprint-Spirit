@@ -1,7 +1,6 @@
 package com.example.sprintspirit.features.dashboard
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.liveData
 import com.example.sprintspirit.database.DBManager
 import com.example.sprintspirit.features.dashboard.profile.data.UsersRepository
@@ -15,7 +14,7 @@ class DashboardViewModel(
     private val repository: UsersRepository = UsersRepository()
 ) : BaseViewModel() {
 
-    var userId: String? = null
+    var email: String? = null
 
     private val dbManager: DBManager = DBManager.getCurrentDBManager()
 
@@ -30,7 +29,7 @@ class DashboardViewModel(
     }
 
     val profilePicture = liveData(Dispatchers.IO) {
-        emit(repository.getProfilePicture(userId))
+        emit(repository.getProfilePicture(email))
     }
 
     fun uploadProfilePicture(image: Uri, user: String, callback: (Boolean) -> Unit) {

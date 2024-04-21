@@ -1,12 +1,14 @@
 package com.example.sprintspirit.database
 
-import android.content.Context
 import android.net.Uri
+import com.example.sprintspirit.database.filters.OrderFilter
+import com.example.sprintspirit.database.filters.TimeFilter
+import com.example.sprintspirit.features.dashboard.home.data.PostsResponse
+import com.example.sprintspirit.features.dashboard.home.data.StatsResponse
 import com.example.sprintspirit.features.dashboard.profile.data.ProfilePictureResponse
 import com.example.sprintspirit.features.dashboard.profile.data.UserResponse
 import com.example.sprintspirit.features.run.data.RunResponse
 import com.example.sprintspirit.features.run.data.RunsResponse
-import com.example.sprintspirit.features.signin.data.User
 import com.google.firebase.auth.FirebaseUser
 
 interface DBManager {
@@ -48,5 +50,11 @@ interface DBManager {
     suspend fun getAllRuns(): RunsResponse
 
     suspend fun saveRun(runResponse: RunResponse)
+
+    suspend fun getPostsByTime(time: TimeFilter): PostsResponse
+
+    /* STATS */
+
+    suspend fun getWeeklyStats(user: String): StatsResponse
 
 }

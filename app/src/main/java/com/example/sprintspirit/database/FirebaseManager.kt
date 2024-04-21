@@ -4,22 +4,25 @@ package com.example.sprintspirit.database
 import android.net.Uri
 import android.util.Log
 import androidx.core.graphics.drawable.toIcon
+import com.example.sprintspirit.database.filters.OrderFilter
+import com.example.sprintspirit.database.filters.TimeFilter
+import com.example.sprintspirit.features.dashboard.home.data.Post
+import com.example.sprintspirit.features.dashboard.home.data.PostsResponse
+import com.example.sprintspirit.features.dashboard.home.data.Stats
+import com.example.sprintspirit.features.dashboard.home.data.StatsResponse
 import com.example.sprintspirit.features.dashboard.profile.data.ProfilePictureResponse
 import com.example.sprintspirit.features.dashboard.profile.data.UserResponse
 import com.example.sprintspirit.features.run.data.RunData
 import com.example.sprintspirit.features.run.data.RunResponse
 import com.example.sprintspirit.features.run.data.RunsResponse
 import com.example.sprintspirit.features.signin.data.User
-import com.google.firebase.Firebase
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageException
-import com.google.firebase.storage.storage
 import kotlinx.coroutines.tasks.await
-import java.io.IOException
-import kotlin.system.exitProcess
+import java.util.Date
 
 class FirebaseManager() : DBManager {
 
@@ -29,11 +32,15 @@ class FirebaseManager() : DBManager {
 
     companion object{
         val USERS = "users"
+        val USER = "user"
         val PROVIDER = "provider"
         val HEIGHT = "height"
         val WEIGHT = "weight"
         val USERNAME = "username"
         val RUNS = "sessions"
+        val POSTS = "posts"
+
+        val START_TIME = "startTime"
 
         val IMAGES = "profilePictures"
     }
@@ -122,7 +129,7 @@ class FirebaseManager() : DBManager {
 
     override suspend fun getProfilePicture(user: String): ProfilePictureResponse {
         val response = ProfilePictureResponse()
-
+        Log.d("getProfilePicture", "user: ${user}")
         try {
             val ref = storage.child(IMAGES).child("$user.jpg")
             val url = ref.downloadUrl.await()
@@ -169,8 +176,73 @@ class FirebaseManager() : DBManager {
                 firestore.collection(RUNS).document().set(runResponse.run).await()
             }
         }catch(e: Exception){
-            Log.e("FirebaseManager", "ERROR SAVING RUN: ${e.toString()}")
+            Log.e("FirebaseManager", "ERROR SAVING RUN: ${e}")
         }
+    }
+
+    override suspend fun getPostsByTime(time: TimeFilter): PostsResponse {
+        val response = PostsResponse()
+
+        try {
+            val runsRef = firestore.collection(RUNS)
+            val minDate = Timestamp(Date(Date().time - time.timeMillis()))
+
+            val runs = runsRef.whereGreaterThan(START_TIME, minDate).get().await().documents.mapNotNull { snapShot ->
+                snapShot.toObject(RunData::class.java)
+            }
+
+            val posts: MutableList<Post> = mutableListOf()
+            runs.forEach {
+                val userId = it.user.removePrefix("/users/")
+                val user = firestore.collection(USERS).document(userId).get().await().toObject(User::class.java)
+                try {
+                    val ref = storage.child(IMAGES).child("$userId.jpg")
+                    user?.profilePictureUrl = ref.downloadUrl.await()
+                }catch(e: Exception){}
+
+                posts.add(Post(
+                    user!!,
+                    it
+                ))
+            }
+
+            response.posts = posts
+        } catch (e: Exception) {
+            response.exception = e
+        }
+
+        return response
+    }
+
+    /* STATS */
+
+    override suspend fun getWeeklyStats(user: String): StatsResponse {
+        val response = StatsResponse()
+        try{
+            var time = 0.0
+            var distance = 0.0
+
+            //get all runs
+            val runsQuery = firestore.collection(RUNS).whereEqualTo(USER, "/users/$user").get().await()
+            val runs = runsQuery.documents.mapNotNull {
+                it.toObject(RunData::class.java)
+            }
+
+            runs.forEach{run ->
+                time += run.getMinutes()
+                distance += run.distance
+            }
+            val pace = if (distance > 0 && time > 0) {
+                time/60.0 / distance
+            } else {
+                0.0
+            }
+            response.stats = Stats(time/60.0, distance, pace)
+        }catch(e:Exception){
+            response.exception = e
+        }
+
+        return response
     }
 
 }

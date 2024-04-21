@@ -106,7 +106,10 @@ class SignUpFragment : BaseFragment() {
                     dbManager.logInWithEmail(
                         binding.edtEmail.text.toString(),
                         binding.edtPassword.text.toString(),
-                        { showHome() },
+                        {
+                            sharedPreferences.email = binding.edtEmail.text.toString()
+                            showHome()
+                        },
                         { context?.let { it1 -> showAlert(it1.getString(R.string.Sign_in_error)) } }
                     )
                 },
