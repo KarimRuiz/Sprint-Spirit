@@ -38,5 +38,6 @@
     <string-array name="order_filter_array">
         <item>New</item>
         <item>Distance</item>
+        <item>Pace</item>
     </string-array>
 </resources>

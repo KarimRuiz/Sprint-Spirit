@@ -1,6 +1,5 @@
 package com.example.sprintspirit.features.dashboard.profile
 
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -13,19 +12,15 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.sprintspirit.R
+import com.example.sprintspirit.data.Preferences
 import com.example.sprintspirit.databinding.FragmentProfileBinding
 import com.example.sprintspirit.features.dashboard.DashboardViewModel
 import com.example.sprintspirit.features.dashboard.profile.data.ProfilePictureResponse
 import com.example.sprintspirit.features.dashboard.profile.data.UserResponse
-import com.example.sprintspirit.features.run.data.RunData
 import com.example.sprintspirit.features.dashboard.profile.ui.ProfileRunAdapter
-import com.example.sprintspirit.features.run.data.RunResponse
 import com.example.sprintspirit.features.run.data.RunsResponse
 import com.example.sprintspirit.ui.BaseFragment
 import com.example.sprintspirit.util.Utils.isInternetAvailable
-import com.google.firebase.firestore.GeoPoint
-import java.io.FileNotFoundException
-import java.util.Date
 
 class ProfileFragment : BaseFragment() {
 
@@ -42,6 +37,7 @@ class ProfileFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = DashboardViewModel()
+        viewModel.email = Preferences(requireContext()).email
         getCurrentUser()
 
         getRuns()
@@ -79,7 +75,9 @@ class ProfileFragment : BaseFragment() {
 
     private fun setProfilePicture(it: ProfilePictureResponse?) {
         if (it != null) {
+            logd("Picture response is not null")
             if(it.picture?.uri != null){
+                logd("picture is not null: ${it.picture?.uri}")
                 Glide.with(requireContext())
                     .load(it.picture?.uri)
                     .into((binding as FragmentProfileBinding).ivProfilePicture)
@@ -98,7 +96,7 @@ class ProfileFragment : BaseFragment() {
     }
 
     private fun uploadProfileImage(uri: Uri) {
-        viewModel.uploadProfilePicture(uri, viewModel.userId!!){success ->
+        viewModel.uploadProfilePicture(uri, viewModel.email!!){ success ->
             if(success){
                 activity?.runOnUiThread {
                     (binding as FragmentProfileBinding).ivProfilePicture.setImageURI(uri)
@@ -117,7 +115,7 @@ class ProfileFragment : BaseFragment() {
     private fun fillProfileData(user: UserResponse?) {
         if(user != null){
             (binding as FragmentProfileBinding).tvName.text = user.user?.username ?: user.user?.email ?: ""
-            viewModel.userId = user.user?.email
+            //viewModel.userId = user.user?.email
             getProfilePicture()
         }else{
             Log.e(TAG, "fillProfileData: COULDN'T GET USER'S DATA")

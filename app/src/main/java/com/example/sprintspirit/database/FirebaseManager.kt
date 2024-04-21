@@ -6,6 +6,8 @@ import android.util.Log
 import androidx.core.graphics.drawable.toIcon
 import com.example.sprintspirit.database.filters.OrderFilter
 import com.example.sprintspirit.database.filters.TimeFilter
+import com.example.sprintspirit.features.dashboard.home.data.Post
+import com.example.sprintspirit.features.dashboard.home.data.PostsResponse
 import com.example.sprintspirit.features.dashboard.home.data.Stats
 import com.example.sprintspirit.features.dashboard.home.data.StatsResponse
 import com.example.sprintspirit.features.dashboard.profile.data.ProfilePictureResponse
@@ -127,7 +129,7 @@ class FirebaseManager() : DBManager {
 
     override suspend fun getProfilePicture(user: String): ProfilePictureResponse {
         val response = ProfilePictureResponse()
-
+        Log.d("getProfilePicture", "user: ${user}")
         try {
             val ref = storage.child(IMAGES).child("$user.jpg")
             val url = ref.downloadUrl.await()
@@ -178,21 +180,33 @@ class FirebaseManager() : DBManager {
         }
     }
 
-    override suspend fun getRunsByFilterAndTime(filter: OrderFilter, time: TimeFilter): RunsResponse {
-        val response = RunsResponse()
+    override suspend fun getPostsByTime(time: TimeFilter): PostsResponse {
+        val response = PostsResponse()
 
         try {
             val runsRef = firestore.collection(RUNS)
             val minDate = Timestamp(Date(Date().time - time.timeMillis()))
 
-            response.runs = runsRef.whereGreaterThan(START_TIME, minDate).get().await().documents.mapNotNull { snapShot ->
+            val runs = runsRef.whereGreaterThan(START_TIME, minDate).get().await().documents.mapNotNull { snapShot ->
                 snapShot.toObject(RunData::class.java)
             }
 
-            when(filter){
-                OrderFilter.NEW -> response.runs = response.runs!!.sortedBy { it.startTime.time }
-                OrderFilter.DISTANCE -> response.runs = response.runs!!.sortedBy { it.distance }
+            val posts: MutableList<Post> = mutableListOf()
+            runs.forEach {
+                val userId = it.user.removePrefix("/users/")
+                val user = firestore.collection(USERS).document(userId).get().await().toObject(User::class.java)
+                try {
+                    val ref = storage.child(IMAGES).child("$userId.jpg")
+                    user?.profilePictureUrl = ref.downloadUrl.await()
+                }catch(e: Exception){}
+
+                posts.add(Post(
+                    user!!,
+                    it
+                ))
             }
+
+            response.posts = posts
         } catch (e: Exception) {
             response.exception = e
         }
@@ -204,7 +218,6 @@ class FirebaseManager() : DBManager {
 
     override suspend fun getWeeklyStats(user: String): StatsResponse {
         val response = StatsResponse()
-
         try{
             var time = 0.0
             var distance = 0.0
@@ -224,7 +237,6 @@ class FirebaseManager() : DBManager {
             } else {
                 0.0
             }
-            Log.d("TOTAL DISTANCE: ", distance.toString())
             response.stats = Stats(time/60.0, distance, pace)
         }catch(e:Exception){
             response.exception = e

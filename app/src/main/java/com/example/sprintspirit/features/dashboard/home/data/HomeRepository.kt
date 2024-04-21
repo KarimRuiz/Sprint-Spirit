@@ -13,8 +13,8 @@ class HomeRepository {
         return manager.getWeeklyStats(user)
     }
 
-    suspend fun getRunsByFilterAndTime(filter: OrderFilter, time: TimeFilter): RunsResponse{
-        return manager.getRunsByFilterAndTime(filter, time)
+    suspend fun getPostsByFilter(time: TimeFilter): PostsResponse{
+        return manager.getPostsByTime(time)
     }
 
 }

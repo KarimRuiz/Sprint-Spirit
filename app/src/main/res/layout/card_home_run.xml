@@ -158,15 +158,32 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true">
 
-            <TextView
-                android:id="@+id/tv_date_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/card_user_run_corner"
-                android:gravity="end"
-                android:padding="@dimen/margin_small"
-                android:text="12/5/2024"
-                android:textColor="@color/black"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tv_date_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_user_run_corner"
+                    android:gravity="end"
+                    android:layout_gravity="bottom"
+                    android:padding="@dimen/margin_small"
+                    android:text="12/5/2024"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:id="@+id/tv_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_user_run_corner"
+                    android:padding="@dimen/margin_small"
+                    android:visibility="gone"
+                    android:text="Content description"
+                    android:textColor="@color/black"/>
+
+            </LinearLayout>
 
         </FrameLayout>
 

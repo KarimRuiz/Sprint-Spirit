@@ -53,8 +53,6 @@
                 android:id="@+id/runs_home_rv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingLeft="@dimen/margin_big"
-                android:paddingEnd="@dimen/margin_big"
                 android:translationZ="0dp"
                 android:layout_margin="@dimen/margin_small"
                 />

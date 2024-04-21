@@ -3,6 +3,7 @@ package com.example.sprintspirit.database
 import android.net.Uri
 import com.example.sprintspirit.database.filters.OrderFilter
 import com.example.sprintspirit.database.filters.TimeFilter
+import com.example.sprintspirit.features.dashboard.home.data.PostsResponse
 import com.example.sprintspirit.features.dashboard.home.data.StatsResponse
 import com.example.sprintspirit.features.dashboard.profile.data.ProfilePictureResponse
 import com.example.sprintspirit.features.dashboard.profile.data.UserResponse
@@ -50,7 +51,7 @@ interface DBManager {
 
     suspend fun saveRun(runResponse: RunResponse)
 
-    suspend fun getRunsByFilterAndTime(filter: OrderFilter, time: TimeFilter): RunsResponse
+    suspend fun getPostsByTime(time: TimeFilter): PostsResponse
 
     /* STATS */
 

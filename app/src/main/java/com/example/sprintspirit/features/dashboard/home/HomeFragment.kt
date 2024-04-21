@@ -70,28 +70,31 @@ class HomeFragment : BaseFragment(), AdapterView.OnItemSelectedListener {
             binding.homeFragmentStats.pace = String.format("%.2f", it.stats?.pace)
         })
 
-        viewModel.filteredRuns.observe(viewLifecycleOwner, Observer{runs ->
-            if((runs != null) and (runs!!.runs != null)){
+        viewModel.filteredRuns.observe(viewLifecycleOwner, Observer{posts ->
+            logd("Filtered runs observer triggered.")
+            if(posts != null){
                 logd("Updating...")
-                adapter = HomeRunAdapter(runs.runs!!)
+                adapter = HomeRunAdapter(posts.postsByTime(), requireContext())
                 binding.runsHomeRv.adapter = adapter
             }else{
-                Log.e(TAG, "filteredRuns: COULDN'T GET RUNS: ${runs.exception.toString()}")
+                Log.e(TAG, "filteredRuns: COULDN'T GET RUNS: ${posts?.exception.toString()}")
             }
         })
     }
 
-    private fun fillRuns(runs: List<RunData>){
-        adapter = HomeRunAdapter(runs)
-        (binding as FragmentProfileBinding).runProfileRv.adapter = adapter
-    }
-
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        logd("Selected position: ${position}")
-        when(position){
-            0 -> viewModel.setOrderFilter(OrderFilter.NEW)
-            1 -> viewModel.setOrderFilter(OrderFilter.DISTANCE)
-            else -> viewModel.setOrderFilter(OrderFilter.NEW)
+        val sortedList = when(position){
+            0 -> viewModel.filteredRuns.value?.posts?.filter{it.run.isPublic}?.sortedByDescending { it.run.startTime }
+            1 -> viewModel.filteredRuns.value?.posts?.filter{it.run.isPublic}?.sortedByDescending { it.run.distance }
+            2 -> viewModel.filteredRuns.value?.posts?.filter{it.run.isPublic}?.sortedByDescending { (it.run.distance)/(it.run.startTime.time/(1000*60)) }
+            else -> viewModel.filteredRuns.value?.posts?.filter{it.run.isPublic}?.sortedBy { it.run.startTime }
+        }
+        sortedList?.take(10)
+        sortedList?.let { list ->
+            if (::adapter.isInitialized) {
+                adapter = HomeRunAdapter(list, requireContext())
+                (binding as FragmentHomeBinding).runsHomeRv.adapter = adapter
+            }
         }
     }
 
