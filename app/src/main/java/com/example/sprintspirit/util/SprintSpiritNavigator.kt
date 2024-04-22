@@ -3,7 +3,7 @@ package com.example.sprintspirit.util
 import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.FragmentActivity
-import com.example.sprintspirit.MainActivity
+import com.example.sprintspirit.features.dashboard.DashboardActivity
 import com.example.sprintspirit.features.settings.SettingsActivity
 import com.example.sprintspirit.features.signin.ui.signin.SignInActivity
 
@@ -13,7 +13,7 @@ class SprintSpiritNavigator(val context: Context) {
         activity: FragmentActivity?,
         preserveStack: Boolean? = true
     ){
-        navigateTo(activity, Intent(activity, MainActivity::class.java), preserveStack)
+        navigateTo(activity, Intent(activity, DashboardActivity::class.java), preserveStack)
     }
 
     fun navigateToLogIn(
