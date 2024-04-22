@@ -47,6 +47,9 @@ android {
 }
 
 dependencies {
+    //Mapbox
+    implementation("com.mapbox.maps:android:11.3.0")
+
     //Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
     implementation("com.firebaseui:firebase-ui-auth:7.2.0")
