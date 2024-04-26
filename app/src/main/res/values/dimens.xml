@@ -13,6 +13,9 @@
     <dimen name="profile_height">160dp</dimen>
     <dimen name="profile_picture_size">125dp</dimen>
 
+    <!-- RECORD RUN -->
+    <dimen name="record_button_size">96dp</dimen>
+
     <dimen name="margin_small">4dp</dimen>
     <dimen name="margin_normal">8dp</dimen>
     <dimen name="margin_big">12dp</dimen>

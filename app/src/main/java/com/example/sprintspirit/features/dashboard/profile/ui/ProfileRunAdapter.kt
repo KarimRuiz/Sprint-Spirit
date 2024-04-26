@@ -45,8 +45,8 @@ class ProfileRunAdapter(var runlist:List<RunData>) : RecyclerView.Adapter<Profil
             }
 
             //Time
-            val firstTime = get.points.first().keys.first().toLong()
-            val lastTime = get.points.last().keys.first().toLong()
+            val firstTime = get.points!!.first().keys.first().toLong()
+            val lastTime = get.points!!.last().keys.first().toLong()
             val time: Double = (lastTime - firstTime) / 60000.0 //ms to min
 
             binding.tvDistanceValue.text = get.distance.toString() + " km"

@@ -38,12 +38,4 @@ class DashboardViewModel(
             callback(success)
         }
     }
-
-    //TODO: this goes into the run activity
-    fun saveRun(runResponse: RunResponse){
-        CoroutineScope(Dispatchers.IO).launch {
-            repository.saveRun(runResponse)
-        }
-    }
-
 }

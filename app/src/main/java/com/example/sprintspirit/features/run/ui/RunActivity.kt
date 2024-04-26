@@ -4,6 +4,8 @@ import android.graphics.Color
 import android.os.Bundle
 import android.widget.Toast
 import com.example.sprintspirit.databinding.ActivityRunBinding
+import com.example.sprintspirit.features.run.data.RunData
+import com.example.sprintspirit.features.run.data.RunResponse
 import com.example.sprintspirit.ui.BaseActivity
 import com.example.sprintspirit.util.LocationPermissionHelper
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -11,8 +13,16 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.firestore.GeoPoint
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
+import com.mapbox.common.location.AccuracyLevel
+import com.mapbox.common.location.DeviceLocationProvider
+import com.mapbox.common.location.IntervalSettings
+import com.mapbox.common.location.Location
+import com.mapbox.common.location.LocationObserver
+import com.mapbox.common.location.LocationProviderRequest
+import com.mapbox.common.location.LocationServiceFactory
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
@@ -29,24 +39,45 @@ import com.mapbox.maps.plugin.locationcomponent.createDefault2DPuck
 import com.mapbox.maps.plugin.locationcomponent.location
 import com.mapbox.maps.plugin.viewport.viewport
 import java.lang.ref.WeakReference
+import java.util.Date
 
 
 class RunActivity : BaseActivity() {
 
+    private lateinit var viewModel: RunViewModel
     private lateinit var mapView: MapView
     private lateinit var binding: ActivityRunBinding
     private lateinit var locationPermissionHelper: LocationPermissionHelper
 
-    private var permissionsListener: PermissionsListener = object : PermissionsListener{
-        override fun onExplanationNeeded(permissionsToExplain: List<String>) {
-            TODO("Not yet implemented")
-        }
-        override fun onPermissionResult(granted: Boolean) {
-            if (granted) {
-                setUpMap()
-            } else {
-                // User denied the permission
-            }
+    private var isRunning = false
+    private var run: RunData? = null
+
+    private val locatonService = LocationServiceFactory.getOrCreate()
+    private var locationProvider: DeviceLocationProvider? = null
+
+    val request = LocationProviderRequest.Builder()
+        .interval(IntervalSettings.Builder().interval(0L).minimumInterval(0L).maximumInterval(0L).build())
+        .displacement(0F)
+        .accuracy(AccuracyLevel.HIGH)
+        .build()
+
+    val locationObserver = LocationObserver { locations ->
+        logd("Location update received: " + locations)
+        for(location in locations){
+            val point = Point.fromLngLat(location.longitude, location.latitude)
+            val cameraOptions = CameraOptions.Builder()
+                .center(point)
+                .build()
+
+            val timeStamp = System.currentTimeMillis()
+            val runPoint: Map<String, GeoPoint> = mapOf(timeStamp.toString() to GeoPoint(location.latitude, location.longitude))
+
+            val mutablePoints = run?.points?.toMutableList() ?: mutableListOf()
+            mutablePoints.add(runPoint)
+            run?.points = mutablePoints
+
+            binding.mapView.mapboxMap.setCamera(cameraOptions)
+            binding.mapView.gestures.focalPoint = binding.mapView.mapboxMap.pixelForCoordinate(point)
         }
     }
 
@@ -63,14 +94,46 @@ class RunActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = RunViewModel()
         binding = ActivityRunBinding.inflate(layoutInflater)
 
-        locationPermissionHelper = LocationPermissionHelper(WeakReference(this))
+        /*locationPermissionHelper = LocationPermissionHelper(WeakReference(this))
         locationPermissionHelper.checkPermissions {
             setUpMap()
+        }*/
+        val result = locatonService.getDeviceLocationProvider(request)
+        if(result.isValue){
+            setUpMap()
+            locationProvider = result.value!!
+        }else{
+            loge("Failed to get devices location provider")
         }
+        locationProvider?.addLocationObserver(locationObserver)
+
+        subscribeUi(binding)
 
         setContentView(binding.root)
+    }
+
+    private fun subscribeUi(binding: ActivityRunBinding) {
+        binding.recordRunButton.setOnClickListener {
+            if(isRunning){
+                binding.recordRunStatus.text = "Record run"
+                if((run?.points?.size ?: 0) > 2) postRun()
+                run = null
+            }else{
+                binding.recordRunStatus.text = "Recording..."
+                run = RunData(
+                    user = "/users/" + sharedPreferences.email?: "",
+                    startTime = Date()
+                )
+            }
+            isRunning = !isRunning
+        }
+    }
+
+    private fun postRun() {
+        viewModel.saveRun(RunResponse(run))
     }
 
     private fun setUpMap(){
@@ -84,8 +147,9 @@ class RunActivity : BaseActivity() {
                 .build()
         )*/
         with(mapView) {
-            location.locationPuck = createDefault2DPuck(withBearing = true)
+            location.locationPuck = createDefault2DPuck(withBearing = false) //bearing wont appear until the direction is solved
             location.enabled = true
+            location.puckBearingEnabled = true
             location.puckBearing = PuckBearing.HEADING //this should be PuckBearing, but doesnt seem to be working
             gestures.scrollEnabled = true
             gestures.rotateEnabled = true
@@ -135,6 +199,7 @@ class RunActivity : BaseActivity() {
 
     override fun onStop() {
         super.onStop()
+        locationProvider?.removeLocationObserver(locationObserver);
         binding.mapView.location
             .removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener)
     }
