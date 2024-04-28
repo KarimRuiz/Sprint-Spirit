@@ -71,7 +71,7 @@ class HomeFragment : BaseFragment(), AdapterView.OnItemSelectedListener {
         })
 
         viewModel.filteredRuns.observe(viewLifecycleOwner, Observer{posts ->
-            logd("Filtered runs observer triggered.")
+            logd("Filtered runs observer triggered: ${posts.posts.size}, ${posts.exception.toString()}")
             if(posts != null){
                 logd("Updating...")
                 adapter = HomeRunAdapter(posts.postsByTime(), requireContext())

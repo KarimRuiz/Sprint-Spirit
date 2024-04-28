@@ -62,6 +62,9 @@ dependencies {
     //Gson
     implementation("com.google.code.gson:gson:2.8.8")
 
+    //Play Services
+    implementation("com.google.android.gms:play-services-location:21.2.0")
+
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")

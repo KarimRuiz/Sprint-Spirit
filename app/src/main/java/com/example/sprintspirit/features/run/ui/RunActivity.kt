@@ -1,11 +1,21 @@
 package com.example.sprintspirit.features.run.ui
 
+import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import com.example.sprintspirit.databinding.ActivityRunBinding
 import com.example.sprintspirit.features.run.data.RunData
 import com.example.sprintspirit.features.run.data.RunResponse
+import com.example.sprintspirit.features.run.location.LocationService
 import com.example.sprintspirit.ui.BaseActivity
 import com.example.sprintspirit.util.LocationPermissionHelper
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -42,15 +52,13 @@ import java.lang.ref.WeakReference
 import java.util.Date
 
 
-class RunActivity : BaseActivity() {
+class RunActivity : BaseActivity(), PermissionsListener {
 
     private lateinit var viewModel: RunViewModel
     private lateinit var mapView: MapView
     private lateinit var binding: ActivityRunBinding
+    private lateinit var permissionsManager: PermissionsManager
     private lateinit var locationPermissionHelper: LocationPermissionHelper
-
-    private var isRunning = false
-    private var run: RunData? = null
 
     private val locatonService = LocationServiceFactory.getOrCreate()
     private var locationProvider: DeviceLocationProvider? = null
@@ -62,22 +70,34 @@ class RunActivity : BaseActivity() {
         .build()
 
     val locationObserver = LocationObserver { locations ->
-        logd("Location update received: " + locations)
+        logd("GOT LOCATION")
         for(location in locations){
             val point = Point.fromLngLat(location.longitude, location.latitude)
             val cameraOptions = CameraOptions.Builder()
                 .center(point)
                 .build()
 
-            val timeStamp = System.currentTimeMillis()
-            val runPoint: Map<String, GeoPoint> = mapOf(timeStamp.toString() to GeoPoint(location.latitude, location.longitude))
-
-            val mutablePoints = run?.points?.toMutableList() ?: mutableListOf()
-            mutablePoints.add(runPoint)
-            run?.points = mutablePoints
-
             binding.mapView.mapboxMap.setCamera(cameraOptions)
             binding.mapView.gestures.focalPoint = binding.mapView.mapboxMap.pixelForCoordinate(point)
+        }
+    }
+
+    val locationReceiver = object : BroadcastReceiver(){
+        override fun onReceive(context: Context?, intent: Intent?) {
+            intent?.let{
+                if(viewModel.isRunning()){
+                    val location =
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            intent.getParcelableExtra(LocationService.LOCATION_INTENT, android.location.Location::class.java)
+                    }else{
+                            intent.extras?.getParcelable(LocationService.LOCATION_INTENT) as? android.location.Location
+                    }
+                    val timeStamp = System.currentTimeMillis()
+                    val runPoint = GeoPoint(location!!.latitude, location.longitude)
+                    viewModel.addCoord(runPoint, timeStamp)
+                    logd("Location added to run: " + runPoint)
+                }
+            }
         }
     }
 
@@ -87,21 +107,20 @@ class RunActivity : BaseActivity() {
             .center(it)
             .build()
         binding.mapView.mapboxMap.setCamera(cameraOptions)
-        //binding.mapView.mapboxMap.loadStyle(Style.OUTDOORS) //TODO: if the style is correct, just delete it
         // Set the gestures plugin's focal point to the current indicator location.
         binding.mapView.gestures.focalPoint = binding.mapView.mapboxMap.pixelForCoordinate(it)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = RunViewModel()
+        viewModel = RunViewModel(prefs = sharedPreferences)
         binding = ActivityRunBinding.inflate(layoutInflater)
 
-        /*locationPermissionHelper = LocationPermissionHelper(WeakReference(this))
-        locationPermissionHelper.checkPermissions {
-            setUpMap()
-        }*/
+        permissionsManager = PermissionsManager(this)
+        permissionsManager.requestLocationPermissions(this)
+        logd("isBackgroundLocationPermissionGranted: ${PermissionsManager.isBackgroundLocationPermissionGranted(this)}")
         val result = locatonService.getDeviceLocationProvider(request)
+
         if(result.isValue){
             setUpMap()
             locationProvider = result.value!!
@@ -116,36 +135,45 @@ class RunActivity : BaseActivity() {
     }
 
     private fun subscribeUi(binding: ActivityRunBinding) {
+        logd("Requesting permissions...")
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ),
+            0
+        )
         binding.recordRunButton.setOnClickListener {
-            if(isRunning){
+            if(viewModel.isRunning()){
+                Intent(applicationContext, LocationService::class.java).apply{
+                    action = LocationService.ACTION_STOP
+                    startService(this)
+                    unregisterReceiver(locationReceiver)
+                }
+
                 binding.recordRunStatus.text = "Record run"
-                if((run?.points?.size ?: 0) > 2) postRun()
-                run = null
+                if(viewModel.runCanBeUploaded()) postRun()
             }else{
+                Intent(applicationContext, LocationService::class.java).apply{
+                    action = LocationService.ACTION_START
+                    startService(this)
+                    val filter = IntentFilter(LocationService.LOCATION_INTENT)
+                    registerReceiver(locationReceiver, filter)
+                }
+
                 binding.recordRunStatus.text = "Recording..."
-                run = RunData(
-                    user = "/users/" + sharedPreferences.email?: "",
-                    startTime = Date()
-                )
+                viewModel.startRun()
             }
-            isRunning = !isRunning
         }
     }
 
     private fun postRun() {
-        viewModel.saveRun(RunResponse(run))
+        viewModel.saveRun()
     }
 
     private fun setUpMap(){
         mapView = MapView(this)
-        /*mapView.mapboxMap.setCamera(
-            CameraOptions.Builder()
-                .center(Point.fromLngLat(37.1, 3.6))
-                .pitch(0.0)
-                .zoom(10.0)
-                .bearing(0.0)
-                .build()
-        )*/
         with(mapView) {
             location.locationPuck = createDefault2DPuck(withBearing = false) //bearing wont appear until the direction is solved
             location.enabled = true
@@ -159,35 +187,6 @@ class RunActivity : BaseActivity() {
             )
             mapboxMap.loadStyle(Style.OUTDOORS)
         }
-        /*binding.mapView.apply {
-            location.enabled = true
-            mapboxMap.loadStyle(Style.OUTDOORS) {
-                // Disable scroll gesture, since we are updating the camera position based on the indicator location.
-                gestures.scrollEnabled = true
-                gestures.addOnMapClickListener { point ->
-                    location
-                        .isLocatedAt(point) { isPuckLocatedAtPoint ->
-                            if (isPuckLocatedAtPoint) {
-                                Toast.makeText(context, "Clicked on location puck", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    true
-                }
-                gestures.addOnMapLongClickListener { point ->
-                    location.isLocatedAt(point) { isPuckLocatedAtPoint ->
-                        if (isPuckLocatedAtPoint) {
-                            Toast.makeText(context, "Long-clicked on location puck", Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                    }
-                    true
-                }
-                val locationProvider = location.getLocationProvider() as DefaultLocationProvider
-                locationProvider.addOnCompassCalibrationListener {
-                    Toast.makeText(context, "Compass needs to be calibrated", Toast.LENGTH_LONG).show()
-                }
-            }
-        }*/
         binding.mapView.addView(mapView)
     }
 
@@ -202,6 +201,14 @@ class RunActivity : BaseActivity() {
         locationProvider?.removeLocationObserver(locationObserver);
         binding.mapView.location
             .removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener)
+    }
+
+    override fun onExplanationNeeded(permissionsToExplain: List<String>) {
+        logd("Explanation: just fucking accept")
+    }
+
+    override fun onPermissionResult(granted: Boolean) {
+        logd("Permission granted: ${granted}")
     }
 
 }
