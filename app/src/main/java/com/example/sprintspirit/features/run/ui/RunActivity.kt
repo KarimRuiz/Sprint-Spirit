@@ -15,7 +15,9 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import com.example.sprintspirit.R
 import com.example.sprintspirit.databinding.ActivityRunBinding
 import com.example.sprintspirit.features.run.location.LocationService
 import com.example.sprintspirit.ui.BaseActivity
@@ -48,6 +50,7 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
 
     private val locatonService = LocationServiceFactory.getOrCreate()
     private var locationProvider: DeviceLocationProvider? = null
+    private var isReceiverRegistered = false
 
     val request = LocationProviderRequest.Builder()
         .interval(IntervalSettings.Builder().interval(0L).minimumInterval(0L).maximumInterval(0L).build())
@@ -163,31 +166,43 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
 
     private fun subscribeUi(binding: ActivityRunBinding) {
         binding.recordRunButton.setOnClickListener {
+            logd("viewModel.isRunning(): ${viewModel.isRunning()}")
             if(viewModel.isRunning()){
-                Intent(applicationContext, LocationService::class.java).apply{
+                Intent(applicationContext, LocationService::class.java).apply {
                     action = LocationService.ACTION_STOP
                     startService(this)
+                }
+                // Unregister receiver if registered
+                if (isReceiverRegistered) {
                     unregisterReceiver(locationReceiver)
+                    isReceiverRegistered = false
                 }
 
-                binding.recordRunStatus.text = "Record run"
-                if(viewModel.runCanBeUploaded()) postRun()
+                binding.recordRunStatus.text = "Record"
+                binding.recordRunButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.record_button))
+                postRun()
             }else{
                 Intent(applicationContext, LocationService::class.java).apply{
                     action = LocationService.ACTION_START
                     startService(this)
                     val filter = IntentFilter(LocationService.LOCATION_INTENT)
-                    registerReceiver(locationReceiver, filter)
+                    ContextCompat.registerReceiver(this@RunActivity, locationReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
+                    isReceiverRegistered = true
                 }
 
-                binding.recordRunStatus.text = "Recording..."
+                binding.recordRunStatus.text = "Stop"
+                binding.recordRunButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.record_button_running))
                 viewModel.startRun()
             }
         }
     }
 
     private fun postRun() {
-        viewModel.saveRun()
+        try{
+            viewModel.saveRun()
+        }catch(e: Exception){
+            ErrorDialog(e.message?: "").show(supportFragmentManager, "ERROR_DIALOG")
+        }
     }
 
     private fun setUpMap(){
@@ -274,6 +289,19 @@ class EnableLocationDialog(
                 .setNegativeButton("Cancel") { dialog, id ->
                     activity.finish()
                 }
+            builder.create()
+        } ?: throw IllegalStateException("Activity cannot be null")
+    }
+}
+
+class ErrorDialog(
+    val message: String
+) : DialogFragment() {
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return activity.let {
+            val builder = AlertDialog.Builder(it)
+            builder.setMessage(message)
+                .setNeutralButton("Ok") { dialog, id -> }
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }

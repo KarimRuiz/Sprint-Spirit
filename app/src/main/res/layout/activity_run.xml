@@ -33,7 +33,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:background="@color/colorPrimary"
             android:layout_marginBottom="@dimen/margin_normal">
 
             <ImageView
@@ -51,6 +50,9 @@
                 android:layout_alignTop="@+id/record_run_button"
                 android:layout_alignRight="@+id/record_run_button"
                 android:layout_alignBottom="@+id/record_run_button"
+                android:textSize="@dimen/font_normal"
+                android:textStyle="bold"
+                android:textColor="@color/white"
                 android:gravity="center"
                 android:text="Record"
                 />

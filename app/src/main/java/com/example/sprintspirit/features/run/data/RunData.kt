@@ -6,7 +6,7 @@ import java.util.Date
 
 data class RunData(
     val user: String = "",
-    val distance: Double = 0.0, //in km
+    var distance: Double = 0.0, //in km
     val startTime: Date = Date(),
     val isPublic: Boolean = true,
     val description: String = "",
