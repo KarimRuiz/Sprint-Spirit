@@ -31,17 +31,20 @@ class FirebaseManager() : DBManager {
     private val storage = FirebaseStorage.getInstance().getReferenceFromUrl("gs://sprint-spirit.appspot.com")
 
     companion object{
+        //COLLECTIONS
         val USERS = "users"
-        val USER = "user"
+        val RUNS = "sessions"
+        val POSTS = "posts"
+
+        //FIELDS
         val PROVIDER = "provider"
         val HEIGHT = "height"
         val WEIGHT = "weight"
         val USERNAME = "username"
-        val RUNS = "sessions"
-        val POSTS = "posts"
-
         val START_TIME = "startTime"
 
+        //NOT CATEGOIZED
+        val USER = "user"
         val IMAGES = "profilePictures"
     }
 
@@ -198,11 +201,11 @@ class FirebaseManager() : DBManager {
         val response = PostsResponse()
 
         try {
-            val runsRef = firestore.collection(RUNS)
+            val postsRef = firestore.collection(POSTS)
             val minDate = Timestamp(Date(Date().time - time.timeMillis()))
 
-            val runs = runsRef.whereGreaterThan(START_TIME, minDate).get().await().documents.mapNotNull { snapShot ->
-                snapShot.toObject(RunData::class.java)
+            val runs = postsRef.whereGreaterThan(START_TIME, minDate).get().await().documents.mapNotNull { snapShot ->
+                snapShot.toObject(Post::class.java)
             }
 
             val posts: MutableList<Post> = mutableListOf()
@@ -215,8 +218,13 @@ class FirebaseManager() : DBManager {
                 }catch(e: Exception){}
 
                 posts.add(Post(
+                    userId,
                     user!!,
-                    it
+                    it.distance,
+                    it.startTime,
+                    it.minutes,
+                    it.description,
+                    it.points
                 ))
             }
 

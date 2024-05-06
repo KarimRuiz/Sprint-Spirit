@@ -40,7 +40,7 @@ class HomeRunAdapter(var postList:List<Post>, val context: Context) : RecyclerVi
         fun bind(get: Post){
             //Path
             path = mutableListOf()
-            val geoPoints = get.run.points!!
+            val geoPoints = get.points!!
             for(pos in geoPoints){
                 for((date, geoPoint) in pos){
                     path.add(LatLng(geoPoint.latitude, geoPoint.longitude))
@@ -52,21 +52,21 @@ class HomeRunAdapter(var postList:List<Post>, val context: Context) : RecyclerVi
             val lastTime = geoPoints.last().keys.first().toLong()
             val time: Double = (lastTime - firstTime) / 60000.0 //ms to min
 
-            binding.tvUsername.text = get.user.username
-            binding.tvDistanceValue.text = get.run.distance.toString() + " km"
+            binding.tvUsername.text = get.userData.username
+            binding.tvDistanceValue.text = get.distance.toString() + " km"
             val timeString = String.format("%d:%02d", (time*60).toInt()/60, (time*60).toInt()%60)
             binding.tvTimeValue.text = timeString + " min"
-            binding.tvPaceValue.text = String.format("%.2f", (time / get.run.distance)) + " min/km"
-            binding.tvDateValue.text = SimpleDateFormat("dd-MM-yy").format(get.run.startTime)
+            binding.tvPaceValue.text = String.format("%.2f", (time / get.distance)) + " min/km"
+            binding.tvDateValue.text = SimpleDateFormat("dd-MM-yy").format(get.startTime)
             //description
-            if(get.run.description.isNotBlank()){
-                binding.tvDescription.text = get.run.description
+            if(get.description.isNotBlank()){
+                binding.tvDescription.text = get.description
                 binding.tvDescription.visibility = View.VISIBLE
             }
 
             //Profile Image
             Glide.with(context)
-                .load(get.user.profilePictureUrl)
+                .load(get.userData.profilePictureUrl)
                 .into(binding.ivHomeProfilePicture)
                 .onLoadFailed(AppCompatResources.getDrawable(context, R.drawable.ic_account))
 
