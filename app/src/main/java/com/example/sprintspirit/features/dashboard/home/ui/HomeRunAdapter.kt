@@ -12,7 +12,6 @@ import com.bumptech.glide.Glide
 import com.example.sprintspirit.R
 import com.example.sprintspirit.databinding.CardHomeRunBinding
 import com.example.sprintspirit.features.dashboard.home.data.Post
-import com.example.sprintspirit.features.run.data.RunData
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -21,7 +20,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
 import java.text.SimpleDateFormat
-import kotlin.coroutines.coroutineContext
 
 class HomeRunAdapter(var postList:List<Post>, val context: Context) : RecyclerView.Adapter<HomeRunAdapter.HomeRunHolder>() {
 

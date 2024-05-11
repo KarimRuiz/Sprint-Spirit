@@ -6,6 +6,7 @@ import com.google.firebase.firestore.GeoPoint
 import java.util.Date
 
 data class Post (
+    var id: String = "",
     val user: String = "", //email
     var userData: User = User(email = user),
     var distance: Double = 0.0, //in km

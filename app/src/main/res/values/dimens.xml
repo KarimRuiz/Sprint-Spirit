@@ -12,6 +12,8 @@
     <!-- PROFILE -->
     <dimen name="profile_height">160dp</dimen>
     <dimen name="profile_picture_size">125dp</dimen>
+    <dimen name="menu_width">25dp</dimen>
+    <dimen name="menu_height">25dp</dimen>
 
     <!-- RECORD RUN -->
     <dimen name="record_button_size">104dp</dimen>

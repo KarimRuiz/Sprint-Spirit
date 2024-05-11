@@ -1,128 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_user_run"
-    android:layout_margin="12dp"
-    card_view:cardBackgroundColor="?attr/colorPrimary"
-    card_view:cardCornerRadius="15dp"
-    card_view:cardElevation="6dp"
-    card_view:contentPadding="1dp">
+<layout>
 
-    <RelativeLayout
-        android:id="@+id/relativeLayout"
-        android:layout_width="387dp"
-        android:layout_height="225dp">
+    <data>
+        <variable
+            name="menuSettingsListener"
+            type="android.view.View.OnClickListener" />
+    </data>
 
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/mapView"
+    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_user_run"
+        android:layout_margin="12dp"
+        card_view:cardBackgroundColor="?attr/colorPrimary"
+        card_view:cardCornerRadius="15dp"
+        card_view:cardElevation="6dp"
+        card_view:contentPadding="1dp">
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            android:contentDescription="Run map"
-            android:outlineAmbientShadowColor="#C13B3B"
-            android:outlineSpotShadowColor="#7B3A3A"
-            card_view:cameraZoom="8"
-            card_view:layout_constraintBottom_toBottomOf="parent"
-            card_view:layout_constraintEnd_toEndOf="parent"
-            card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toBottomOf="@+id/tableLayout"
-            card_view:liteMode="true"
-            card_view:mapType="hybrid" />
+            android:layout_height="225dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true">
-
-            <TextView
-                android:id="@+id/tv_date_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="48dp"
-                android:background="@drawable/card_user_run_corner"
-                android:padding="@dimen/margin_small"
-                android:text="12/5/2024"
-                android:textColor="@color/black"
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mapView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:contentDescription="Run map"
+                android:outlineAmbientShadowColor="#C13B3B"
+                android:outlineSpotShadowColor="#7B3A3A"
+                card_view:cameraZoom="8"
                 card_view:layout_constraintBottom_toBottomOf="parent"
-                card_view:layout_constraintEnd_toEndOf="parent" />
+                card_view:layout_constraintEnd_toEndOf="parent"
+                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:liteMode="true"
+                card_view:mapType="hybrid" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <TableLayout
-            android:id="@+id/tableLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/margin_normal"
-            android:background="@drawable/card_user_run_corner">
-
-            <TableRow
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/margin_small">
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true">
 
                 <TextView
-                    android:id="@+id/tv_distance"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/margin_normal"
-                    android:text="@string/Distance"
-                    android:textColor="@color/black"/>
-
-                <TextView
-                    android:id="@+id/tv_distance_value"
+                    android:id="@+id/tv_date_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="5 km"
-                    android:textColor="@color/black"/>
-            </TableRow>
+                    android:layout_marginEnd="48dp"
+                    android:background="@drawable/card_user_run_corner"
+                    android:padding="@dimen/margin_small"
+                    android:text="12/5/2024"
+                    android:textColor="@color/black"
+                    card_view:layout_constraintBottom_toBottomOf="parent"
+                    card_view:layout_constraintEnd_toEndOf="parent" />
 
-            <TableRow
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/margin_small">
+                android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/tv_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/Time"
-                    android:textColor="@color/black"/>
-
-                <TextView
-                    android:id="@+id/tv_time_value"
+                <TableLayout
+                    android:id="@+id/tableLayout"
+                    card_view:layout_constraintStart_toStartOf="parent"
+                    card_view:layout_constraintTop_toTopOf="parent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="25 min"
-                    android:textColor="@color/black"/>
-            </TableRow>
+                    android:padding="@dimen/margin_normal"
+                    android:background="@drawable/card_user_run_corner">
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/margin_small">
 
-                <TextView
-                    android:id="@+id/tv_pace"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/Pace"
-                    android:textColor="@color/black"/>
+                        <TextView
+                            android:id="@+id/tv_distance"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/margin_normal"
+                            android:text="@string/Distance"
+                            android:textColor="@color/black"/>
 
-                <TextView
-                    android:id="@+id/tv_pace_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="5 min/km"
-                    android:textColor="@color/black"/>
-            </TableRow>
-        </TableLayout>
+                        <TextView
+                            android:id="@+id/tv_distance_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="5 km"
+                            android:textColor="@color/black"/>
+                    </TableRow>
 
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/margin_small">
 
+                        <TextView
+                            android:id="@+id/tv_time"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/Time"
+                            android:textColor="@color/black"/>
 
+                        <TextView
+                            android:id="@+id/tv_time_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="25 min"
+                            android:textColor="@color/black"/>
+                    </TableRow>
 
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-    </RelativeLayout>
+                        <TextView
+                            android:id="@+id/tv_pace"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/Pace"
+                            android:textColor="@color/black"/>
 
-</androidx.cardview.widget.CardView>
+                        <TextView
+                            android:id="@+id/tv_pace_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="5 min/km"
+                            android:textColor="@color/black"/>
+                    </TableRow>
+                </TableLayout>
+
+                <ImageView
+                    android:id="@+id/iv_run_card_menu"
+                    android:layout_width="@dimen/menu_width"
+                    android:layout_height="@dimen/menu_height"
+                    android:padding="5dp"
+                    android:onClickListener="@{menuSettingsListener}"
+                    android:background="@drawable/card_user_run_corner"
+                    card_view:layout_constraintEnd_toEndOf="parent"
+                    card_view:layout_constraintTop_toTopOf="parent"
+                    android:src="@drawable/ic_three_dots_menu"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>

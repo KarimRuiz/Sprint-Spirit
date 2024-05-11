@@ -165,6 +165,9 @@ class FirebaseManager() : DBManager {
         try{
             response.runs = firestore.collection(RUNS).get().await().documents.mapNotNull { snapShot ->
                 snapShot.toObject(RunData::class.java)
+                val runData = snapShot.toObject(RunData::class.java)
+                runData?.id = snapShot.id
+                runData
             }
         }catch (e: Exception){
             response.exception = e
@@ -178,7 +181,9 @@ class FirebaseManager() : DBManager {
 
         try{
             response.runs = firestore.collection(RUNS).whereEqualTo(USER, "/${USERS}/${usermail}").get().await().documents.mapNotNull { snapShot ->
-                snapShot.toObject(RunData::class.java)
+                val runData = snapShot.toObject(RunData::class.java)
+                runData?.id = snapShot.id
+                runData
             }
         }catch (e: Exception){
             response.exception = e
@@ -204,12 +209,14 @@ class FirebaseManager() : DBManager {
             val postsRef = firestore.collection(POSTS)
             val minDate = Timestamp(Date(Date().time - time.timeMillis()))
 
-            val runs = postsRef.whereGreaterThan(START_TIME, minDate).get().await().documents.mapNotNull { snapShot ->
-                snapShot.toObject(Post::class.java)
+            val posts = postsRef.whereGreaterThan(START_TIME, minDate).get().await().documents.mapNotNull { snapShot ->
+                val post = snapShot.toObject(Post::class.java)
+                post?.id = snapShot.id
+                post
             }
 
-            val posts: MutableList<Post> = mutableListOf()
-            runs.forEach {
+            val postsRes: MutableList<Post> = mutableListOf()
+            posts.forEach {
                 val userId = it.user.removePrefix("/users/")
                 val user = firestore.collection(USERS).document(userId).get().await().toObject(User::class.java)
                 try {
@@ -217,7 +224,8 @@ class FirebaseManager() : DBManager {
                     user?.profilePictureUrl = ref.downloadUrl.await()
                 }catch(e: Exception){}
 
-                posts.add(Post(
+                postsRes.add(Post(
+                    it.id,
                     userId,
                     user!!,
                     it.distance,
@@ -234,6 +242,12 @@ class FirebaseManager() : DBManager {
         }
 
         return response
+    }
+
+    override fun deleteRun(run: RunData) {
+        Log.d("FirebaseManager", "Deleting run...")
+        firestore.collection(RUNS).document(run.id).delete()
+
     }
 
     /* STATS */

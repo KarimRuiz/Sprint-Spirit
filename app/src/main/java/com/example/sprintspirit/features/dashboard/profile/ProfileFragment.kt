@@ -123,7 +123,14 @@ class ProfileFragment : BaseFragment() {
 
     private fun fillRuns(runs: RunsResponse?) {
         if((runs != null) and (runs!!.runs != null)){
-            adapter = ProfileRunAdapter(runs.runs!!)
+            adapter = ProfileRunAdapter(runs.runs!!,
+                deleteCallback = {
+                viewModel.deleteRun(it)
+                },
+                postCallback = {
+                    navigator.navigateToPostRun(activity, true)
+                }
+            )
             (binding as FragmentProfileBinding).runProfileRv.adapter = adapter
             if(runs.runs!!.isEmpty())
                     (binding as FragmentProfileBinding).tvProfileNoRuns.visibility = View.VISIBLE

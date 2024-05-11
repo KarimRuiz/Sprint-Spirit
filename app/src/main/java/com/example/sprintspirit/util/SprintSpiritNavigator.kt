@@ -30,6 +30,13 @@ class SprintSpiritNavigator(val context: Context) {
         navigateTo(activity, Intent(activity, SettingsActivity::class.java), preserveStack)
     }
 
+    fun navigateToPostRun(
+        activity: FragmentActivity?,
+        preserveStack: Boolean? = true
+    ){
+        //TODO
+    }
+
     private fun navigateTo(
         activity: FragmentActivity?,
         intent: Intent,

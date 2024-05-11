@@ -3,7 +3,9 @@ package com.example.sprintspirit.features.dashboard.profile.ui
 import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sprintspirit.R
@@ -20,13 +22,22 @@ import com.google.android.gms.maps.model.PolylineOptions
 import java.text.SimpleDateFormat
 import java.util.Date
 
-class ProfileRunAdapter(var runlist:List<RunData>) : RecyclerView.Adapter<ProfileRunAdapter.ProfileRunHolder>(){
+class ProfileRunAdapter(
+    var runlist:List<RunData>,
+    var deleteCallback : (RunData) -> Unit,
+    var postCallback : (RunData) -> Unit
+) : RecyclerView.Adapter<ProfileRunAdapter.ProfileRunHolder>(){
 
-    class ProfileRunHolder(val binding: CardUserRunBinding) : RecyclerView.ViewHolder(binding.root), OnMapReadyCallback{
+
+    class ProfileRunHolder(val binding: CardUserRunBinding,
+                           val deleteCallback: (RunData) -> Unit,
+                           var postCallback : (RunData) -> Unit
+    ) : RecyclerView.ViewHolder(binding.root), OnMapReadyCallback{
 
         private val mapView: MapView = binding.mapView
         private lateinit var map: GoogleMap
         private lateinit var path: MutableList<LatLng>
+        private lateinit var run: RunData
 
         init{
             with(mapView){
@@ -36,6 +47,7 @@ class ProfileRunAdapter(var runlist:List<RunData>) : RecyclerView.Adapter<Profil
         }
 
         fun bind(get: RunData){
+            run = get
             //Path
             path = mutableListOf()
             for(pos in get.points!!){
@@ -54,6 +66,8 @@ class ProfileRunAdapter(var runlist:List<RunData>) : RecyclerView.Adapter<Profil
             binding.tvTimeValue.text = timeString + " min"
             binding.tvPaceValue.text = String.format("%.2f", (get.distance / time)) + " min/km"
             binding.tvDateValue.text = SimpleDateFormat("dd-MM-yy").format(Date(firstTime))
+
+            binding.menuSettingsListener = menuSettingsListener()
         }
 
         fun setMapLocation(){
@@ -96,11 +110,41 @@ class ProfileRunAdapter(var runlist:List<RunData>) : RecyclerView.Adapter<Profil
             setMapLocation()
         }
 
+        private fun showMenu(v: View){
+            val popupMenu = PopupMenu(v.context, v)
+            popupMenu.inflate(R.menu.menu_post_popup)
+            popupMenu.setOnMenuItemClickListener {
+                when (it.itemId){
+                    R.id.post_menu_delete ->{
+                        deleteCallback(run)
+                        true
+                    }
+                    R.id.post_menu_switch -> {
+                        postCallback(run)
+                        true
+                    }
+                    else -> {
+                        false
+                    }
+                }
+            }
+            popupMenu.show()
+        }
+
+        //LISTENERS
+        private fun menuSettingsListener() = View.OnClickListener {
+            showMenu(it)
+        }
+
+    }
+
+    fun deleteListener(callback: (RunData) -> Unit){
+        deleteCallback = callback
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileRunHolder {
         val binding = CardUserRunBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ProfileRunHolder(binding)
+        return ProfileRunHolder(binding, deleteCallback, postCallback)
     }
 
     override fun onBindViewHolder(holder: ProfileRunHolder, position: Int) {

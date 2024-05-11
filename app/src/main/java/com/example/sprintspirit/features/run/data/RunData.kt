@@ -5,6 +5,7 @@ import com.google.firebase.firestore.GeoPoint
 import java.util.Date
 
 data class RunData(
+    var id: String = "",
     val user: String = "",
     var distance: Double = 0.0, //in km
     val startTime: Date = Date(),

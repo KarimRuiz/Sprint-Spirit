@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.liveData
 import com.example.sprintspirit.database.DBManager
 import com.example.sprintspirit.features.dashboard.profile.data.UsersRepository
+import com.example.sprintspirit.features.run.data.RunData
 import com.example.sprintspirit.features.run.data.RunResponse
 import com.example.sprintspirit.ui.BaseViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -36,6 +37,12 @@ class DashboardViewModel(
         CoroutineScope(Dispatchers.IO).launch {
             val success = repository.saveProfilePicture(image, user)
             callback(success)
+        }
+    }
+
+    fun deleteRun(run: RunData){
+        CoroutineScope(Dispatchers.IO).launch {
+            repository.deleteRun(run)
         }
     }
 }
