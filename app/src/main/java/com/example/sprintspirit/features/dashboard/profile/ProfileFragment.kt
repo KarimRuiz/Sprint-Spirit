@@ -20,6 +20,7 @@ import com.example.sprintspirit.features.dashboard.profile.data.UserResponse
 import com.example.sprintspirit.features.dashboard.profile.ui.ProfileRunAdapter
 import com.example.sprintspirit.features.run.data.RunsResponse
 import com.example.sprintspirit.ui.BaseFragment
+import com.example.sprintspirit.util.SprintSpiritNavigator
 import com.example.sprintspirit.util.Utils.isInternetAvailable
 
 class ProfileFragment : BaseFragment() {
@@ -41,6 +42,8 @@ class ProfileFragment : BaseFragment() {
         getCurrentUser()
 
         getRuns()
+
+        navigator = SprintSpiritNavigator(requireContext())
     }
 
     override fun onCreateView(
@@ -128,7 +131,7 @@ class ProfileFragment : BaseFragment() {
                 viewModel.deleteRun(it)
                 },
                 postCallback = {
-                    navigator.navigateToPostRun(activity, true)
+                    navigator.navigateToPostRun(activity, it, true)
                 }
             )
             (binding as FragmentProfileBinding).runProfileRv.adapter = adapter

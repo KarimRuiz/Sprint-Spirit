@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_big"
+                    android:orientation="vertical"
+                    >
+
+                    <EditText
+                        android:id="@+id/edt_post_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:layout_marginBottom="@dimen/margin_normal"
+                        android:ems="10"
+                        android:inputType="text"
+                        android:hint="Título"
+                        android:autofillHints="name"
+                        android:maxLines="1"
+                        android:maxLength="25"/>
+
+                    <EditText
+                        android:id="@+id/edt_post_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:layout_marginBottom="@dimen/margin_normal"
+                        android:ems="10"
+                        android:inputType="text"
+                        android:hint="Descripción"
+                        android:autofillHints="name"
+                        android:maxLength="175"
+                        android:maxLines="8"
+                        />
+
+                    <com.google.android.gms.maps.MapView
+                        android:id="@+id/map_post_run"
+                        android:layout_height="175dp"
+                        android:layout_width="match_parent"
+                        android:background="@color/on_primary"/>
+
+                </LinearLayout>
+
+            </ScrollView>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_marginEnd="@dimen/margin_big"
+                android:layout_marginBottom="@dimen/margin_big"
+                android:text="Publicar"
+                />
+
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
