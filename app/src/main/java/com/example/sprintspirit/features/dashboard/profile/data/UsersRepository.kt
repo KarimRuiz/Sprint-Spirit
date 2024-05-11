@@ -3,6 +3,7 @@ package com.example.sprintspirit.features.dashboard.profile.data
 import android.net.Uri
 import android.util.Log
 import com.example.sprintspirit.database.DBManager
+import com.example.sprintspirit.features.run.data.RunData
 import com.example.sprintspirit.features.run.data.RunResponse
 import com.example.sprintspirit.features.run.data.RunsResponse
 
@@ -30,6 +31,10 @@ class UsersRepository{
 
     suspend fun saveProfilePicture(image: Uri, user: String): Boolean {
         return manager.saveProfilePicture(image, user)
+    }
+
+    suspend fun deleteRun(run: RunData) {
+        manager.deleteRun(run)
     }
 
 }

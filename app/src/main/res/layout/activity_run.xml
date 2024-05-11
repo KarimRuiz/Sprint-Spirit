@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -12,12 +12,53 @@
             android:id="@+id/run_toolbar"
             layout="@layout/toolbar_logo" />
 
-        <fragment
+        <!--<fragment
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment" />
+            android:name="com.google.android.gms.maps.SupportMapFragment" />-->
 
-    </LinearLayout>
+        <com.mapbox.maps.MapView
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:mapbox_cameraTargetLat="37.178"
+            app:mapbox_cameraTargetLng="-3.601"
+            app:mapbox_cameraZoom="8.0"
+            app:mapbox_cameraPitch="0.0"
+            app:mapbox_cameraBearing="0.0"
+            app:mapbox_locationComponentPuckBearing="heading"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="@dimen/margin_normal">
+
+            <ImageView
+                android:id="@+id/record_run_button"
+                android:layout_width="@dimen/record_button_size"
+                android:layout_height="@dimen/record_button_size"
+                android:src="@drawable/record_button"
+                />
+
+            <TextView
+                android:id="@+id/record_run_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/record_run_button"
+                android:layout_alignTop="@+id/record_run_button"
+                android:layout_alignRight="@+id/record_run_button"
+                android:layout_alignBottom="@+id/record_run_button"
+                android:textSize="@dimen/font_normal"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:text="Record"
+                />
+
+        </RelativeLayout>
+
+    </FrameLayout>
 
 </layout>

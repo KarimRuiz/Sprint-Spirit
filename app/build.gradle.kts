@@ -47,6 +47,9 @@ android {
 }
 
 dependencies {
+    //Mapbox
+    implementation("com.mapbox.maps:android:11.3.0")
+
     //Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
     implementation("com.firebaseui:firebase-ui-auth:7.2.0")
@@ -58,6 +61,9 @@ dependencies {
 
     //Gson
     implementation("com.google.code.gson:gson:2.8.8")
+
+    //Play Services
+    implementation("com.google.android.gms:play-services-location:21.2.0")
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")

@@ -7,7 +7,7 @@ data class PostsResponse (
 ){
 
     fun postsByTime(): List<Post> {
-        return posts.sortedBy { it.run.startTime }
+        return posts.sortedBy { it.startTime }
     }
 
 }

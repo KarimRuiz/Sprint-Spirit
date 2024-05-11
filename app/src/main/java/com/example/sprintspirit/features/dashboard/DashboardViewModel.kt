@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.liveData
 import com.example.sprintspirit.database.DBManager
 import com.example.sprintspirit.features.dashboard.profile.data.UsersRepository
+import com.example.sprintspirit.features.run.data.RunData
 import com.example.sprintspirit.features.run.data.RunResponse
 import com.example.sprintspirit.ui.BaseViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -39,11 +40,9 @@ class DashboardViewModel(
         }
     }
 
-    //TODO: this goes into the run activity
-    fun saveRun(runResponse: RunResponse){
+    fun deleteRun(run: RunData){
         CoroutineScope(Dispatchers.IO).launch {
-            repository.saveRun(runResponse)
+            repository.deleteRun(run)
         }
     }
-
 }

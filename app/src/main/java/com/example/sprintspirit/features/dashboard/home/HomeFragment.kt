@@ -71,7 +71,7 @@ class HomeFragment : BaseFragment(), AdapterView.OnItemSelectedListener {
         })
 
         viewModel.filteredRuns.observe(viewLifecycleOwner, Observer{posts ->
-            logd("Filtered runs observer triggered.")
+            logd("Filtered runs observer triggered: ${posts.posts.size}, ${posts.exception.toString()}")
             if(posts != null){
                 logd("Updating...")
                 adapter = HomeRunAdapter(posts.postsByTime(), requireContext())
@@ -84,10 +84,11 @@ class HomeFragment : BaseFragment(), AdapterView.OnItemSelectedListener {
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         val sortedList = when(position){
-            0 -> viewModel.filteredRuns.value?.posts?.filter{it.run.isPublic}?.sortedByDescending { it.run.startTime }
-            1 -> viewModel.filteredRuns.value?.posts?.filter{it.run.isPublic}?.sortedByDescending { it.run.distance }
-            2 -> viewModel.filteredRuns.value?.posts?.filter{it.run.isPublic}?.sortedByDescending { (it.run.distance)/(it.run.startTime.time/(1000*60)) }
-            else -> viewModel.filteredRuns.value?.posts?.filter{it.run.isPublic}?.sortedBy { it.run.startTime }
+            //0 -> viewModel.filteredRuns.value?.posts?.filter{it.run.isPublic}?.sortedByDescending { it.run.startTime }
+            0 -> viewModel.filteredRuns.value?.posts?.sortedByDescending { it.startTime }
+            1 -> viewModel.filteredRuns.value?.posts?.sortedByDescending { it.distance }
+            2 -> viewModel.filteredRuns.value?.posts?.sortedByDescending { (it.distance)/(it.startTime.time/(1000*60)) }
+            else -> viewModel.filteredRuns.value?.posts?.sortedBy { it.startTime }
         }
         sortedList?.take(10)
         sortedList?.let { list ->
