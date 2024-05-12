@@ -3,6 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
+        <variable
+            name="onPostListener"
+            type="android.view.View.OnClickListener" />
 
     </data>
 
@@ -57,7 +60,8 @@
                         android:id="@+id/map_post_run"
                         android:layout_height="175dp"
                         android:layout_width="match_parent"
-                        android:background="@color/on_primary"/>
+                        android:background="@color/on_primary"
+                        />
 
                 </LinearLayout>
 
@@ -69,6 +73,7 @@
                 android:layout_gravity="bottom|end"
                 android:layout_marginEnd="@dimen/margin_big"
                 android:layout_marginBottom="@dimen/margin_big"
+                android:onClick="@{onPostListener}"
                 android:text="Publicar"
                 />
 

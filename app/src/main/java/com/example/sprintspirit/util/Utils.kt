@@ -1,11 +1,14 @@
 package com.example.sprintspirit.util
 
 import android.content.Context
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.text.Editable
 import com.google.firebase.firestore.GeoPoint
+import java.util.Locale
 import java.util.regex.Pattern
 
 object Utils{
@@ -32,6 +35,13 @@ object Utils{
         val distance = FloatArray(2)
         Location.distanceBetween(p1.latitude, p1.longitude, p2.latitude, p2.longitude, distance) // the other results is the initial and the final bearing
         return distance[0] / 1000.0
+    }
+
+    fun addressFromLocation(context: Context, point: GeoPoint): Address?{
+        val geocoder = Geocoder(context)
+        val addresses = geocoder.getFromLocation(point.latitude, point.longitude, 1)
+
+        return addresses?.firstOrNull()
     }
 
 }

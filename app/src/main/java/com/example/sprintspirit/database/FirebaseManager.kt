@@ -1,6 +1,7 @@
 package com.example.sprintspirit.database
 
 
+import android.location.Address
 import android.net.Uri
 import android.util.Log
 import androidx.core.graphics.drawable.toIcon
@@ -16,6 +17,7 @@ import com.example.sprintspirit.features.run.data.RunData
 import com.example.sprintspirit.features.run.data.RunResponse
 import com.example.sprintspirit.features.run.data.RunsResponse
 import com.example.sprintspirit.features.signin.data.User
+import com.example.sprintspirit.util.Utils
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -224,7 +226,7 @@ class FirebaseManager() : DBManager {
                     user?.profilePictureUrl = ref.downloadUrl.await()
                 }catch(e: Exception){}
 
-                postsRes.add(Post(
+                /*postsRes.add(Post(
                     it.id,
                     userId,
                     user!!,
@@ -232,7 +234,26 @@ class FirebaseManager() : DBManager {
                     it.startTime,
                     it.minutes,
                     it.description,
+                    it.title,
+                    it.town,
+                    it.city,
+                    it.state,
+                    it.country,
                     it.points
+                ))*/
+                postsRes.add(Post(
+                    user = userId,
+                    userData = user!!,
+                    distance = it.distance,
+                    startTime = it.startTime,
+                    minutes = it.minutes,
+                    description = it.description,
+                    title = it.title,
+                    town = it.town,
+                    city = it.city,
+                    state = it.state,
+                    country = it.country,
+                    points = it.points
                 ))
             }
 
@@ -247,6 +268,31 @@ class FirebaseManager() : DBManager {
     override fun deleteRun(run: RunData) {
         Log.d("FirebaseManager", "Deleting run...")
         firestore.collection(RUNS).document(run.id).delete()
+
+    }
+
+    override suspend fun postRun(run: RunData, address: Address, title: String, description: String): Boolean {
+        try{
+            val post = Post(
+                user = run.user,
+                distance = run.distance,
+                startTime = run.startTime,
+                minutes = run.getMinutes(),
+                title = title,
+                town = address.locality,
+                city = address.subAdminArea,
+                state = address.adminArea,
+                country = address.countryCode,
+                description = description,
+                points = run.points
+            )
+
+            firestore.collection(POSTS).document().set(post).await()
+            return true
+        }catch(e: Exception){
+            Log.e("FirebaseManager", "ERROR POSTING RUN: ${e}")
+            return false
+        }
 
     }
 
