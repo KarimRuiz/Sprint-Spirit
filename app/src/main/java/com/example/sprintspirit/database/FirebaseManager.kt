@@ -218,47 +218,40 @@ class FirebaseManager() : DBManager {
             }
 
             val postsRes: MutableList<Post> = mutableListOf()
-            posts.forEach {
-                val userId = it.user.removePrefix("/users/")
-                val user = firestore.collection(USERS).document(userId).get().await().toObject(User::class.java)
+
+            posts.forEach {post ->
+                val userId = post.user.removePrefix("/users/")
+                val userDocRef = firestore.collection(USERS).document(userId)
+                val userData = userDocRef.get().await().toObject(User::class.java)
+
                 try {
                     val ref = storage.child(IMAGES).child("$userId.jpg")
-                    user?.profilePictureUrl = ref.downloadUrl.await()
-                }catch(e: Exception){}
+                    userData?.profilePictureUrl = ref.downloadUrl.await()
+                }catch(e: Exception){
+                    Log.d("FirebaseManager", "EXCEPTION GETTING POSTS USERS: ${e}")
+                }
 
-                /*postsRes.add(Post(
-                    it.id,
-                    userId,
-                    user!!,
-                    it.distance,
-                    it.startTime,
-                    it.minutes,
-                    it.description,
-                    it.title,
-                    it.town,
-                    it.city,
-                    it.state,
-                    it.country,
-                    it.points
-                ))*/
-                postsRes.add(Post(
-                    user = userId,
-                    userData = user!!,
-                    distance = it.distance,
-                    startTime = it.startTime,
-                    minutes = it.minutes,
-                    description = it.description,
-                    title = it.title,
-                    town = it.town,
-                    city = it.city,
-                    state = it.state,
-                    country = it.country,
-                    points = it.points
-                ))
+                userData?.let {
+                    postsRes.add(Post(
+                        user = userId,
+                        userData = it,
+                        distance = post.distance,
+                        startTime = post.startTime,
+                        minutes = post.minutes,
+                        description = post.description,
+                        title = post.title,
+                        town = post.town,
+                        city = post.city,
+                        state = post.state,
+                        country = post.country,
+                        points = post.points
+                    ))
+                }
             }
 
-            response.posts = posts
+            response.posts = postsRes
         } catch (e: Exception) {
+            Log.d("FirebaseManager", "EXCEPTION GETTING POSTS: ${e}")
             response.exception = e
         }
 
