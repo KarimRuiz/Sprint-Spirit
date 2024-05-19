@@ -1,5 +1,6 @@
 package com.example.sprintspirit.database
 
+import android.location.Address
 import android.net.Uri
 import com.example.sprintspirit.database.filters.OrderFilter
 import com.example.sprintspirit.database.filters.TimeFilter
@@ -57,6 +58,8 @@ interface DBManager {
     suspend fun getPostsByTime(time: TimeFilter): PostsResponse
 
     fun deleteRun(run: RunData)
+
+    suspend fun postRun(run: RunData, address: Address, title: String, description: String): Boolean
 
     /* STATS */
 

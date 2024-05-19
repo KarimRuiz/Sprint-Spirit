@@ -1,6 +1,7 @@
 package com.example.sprintspirit.database
 
 
+import android.location.Address
 import android.net.Uri
 import android.util.Log
 import androidx.core.graphics.drawable.toIcon
@@ -16,6 +17,7 @@ import com.example.sprintspirit.features.run.data.RunData
 import com.example.sprintspirit.features.run.data.RunResponse
 import com.example.sprintspirit.features.run.data.RunsResponse
 import com.example.sprintspirit.features.signin.data.User
+import com.example.sprintspirit.util.Utils
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -42,6 +44,7 @@ class FirebaseManager() : DBManager {
         val WEIGHT = "weight"
         val USERNAME = "username"
         val START_TIME = "startTime"
+        val PUBLISH_DATE = "publishDate"
 
         //NOT CATEGOIZED
         val USER = "user"
@@ -209,35 +212,48 @@ class FirebaseManager() : DBManager {
             val postsRef = firestore.collection(POSTS)
             val minDate = Timestamp(Date(Date().time - time.timeMillis()))
 
-            val posts = postsRef.whereGreaterThan(START_TIME, minDate).get().await().documents.mapNotNull { snapShot ->
+            val posts = postsRef.whereGreaterThan(PUBLISH_DATE, minDate).get().await().documents.mapNotNull { snapShot ->
                 val post = snapShot.toObject(Post::class.java)
                 post?.id = snapShot.id
                 post
             }
 
             val postsRes: MutableList<Post> = mutableListOf()
-            posts.forEach {
-                val userId = it.user.removePrefix("/users/")
-                val user = firestore.collection(USERS).document(userId).get().await().toObject(User::class.java)
+
+            posts.forEach {post ->
+                val userId = post.user.removePrefix("/users/")
+                val userDocRef = firestore.collection(USERS).document(userId)
+                val userData = userDocRef.get().await().toObject(User::class.java)
+
                 try {
                     val ref = storage.child(IMAGES).child("$userId.jpg")
-                    user?.profilePictureUrl = ref.downloadUrl.await()
-                }catch(e: Exception){}
+                    userData?.profilePictureUrl = ref.downloadUrl.await()
+                }catch(e: Exception){
+                    Log.d("FirebaseManager", "EXCEPTION GETTING POSTS USERS: ${e}")
+                }
 
-                postsRes.add(Post(
-                    it.id,
-                    userId,
-                    user!!,
-                    it.distance,
-                    it.startTime,
-                    it.minutes,
-                    it.description,
-                    it.points
-                ))
+                userData?.let {
+                    postsRes.add(Post(
+                        id = post.id,
+                        user = userId,
+                        userData = it,
+                        distance = post.distance,
+                        startTime = post.startTime,
+                        minutes = post.minutes,
+                        description = post.description,
+                        title = post.title,
+                        town = post.town,
+                        city = post.city,
+                        state = post.state,
+                        country = post.country,
+                        points = post.points
+                    ))
+                }
             }
 
-            response.posts = posts
+            response.posts = postsRes
         } catch (e: Exception) {
+            Log.d("FirebaseManager", "EXCEPTION GETTING POSTS: ${e}")
             response.exception = e
         }
 
@@ -247,6 +263,31 @@ class FirebaseManager() : DBManager {
     override fun deleteRun(run: RunData) {
         Log.d("FirebaseManager", "Deleting run...")
         firestore.collection(RUNS).document(run.id).delete()
+
+    }
+
+    override suspend fun postRun(run: RunData, address: Address, title: String, description: String): Boolean {
+        try{
+            val post = Post(
+                user = run.user,
+                distance = run.distance,
+                startTime = run.startTime,
+                minutes = run.getMinutes(),
+                title = title,
+                town = address.locality,
+                city = address.subAdminArea,
+                state = address.adminArea,
+                country = address.countryCode,
+                description = description,
+                points = run.points
+            )
+
+            firestore.collection(POSTS).document().set(post).await()
+            return true
+        }catch(e: Exception){
+            Log.e("FirebaseManager", "ERROR POSTING RUN: ${e}")
+            return false
+        }
 
     }
 

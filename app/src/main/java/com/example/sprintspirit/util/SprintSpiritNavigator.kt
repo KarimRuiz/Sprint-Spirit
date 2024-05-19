@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.FragmentActivity
 import com.example.sprintspirit.features.dashboard.DashboardActivity
+import com.example.sprintspirit.features.post.ui.PostActivity
+import com.example.sprintspirit.features.run.data.RunData
 import com.example.sprintspirit.features.settings.SettingsActivity
 import com.example.sprintspirit.features.signin.ui.signin.SignInActivity
 
@@ -32,9 +34,13 @@ class SprintSpiritNavigator(val context: Context) {
 
     fun navigateToPostRun(
         activity: FragmentActivity?,
+        run: RunData,
         preserveStack: Boolean? = true
     ){
-        //TODO
+        PostActivity.runData = run
+        navigateTo(activity,
+            Intent(activity, PostActivity::class.java),
+            preserveStack)
     }
 
     private fun navigateTo(

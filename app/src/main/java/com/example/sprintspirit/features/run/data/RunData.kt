@@ -1,6 +1,5 @@
 package com.example.sprintspirit.features.run.data
 
-import android.util.Log
 import com.google.firebase.firestore.GeoPoint
 import java.util.Date
 

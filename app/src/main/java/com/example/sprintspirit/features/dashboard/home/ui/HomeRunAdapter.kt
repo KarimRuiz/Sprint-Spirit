@@ -1,7 +1,6 @@
 package com.example.sprintspirit.features.dashboard.home.ui
 
 import android.content.Context
-import android.graphics.drawable.Icon
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
