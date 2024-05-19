@@ -13,6 +13,7 @@ data class Post (
     @get:Exclude
     var userData: User = User(email = user),
     var distance: Double = 0.0, //in km
+    val publishDate: Date = Date(),
     val startTime: Date = Date(),
     val minutes: Double = 0.0,
     val title: String = "",

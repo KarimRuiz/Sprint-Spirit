@@ -44,6 +44,7 @@ class FirebaseManager() : DBManager {
         val WEIGHT = "weight"
         val USERNAME = "username"
         val START_TIME = "startTime"
+        val PUBLISH_DATE = "publishDate"
 
         //NOT CATEGOIZED
         val USER = "user"
@@ -211,7 +212,7 @@ class FirebaseManager() : DBManager {
             val postsRef = firestore.collection(POSTS)
             val minDate = Timestamp(Date(Date().time - time.timeMillis()))
 
-            val posts = postsRef.whereGreaterThan(START_TIME, minDate).get().await().documents.mapNotNull { snapShot ->
+            val posts = postsRef.whereGreaterThan(PUBLISH_DATE, minDate).get().await().documents.mapNotNull { snapShot ->
                 val post = snapShot.toObject(Post::class.java)
                 post?.id = snapShot.id
                 post
@@ -233,6 +234,7 @@ class FirebaseManager() : DBManager {
 
                 userData?.let {
                     postsRes.add(Post(
+                        id = post.id,
                         user = userId,
                         userData = it,
                         distance = post.distance,
