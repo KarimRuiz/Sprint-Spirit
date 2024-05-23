@@ -189,4 +189,11 @@
 
     </RelativeLayout>
 
+    <TextView
+        android:id="@+id/tv_go_to_chat"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:text="IR AL CHAT"/>
+
 </androidx.cardview.widget.CardView>

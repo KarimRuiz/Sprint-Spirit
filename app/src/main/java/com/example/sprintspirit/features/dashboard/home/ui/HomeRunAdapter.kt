@@ -20,9 +20,15 @@ import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
 import java.text.SimpleDateFormat
 
-class HomeRunAdapter(var postList:List<Post>, val context: Context) : RecyclerView.Adapter<HomeRunAdapter.HomeRunHolder>() {
+class HomeRunAdapter(var postList:List<Post>,
+                     val context: Context,
+                    val onOpenChat: (Post) -> Unit
+) : RecyclerView.Adapter<HomeRunAdapter.HomeRunHolder>() {
 
-    class HomeRunHolder(val binding: CardHomeRunBinding, val context: Context) : RecyclerView.ViewHolder(binding.root), OnMapReadyCallback{
+    class HomeRunHolder(val binding: CardHomeRunBinding,
+                        val context: Context,
+                        val goToChat: (Post) -> Unit
+        ) : RecyclerView.ViewHolder(binding.root), OnMapReadyCallback{
         private val mapView: MapView = binding.cardHomeRunMap
         private lateinit var map: GoogleMap
         private lateinit var path: MutableList<LatLng>
@@ -59,6 +65,10 @@ class HomeRunAdapter(var postList:List<Post>, val context: Context) : RecyclerVi
             if(get.description.isNotBlank()){
                 binding.tvDescription.text = get.description
                 binding.tvDescription.visibility = View.VISIBLE
+            }
+
+            binding.tvGoToChat.setOnClickListener {
+                goToChat(get)
             }
 
             //Profile Image
@@ -99,7 +109,7 @@ class HomeRunAdapter(var postList:List<Post>, val context: Context) : RecyclerVi
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeRunHolder {
         val binding = CardHomeRunBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return HomeRunHolder(binding, context)
+        return HomeRunHolder(binding, context, onOpenChat)
     }
 
     override fun getItemCount(): Int {

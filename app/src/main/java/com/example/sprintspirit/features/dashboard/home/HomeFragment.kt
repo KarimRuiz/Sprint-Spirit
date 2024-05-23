@@ -16,10 +16,12 @@ import com.example.sprintspirit.database.filters.TimeFilter
 import com.example.sprintspirit.databinding.FragmentHomeBinding
 import com.example.sprintspirit.databinding.FragmentProfileBinding
 import com.example.sprintspirit.features.dashboard.DashboardViewModel
+import com.example.sprintspirit.features.dashboard.home.data.Post
 import com.example.sprintspirit.features.dashboard.home.ui.HomeRunAdapter
 import com.example.sprintspirit.features.dashboard.profile.ui.ProfileRunAdapter
 import com.example.sprintspirit.features.run.data.RunData
 import com.example.sprintspirit.ui.BaseFragment
+import com.example.sprintspirit.util.SprintSpiritNavigator
 
 class HomeFragment : BaseFragment(), AdapterView.OnItemSelectedListener {
 
@@ -29,6 +31,7 @@ class HomeFragment : BaseFragment(), AdapterView.OnItemSelectedListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val email = sharedPreferences.email ?: ""
+        navigator = SprintSpiritNavigator(requireContext())
         viewModel = HomeViewModel(
             user = email
         )
@@ -74,12 +77,18 @@ class HomeFragment : BaseFragment(), AdapterView.OnItemSelectedListener {
             logd("Filtered runs observer triggered: ${posts.posts.size}, ${posts.exception.toString()}")
             if(posts != null){
                 logd("Updating...")
-                adapter = HomeRunAdapter(posts.postsByTime(), requireContext())
+                adapter = HomeRunAdapter(posts.postsByTime(), requireContext(), {
+                    onOpenRun(it)
+                })
                 binding.runsHomeRv.adapter = adapter
             }else{
                 Log.e(TAG, "filteredRuns: COULDN'T GET RUNS: ${posts?.exception.toString()}")
             }
         })
+    }
+
+    private fun onOpenRun(post: Post) {
+        navigator.navigateToChat(activity, post)
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -93,7 +102,7 @@ class HomeFragment : BaseFragment(), AdapterView.OnItemSelectedListener {
         sortedList?.take(10)
         sortedList?.let { list ->
             if (::adapter.isInitialized) {
-                adapter = HomeRunAdapter(list, requireContext())
+                adapter = HomeRunAdapter(list, requireContext(), { onOpenRun(it) })
                 (binding as FragmentHomeBinding).runsHomeRv.adapter = adapter
             }
         }
