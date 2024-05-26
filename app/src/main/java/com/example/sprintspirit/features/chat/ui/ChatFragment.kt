@@ -1,13 +1,25 @@
 package com.example.sprintspirit.features.chat.ui
 
+import android.media.Image
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.bumptech.glide.Glide
+import com.example.sprintspirit.R
 import com.example.sprintspirit.databinding.FragmentChatBinding
-import com.example.sprintspirit.features.chat.ChatActivity
+import com.example.sprintspirit.features.chat.data.MessageUI
 import com.example.sprintspirit.ui.BaseFragment
+import com.stfalcon.chatkit.commons.ImageLoader
+import com.stfalcon.chatkit.messages.MessagesListAdapter
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class ChatFragment : BaseFragment() {
 
@@ -26,6 +38,9 @@ class ChatFragment : BaseFragment() {
     }
 
     private lateinit var viewModel: ChatViewModel
+    private lateinit var adapter: MessagesListAdapter<MessageUI>
+
+    private var messages = mutableListOf<MessageUI>()
     private var postId: String? = null
     private var postName: String? = null
 
@@ -53,6 +68,35 @@ class ChatFragment : BaseFragment() {
     }
 
     private fun subscribeUi(binding: FragmentChatBinding) {
+        viewModel.listenChat()
+
+        val imageLoader = object : ImageLoader{
+            override fun loadImage(p0: ImageView?, p1: String?, p2: Any?) {
+                if(p0 != null && p1 != null){
+                    Glide.with(requireContext())
+                        .load(p2)
+                        .into(p0)
+                        .onLoadFailed(AppCompatResources.getDrawable(requireContext(), R.drawable.ic_account))
+                }
+            }
+        }
+        adapter = MessagesListAdapter(sharedPreferences.email, imageLoader)
+        binding.messagesList.setAdapter(adapter)
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.chatResponse.collect{response ->
+                    response.chat?.messages?.forEach {
+                        if(!messages.contains(MessageUI(it))){
+                            messages.add(MessageUI(it))
+                            adapter.addToStart(MessageUI(it), true)
+                        }
+                    }
+
+                }
+            }
+        }
+
         binding.chatRouteTitle.text = postName
     }
 

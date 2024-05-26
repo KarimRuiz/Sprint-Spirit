@@ -1,6 +1,5 @@
 package com.example.sprintspirit.features.chat.data
 
-import com.example.sprintspirit.features.chat.data.ChatUser
 import java.util.Date
 
 data class Message(

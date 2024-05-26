@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.codegen.optimization.fixStack.replaceAlwaysTrueIfeqWithGoto
+import org.jetbrains.kotlin.ir.backend.js.compile
 
 plugins {
     id("com.android.application")
@@ -47,6 +48,10 @@ android {
 }
 
 dependencies {
+    //ChatView (https://github.com/shrikanth7698/ChatView)
+    implementation(files("libs/Chatkit-v0.4.1.aar"))
+    implementation("com.google.android.flexbox:flexbox:3.0.0")
+
     //Mapbox
     implementation("com.mapbox.maps:android:11.3.0")
 

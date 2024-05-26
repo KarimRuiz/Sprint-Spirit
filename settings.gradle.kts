@@ -3,6 +3,12 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
+        maven {
+            setUrl("https://jitpack.io")
+        }
+        flatDir {
+            dirs("lib")
+        }
     }
 }
 dependencyResolutionManagement {
@@ -10,6 +16,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { setUrl("https://jitpack.io") }
         maven {
             url = uri("https://api.mapbox.com/downloads/v2/releases/maven")
             credentials.username = "mapbox"
