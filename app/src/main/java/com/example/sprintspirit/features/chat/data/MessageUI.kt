@@ -1,5 +1,6 @@
 package com.example.sprintspirit.features.chat.data
 
+import android.net.Uri
 import com.stfalcon.chatkit.commons.models.IMessage
 import com.stfalcon.chatkit.commons.models.IUser
 import java.util.Date
@@ -11,7 +12,7 @@ class MessageUI(
         return message.content.plus(message.user.email)
     }
 
-    override fun getText() = message.content ?: ""
+    override fun getText() = message.content
 
     override fun getUser() = UserUI(message.user)
 

@@ -5,5 +5,5 @@ import android.net.Uri
 data class ChatUser(
     val email: String = "",
     val username: String = "",
-    var profilePictureUrl: Uri? = null
+    val picture: String = ""
 )

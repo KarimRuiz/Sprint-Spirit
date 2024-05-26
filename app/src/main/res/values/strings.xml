@@ -5,6 +5,7 @@
     <string name="Log_in">Log in</string>
     <string name="sprint_spirit_user_email" translatable="false">sprint_spirit_user_email</string>
     <string name="sprint_spirit_user_data" translatable="false">sprint_spirit_user_data</string>
+    <string name="sprint_spirit_user_username" translatable="false">sprint_spirit_user_username</string>
     <string name="Error">Error</string>
     <string name="Accept">Accept</string>
     <string name="Sign_in_error">An error ocurred while singing in</string>
@@ -41,4 +42,5 @@
         <item>Pace</item>
     </string-array>
     <string name="You_dont_have_runs">You don\'t have runs yet.</string>
+    <string name="message_hint">message...</string>
 </resources>

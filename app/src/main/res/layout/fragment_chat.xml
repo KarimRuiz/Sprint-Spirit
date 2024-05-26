@@ -23,9 +23,18 @@
             android:layout_height="0dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/message_input"
             app:layout_constraintTop_toBottomOf="@id/chat_route_title"
             />
+
+        <com.stfalcon.chatkit.messages.MessageInput
+            android:id="@+id/message_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:inputHint="@string/message_hint"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -20,6 +20,7 @@ import com.example.sprintspirit.features.chat.data.Chat
 import com.example.sprintspirit.features.chat.data.ChatResponse
 import com.example.sprintspirit.features.chat.data.Message
 import com.example.sprintspirit.features.signin.data.User
+import com.google.android.gms.tasks.Task
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
@@ -31,6 +32,7 @@ import com.google.firebase.database.database
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -52,6 +54,7 @@ class FirebaseManager() : DBManager {
 
         //REALTIME ROOTS
         val CHATS = "routeChats"
+        val MESSAGES = "messages"
 
         //FIELDS
         val PROVIDER = "provider"
@@ -156,10 +159,16 @@ class FirebaseManager() : DBManager {
             val url = ref.downloadUrl.await()
             response.picture = url.toIcon()
         }catch (e: Exception){
+            Log.d("FirebaseManager", "${e.toString()}")
             response.exception = e
         }
 
         return response
+    }
+
+    override fun getProfilePictureTask(user: String): Task<Uri> {
+        val ref = storage.child(IMAGES).child("$user.jpg")
+        return ref.downloadUrl
     }
 
     override suspend fun saveProfilePicture(image: Uri, user: String): Boolean {
@@ -379,5 +388,13 @@ class FirebaseManager() : DBManager {
             Log.d("Cagaste", "Cagaste")
             chatRef.removeEventListener(listener)
         }
+    }
+
+    //true for correclty sent
+    override suspend fun sendMessage(postId: String, message: Message, messageNum: Int) {
+        val messageRef = realtime.child(CHATS).child(postId).child(MESSAGES).child(messageNum.toString())
+        Log.d("FireabseManager", "Sending message to database... ${messageRef.ref}")
+        messageRef.setValue(message)
+        Log.d("FireabseManager", "Message sent.")
     }
 }

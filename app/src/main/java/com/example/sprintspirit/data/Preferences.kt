@@ -16,6 +16,10 @@ class Preferences(val context: Context) {
         get() = sharedPreferences.getString(context.getString(R.string.sprint_spirit_user_email), null)
         set(value) = sharedPreferences.edit{ putString(context.getString(R.string.sprint_spirit_user_email), value) }
 
+    var username: String?
+        get() = sharedPreferences.getString(context.getString(R.string.sprint_spirit_user_username), null)
+        set(value) = sharedPreferences.edit{ putString(context.getString(R.string.sprint_spirit_user_username), value) }
+
     var userId: String?
         get() = sharedPreferences.getString(context.getString(R.string.sprint_spirit_user_id), null)
         set(value) = sharedPreferences.edit{ putString(context.getString(R.string.sprint_spirit_user_id), value) }
