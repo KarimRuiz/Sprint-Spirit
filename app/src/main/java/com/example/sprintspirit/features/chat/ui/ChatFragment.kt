@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -87,13 +88,14 @@ class ChatFragment : BaseFragment() {
 
         val imageLoader = ImageLoader { imageview, p1, p2 ->
             logd("loading image with url ${p1}")
-            if(imageview != null && p1 != null){
+            if(imageview != null){
                 Glide.with(requireContext())
                     .load(p1)
                     .apply(
                         RequestOptions().placeholder(R.drawable.ic_account)
                         )
                     .into(imageview)
+                    .onLoadFailed(AppCompatResources.getDrawable(requireContext(), R.drawable.ic_account))
             }
         }
 
