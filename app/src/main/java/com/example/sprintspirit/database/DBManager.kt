@@ -66,7 +66,7 @@ interface DBManager {
 
     fun deleteRun(run: RunData)
 
-    suspend fun postRun(run: RunData, address: Address, title: String, description: String): Boolean
+    suspend fun postRun(run: RunData, address: Address, title: String, description: String): String?
 
     /* STATS */
 
@@ -80,4 +80,6 @@ interface DBManager {
 
     suspend fun sendMessage(postId: String, message: Message, messageNum: Int)
 
+    suspend fun susbscribeToChat(email: String, chatId: String, asOp: Boolean): Boolean
+    suspend fun unSusbscribeToChat(email: String, chatId: String): Boolean
 }

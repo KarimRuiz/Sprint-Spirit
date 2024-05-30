@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 class ChatViewModel(
     private val repository: ChatRepository = ChatRepository(),
@@ -32,6 +33,8 @@ class ChatViewModel(
     var postId: String = ""
     var message: Message = Message()
     var messagePos: Int = 0
+
+    var userEmail: String = ""
 
     private val _userPictureUri = MutableLiveData<Uri?>()
     val userPictureUri: LiveData<Uri?> = _userPictureUri
@@ -71,6 +74,26 @@ class ChatViewModel(
 
     val currentUser = liveData(Dispatchers.IO){
         emit(usersRepository.getCurrentUser())
+    }
+
+    val subscriptionStatus = MutableLiveData<Boolean>()
+
+    fun subscribeToChat() {
+        viewModelScope.launch {
+            val success = withContext(Dispatchers.IO) {
+                usersRepository.subscribeToChat(userEmail, postId)
+            }
+            subscriptionStatus.postValue(success)
+        }
+    }
+
+    fun unSubscribeToChat() {
+        viewModelScope.launch {
+            val success = withContext(Dispatchers.IO) {
+                usersRepository.unSubscribeToChat(userEmail, postId)
+            }
+            subscriptionStatus.postValue(!success) // Assumes success means unsubscribed
+        }
     }
 
 }

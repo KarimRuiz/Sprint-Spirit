@@ -37,4 +37,12 @@ class UsersRepository{
         manager.deleteRun(run)
     }
 
+    suspend fun subscribeToChat(userEmail: String, postId: String, asOp: Boolean = false): Boolean {
+        return manager.susbscribeToChat(userEmail, postId, asOp)
+    }
+
+    suspend fun unSubscribeToChat(userEmail: String, postId: String): Boolean {
+        return manager.unSusbscribeToChat(userEmail, postId)
+    }
+
 }

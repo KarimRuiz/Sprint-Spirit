@@ -8,7 +8,7 @@ class PostRepository() {
 
     private val manager = DBManager.getCurrentDBManager()
 
-    suspend fun postRun(run: RunData, address: Address, title: String, description: String): Boolean {
+    suspend fun postRun(run: RunData, address: Address, title: String, description: String): String? {
         return manager.postRun(run, address, title, description)
     }
 }

@@ -63,10 +63,15 @@ class FirebaseManager() : DBManager {
         val USERNAME = "username"
         val START_TIME = "startTime"
         val PUBLISH_DATE = "publishDate"
+        val USER_CHATS = "chats"
 
         //NOT CATEGORIZED
         val USER = "user"
         val IMAGES = "profilePictures"
+
+
+
+        private const val TAG = "FirebaseManager"
     }
 
     /* USER */
@@ -83,8 +88,10 @@ class FirebaseManager() : DBManager {
                     documentSnapshot.get(USERNAME) as String,
                     email,
                     weight = documentSnapshot.get(WEIGHT) as Double,
-                    height = documentSnapshot.get(HEIGHT) as Double
+                    height = documentSnapshot.get(HEIGHT) as Double,
+                    chats = documentSnapshot.get(USER_CHATS) as? Map<String, String>
                 )
+                Log.d(TAG, documentSnapshot.toString())
                 response.user = user
             } else {
                 // Handle case when document does not exist
@@ -94,6 +101,60 @@ class FirebaseManager() : DBManager {
             response.exception = e
         }
         return response
+    }
+
+    override suspend fun susbscribeToChat(email: String, chatId: String, asOp: Boolean): Boolean {
+        try{
+            val userDocumentRef = firestore.collection(USERS).document(email)
+            val documentSnapshot = userDocumentRef.get().await()
+
+            if (documentSnapshot.exists()) {
+                // Retrieve the current chats map
+                val currentChats = documentSnapshot.get(USER_CHATS) as? MutableMap<String, String> ?: mutableMapOf()
+
+                // Add or update the chat entry
+                currentChats[chatId] = if(asOp) "OP" else "NOP"
+
+                // Update the document with the new chats map
+                userDocumentRef.update(USER_CHATS, currentChats).await()
+
+                Log.d(TAG, "User $email successfully subscribed to chat $chatId")
+                return true
+            } else {
+                Log.e(TAG, "User document not found for email: $email")
+                return false
+            }
+        }catch(e: Exception){
+            Log.e(TAG, "Error subscribing user to chat", e)
+            return false
+        }
+    }
+
+    override suspend fun unSusbscribeToChat(email: String, chatId: String): Boolean{
+        return try {
+            val userDocumentRef = firestore.collection(USERS).document(email)
+            val documentSnapshot = userDocumentRef.get().await()
+
+            if (documentSnapshot.exists()) {
+                // Retrieve the current chats map
+                val currentChats = documentSnapshot.get(USER_CHATS) as? MutableMap<String, String> ?: mutableMapOf()
+
+                // Remove the chat entry
+                currentChats.remove(chatId)
+
+                // Update the document with the new chats map
+                userDocumentRef.update(USER_CHATS, currentChats).await()
+
+                Log.d(TAG, "User $email successfully unsubscribed from chat $chatId")
+                true
+            } else {
+                Log.e(TAG, "User document not found for email: $email")
+                false
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error unsubscribing user from chat", e)
+            false
+        }
     }
 
     override fun isUserLoggedIn(): Boolean = getAuthUser() != null
@@ -290,7 +351,9 @@ class FirebaseManager() : DBManager {
 
     }
 
-    override suspend fun postRun(run: RunData, address: Address, title: String, description: String): Boolean {
+    //returns the post id
+    override suspend fun postRun(run: RunData, address: Address, title: String, description: String): String? {
+        var postId: String? = null
         try{
             val post = Post(
                 user = run.user,
@@ -306,13 +369,13 @@ class FirebaseManager() : DBManager {
                 points = run.points
             )
 
-            firestore.collection(POSTS).document().set(post).await()
-            return true
+            //val postRef = firestore.collection(POSTS).document().set(post).await()
+            val postRef = firestore.collection(POSTS).add(post).await()
+            postId = postRef.id
         }catch(e: Exception){
             Log.e("FirebaseManager", "ERROR POSTING RUN: ${e}")
-            return false
         }
-
+        return postId
     }
 
     /* STATS */

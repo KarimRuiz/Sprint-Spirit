@@ -51,6 +51,7 @@ class PostFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     private fun subscribeUi(binding: FragmentPostBinding) {
+        viewModel.email = sharedPreferences.email ?: ""
         viewModel.run = run
         viewModel.address = Utils.addressFromLocation(requireContext(), run.points?.firstOrNull()?.values?.firstOrNull()!!)
 
