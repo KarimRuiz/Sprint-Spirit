@@ -1,5 +1,7 @@
 package com.example.sprintspirit.messaging
 
+import android.app.NotificationManager
+import android.content.Context
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.sprintspirit.R
@@ -12,7 +14,8 @@ class PushNotificationsService : FirebaseMessagingService() {
     companion object{
         private const val TAG = "PushNotificationsService"
 
-        private const val CHANNEL_ID = "CHANNEL_ID"
+        const val CHANNEL_ID = "CHATS_CHANNEL"
+        const val NOTIFICATION_ID = 1
     }
 
     override fun onNewToken(token: String) {
@@ -23,7 +26,7 @@ class PushNotificationsService : FirebaseMessagingService() {
         Log.d(TAG, "From: ${message.from}")
 
         message.data.isNotEmpty().let {
-            Log.d(TAG, "Message data payload: " + message.data)
+            Log.d(TAG, "Message data payload: " + message.toString())
         }
 
         // Check if the message contains a notification payload
@@ -45,7 +48,10 @@ class PushNotificationsService : FirebaseMessagingService() {
             .setContentText(content)
             //.setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-        builder.build()
+
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(NOTIFICATION_ID, builder.build())
+
     }
 
 }
