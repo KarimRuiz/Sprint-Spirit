@@ -34,4 +34,5 @@
     <string name="message_hint">message...</string>
     <string name="Chats">Chats</string>
     <string name="You_dont_have_chats">You dont have chats. Subscribe to one and start discussing!</string>
+    <string name="Your_chats">Your chats</string>
 </resources>

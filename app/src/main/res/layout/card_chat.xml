@@ -14,17 +14,16 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/transparent"
-        android:paddingStart="@dimen/margin_bigger"
-        android:paddingEnd="@dimen/margin_bigger"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/transparent"
         tools:ignore="MissingDefaultResource">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/margin_normal"
-            android:paddingStart="@dimen/margin_normal"
-            android:paddingEnd="@dimen/margin_normal"
+            android:paddingTop="@dimen/margin_big"
+            android:paddingStart="@dimen/margin_huge"
+            android:paddingEnd="@dimen/margin_bigger"
             android:onClick="@{onClickChat}">
 
             <TextView
