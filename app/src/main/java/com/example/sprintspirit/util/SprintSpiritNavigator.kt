@@ -59,6 +59,21 @@ class SprintSpiritNavigator(val context: Context) {
         )
     }
 
+    fun navigateToChat(
+        activity: FragmentActivity?,
+        postId: String,
+        title: String,
+        preserveStack: Boolean? = true
+    ){
+        val intent = Intent(activity, ChatActivity::class.java)
+        intent.putExtra(ChatActivity.CHAT_POST_ID, postId)
+        intent.putExtra(ChatActivity.CHAT_POST_TITLE, title)
+        navigateTo(activity,
+            intent,
+            preserveStack
+        )
+    }
+
     private fun navigateTo(
         activity: FragmentActivity?,
         intent: Intent,

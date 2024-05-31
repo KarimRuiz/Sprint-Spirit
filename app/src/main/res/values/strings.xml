@@ -43,4 +43,8 @@
     </string-array>
     <string name="You_dont_have_runs">You don\'t have runs yet.</string>
     <string name="message_hint">message...</string>
+    <string name="Chats">Chats</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="You_dont_have_chats">You dont have chats. Subscribe to one and start discussing!</string>
 </resources>

@@ -8,6 +8,13 @@
         android:title="@string/Home"
         android:icon="@drawable/ic_home"/>
     <item
+        android:id="@+id/chatsFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="@string/Chats"
+        android:icon="@drawable/ic_chat"
+        />
+    <item
         android:id="@+id/runActivity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

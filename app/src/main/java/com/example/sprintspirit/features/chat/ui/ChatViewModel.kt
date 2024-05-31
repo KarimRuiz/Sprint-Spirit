@@ -11,6 +11,7 @@ import com.example.sprintspirit.features.chat.data.ChatRepository
 import com.example.sprintspirit.features.chat.data.ChatResponse
 import com.example.sprintspirit.features.chat.data.Message
 import com.example.sprintspirit.features.chat.data.MessageUI
+import com.example.sprintspirit.features.dashboard.profile.data.UserResponse
 import com.example.sprintspirit.features.dashboard.profile.data.UsersRepository
 import com.example.sprintspirit.ui.BaseViewModel
 import kotlinx.coroutines.Dispatchers
@@ -33,14 +34,22 @@ class ChatViewModel(
     var postId: String = ""
     var message: Message = Message()
     var messagePos: Int = 0
+    var postTitle: String = ""
 
     var userEmail: String = ""
+
+    private val _currentUser = MutableLiveData<UserResponse>()
+    val currentUser: LiveData<UserResponse> = _currentUser
 
     private val _userPictureUri = MutableLiveData<Uri?>()
     val userPictureUri: LiveData<Uri?> = _userPictureUri
 
     private val _chatResponse = MutableStateFlow(ChatResponse())
     val chatResponse: StateFlow<ChatResponse> = _chatResponse.asStateFlow()
+
+    init {
+        updateUser()
+    }
 
     fun saveChat(){
         viewModelScope.launch {
@@ -72,8 +81,18 @@ class ChatViewModel(
 
     fun getUserPicture(email: String) = repository.getUserPicture(email)
 
-    val currentUser = liveData(Dispatchers.IO){
+    /*val currentUser = liveData(Dispatchers.IO){
         emit(usersRepository.getCurrentUser())
+    }*/
+
+    fun updateUser() {
+        viewModelScope.launch {
+            val newUser = withContext(Dispatchers.IO) {
+                usersRepository.getCurrentUser()
+            }
+            _currentUser.postValue(newUser)
+            Log.d("ChatViewModel", "User updated: $newUser")
+        }
     }
 
     val subscriptionStatus = MutableLiveData<Boolean>()
@@ -81,7 +100,7 @@ class ChatViewModel(
     fun subscribeToChat() {
         viewModelScope.launch {
             val success = withContext(Dispatchers.IO) {
-                usersRepository.subscribeToChat(userEmail, postId)
+                usersRepository.subscribeToChat(userEmail, postTitle, postId)
             }
             subscriptionStatus.postValue(success)
         }

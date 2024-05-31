@@ -80,6 +80,6 @@ interface DBManager {
 
     suspend fun sendMessage(postId: String, message: Message, messageNum: Int)
 
-    suspend fun susbscribeToChat(email: String, chatId: String, asOp: Boolean): Boolean
+    suspend fun susbscribeToChat(email: String, chatName: String, chatId: String, asOp: Boolean): Boolean
     suspend fun unSusbscribeToChat(email: String, chatId: String): Boolean
 }

@@ -32,4 +32,6 @@
     <string name="Order_by">Ordenar por</string>
     <string name="You_dont_have_runs">Todav\'ia no has grabado ninguna actividad.</string>
     <string name="message_hint">mensaje...</string>
+    <string name="Chats">Chats</string>
+    <string name="You_dont_have_chats">Todavía no tienes chats. Suscríbete a uno y empieza la conversación!</string>
 </resources>

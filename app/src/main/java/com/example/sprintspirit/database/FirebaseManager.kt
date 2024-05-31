@@ -20,6 +20,7 @@ import com.example.sprintspirit.features.chat.data.Chat
 import com.example.sprintspirit.features.chat.data.ChatResponse
 import com.example.sprintspirit.features.chat.data.Message
 import com.example.sprintspirit.features.signin.data.User
+import com.example.sprintspirit.features.signin.data.UserChat
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
@@ -89,7 +90,7 @@ class FirebaseManager() : DBManager {
                     email,
                     weight = documentSnapshot.get(WEIGHT) as Double,
                     height = documentSnapshot.get(HEIGHT) as Double,
-                    chats = documentSnapshot.get(USER_CHATS) as? Map<String, String>
+                    chats = documentSnapshot.get(USER_CHATS) as? Map<String, UserChat>
                 )
                 Log.d(TAG, documentSnapshot.toString())
                 response.user = user
@@ -103,17 +104,20 @@ class FirebaseManager() : DBManager {
         return response
     }
 
-    override suspend fun susbscribeToChat(email: String, chatId: String, asOp: Boolean): Boolean {
+    override suspend fun susbscribeToChat(email: String, chatName: String, chatId: String, asOp: Boolean): Boolean {
         try{
             val userDocumentRef = firestore.collection(USERS).document(email)
             val documentSnapshot = userDocumentRef.get().await()
 
             if (documentSnapshot.exists()) {
                 // Retrieve the current chats map
-                val currentChats = documentSnapshot.get(USER_CHATS) as? MutableMap<String, String> ?: mutableMapOf()
+                val currentChats = documentSnapshot.get(USER_CHATS) as? MutableMap<String, UserChat> ?: mutableMapOf()
 
                 // Add or update the chat entry
-                currentChats[chatId] = if(asOp) "OP" else "NOP"
+                currentChats[chatId] = UserChat(
+                    role = if(asOp) "OP" else "NOP",
+                    chatName = chatName
+                )
 
                 // Update the document with the new chats map
                 userDocumentRef.update(USER_CHATS, currentChats).await()
@@ -137,7 +141,7 @@ class FirebaseManager() : DBManager {
 
             if (documentSnapshot.exists()) {
                 // Retrieve the current chats map
-                val currentChats = documentSnapshot.get(USER_CHATS) as? MutableMap<String, String> ?: mutableMapOf()
+                val currentChats = documentSnapshot.get(USER_CHATS) as? MutableMap<String, UserChat> ?: mutableMapOf()
 
                 // Remove the chat entry
                 currentChats.remove(chatId)

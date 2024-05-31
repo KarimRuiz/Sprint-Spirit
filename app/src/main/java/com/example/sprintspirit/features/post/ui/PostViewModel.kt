@@ -26,7 +26,7 @@ class PostViewModel(
             viewModelScope.launch(Dispatchers.IO){
                 val postId = postsRepository.postRun(run, address!!, title, description)
                 if(postId != null){
-                    usersRepository.subscribeToChat(email, postId, true)
+                    usersRepository.subscribeToChat(email, title, postId, true)
                 }
             }
         }

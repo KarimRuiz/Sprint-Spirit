@@ -63,6 +63,7 @@ class ChatFragment : BaseFragment() {
             postId = it.getString(POST_ID)
             viewModel.postId = postId!!
             postName = it.getString(POST_NAME)
+            viewModel.postTitle = postName ?: "Chat"
         }
     }
 

@@ -48,7 +48,7 @@ android {
 }
 
 dependencies {
-    //ChatView (https://github.com/shrikanth7698/ChatView)
+    //ChatView (https://github.com/stfalcon-studio/ChatKit)
     implementation(files("libs/Chatkit-v0.4.1.aar"))
     implementation("com.google.android.flexbox:flexbox:3.0.0")
 

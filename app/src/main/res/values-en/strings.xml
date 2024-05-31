@@ -32,4 +32,6 @@
     <string name="Order_by">Order by</string>
     <string name="You_dont_have_runs">You don\'t have runs yet.</string>
     <string name="message_hint">message...</string>
+    <string name="Chats">Chats</string>
+    <string name="You_dont_have_chats">You dont have chats. Subscribe to one and start discussing!</string>
 </resources>
