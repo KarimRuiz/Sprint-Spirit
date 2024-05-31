@@ -62,6 +62,7 @@ dependencies {
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-database")
     implementation("com.google.firebase:firebase-messaging")
+    implementation("com.google.firebase:firebase-analytics:")
 
     //Glide
     implementation("com.github.bumptech.glide:glide:4.16.0")

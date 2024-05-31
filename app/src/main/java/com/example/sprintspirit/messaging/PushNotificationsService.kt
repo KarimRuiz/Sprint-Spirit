@@ -1,10 +1,13 @@
 package com.example.sprintspirit.messaging
 
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.sprintspirit.R
+import com.example.sprintspirit.features.chat.ChatActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.firebase.messaging.remoteMessage
@@ -23,35 +26,36 @@ class PushNotificationsService : FirebaseMessagingService() {
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
-        Log.d(TAG, "From: ${message.from}")
-
-        message.data.isNotEmpty().let {
-            Log.d(TAG, "Message data payload: " + message.toString())
-        }
-
-        // Check if the message contains a notification payload
-        message.notification?.let {
-            Log.d(TAG, "Message Notification Body: ${it.body}")
-            createNotification("Nuevo mensaje", it.body)
-        }
-
+        handlePayload(message.data)
     }
 
-    private fun createNotification(title: String, content: String?){
-        /*val intent = Intent(this, AlertDetails::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK}
-            val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-        */
+    private fun handlePayload(data: Map<String, String>) {
+        val chatId = data.get("chatId")
+        val sender = data.get("sender")
+        val content = data.get("content")
+
+        val title = "Nuevo mensaje de $sender"
+
+        createNotification(title, content, chatId)
+    }
+
+    private fun createNotification(title: String, content: String?, chatId: String?){
+        val intent = Intent(this, ChatActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra(ChatActivity.CHAT_POST_ID, chatId)
+            putExtra(ChatActivity.CHAT_POST_TITLE, "")
+        }
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+
         var builder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_logo_no_text)
             .setContentTitle(title)
             .setContentText(content)
-            //.setContentIntent(pendingIntent)
+            .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(NOTIFICATION_ID, builder.build())
-
     }
 
 }

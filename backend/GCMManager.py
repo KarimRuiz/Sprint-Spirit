@@ -15,12 +15,8 @@ def sendPush(title, msg, registration_token, dataObject=None):
     response = messaging.send_multicast(message)
     print('Successfully sent message:', response)
 
-def sendPushToTopic(title, msg, topic, dataObject=None):
+def sendPushToTopic(topic, dataObject=None):
     message = messaging.Message(
-        notification=messaging.Notification(
-            title=title,
-            body=msg
-        ),
         data=dataObject,
         topic=topic,
     )

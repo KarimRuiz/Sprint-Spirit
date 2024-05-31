@@ -124,7 +124,7 @@ class ChatFragment : BaseFragment() {
 
         binding.messageInput.setInputListener(sendMessageListener())
 
-        binding.chatRouteTitle.text = postName
+        binding.chatRouteTitle.text = postName ?: ""
     }
 
     private fun sendMessageListener() = object : MessageInput.InputListener{

@@ -19,8 +19,10 @@ def listener(event):
                 message_sender = data['user']['username']
                 print(f'New message in chat {chat_id} by {message_sender}: {message_content}')
                 print('Sending message...')
-                title = 'Nuevo mensaje de ' + message_sender
-                fcm.sendPushToTopic(title, message_content, chat_id)
+
+                data = {"chatId": chat_id, "sender":message_sender, "content":message_content}
+
+                fcm.sendPushToTopic(chat_id, data)
 
 
 
