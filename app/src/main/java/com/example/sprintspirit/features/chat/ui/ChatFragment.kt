@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.example.sprintspirit.R
 import com.example.sprintspirit.databinding.FragmentChatBinding
@@ -96,11 +97,12 @@ class ChatFragment : BaseFragment() {
             if(imageview != null){
                 Glide.with(requireContext())
                     .load(p1)
+                    .error(R.drawable.ic_account)
                     .apply(
-                        RequestOptions().placeholder(R.drawable.ic_account)
+                        RequestOptions().placeholder(R.drawable.ic_account).diskCacheStrategy(
+                            DiskCacheStrategy.ALL)
                         )
                     .into(imageview)
-                    .onLoadFailed(AppCompatResources.getDrawable(requireContext(), R.drawable.ic_account))
             }
         }
 
@@ -124,7 +126,11 @@ class ChatFragment : BaseFragment() {
 
         binding.messageInput.setInputListener(sendMessageListener())
 
-        binding.chatRouteTitle.text = postName ?: ""
+        binding.chatRouteTitle.text = if(postName == "Nuevo mensaje"){
+            ""
+        }else{
+            postName
+        }
     }
 
     private fun sendMessageListener() = object : MessageInput.InputListener{
