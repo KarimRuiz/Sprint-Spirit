@@ -9,7 +9,7 @@ class UserUI(
     override fun getName() = user.username
 
     override fun getAvatar(): String{
-        if(user.picture.isEmpty()) "NO PICTURE WAS FOUND"
+        if(user.picture.isBlank()) return "picture.not.found"
         return user.picture
     }
 
