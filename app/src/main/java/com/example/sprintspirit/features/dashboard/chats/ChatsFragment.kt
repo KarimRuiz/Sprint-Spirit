@@ -69,6 +69,8 @@ class ChatsFragment : BaseFragment() {
     private fun fillChats() {
         if(user.getChatList().size == 0){
             (binding as FragmentChatsBinding).tvChatListNoChats.visibility = View.VISIBLE
+        }else{
+            (binding as FragmentChatsBinding).tvChatListNoChats.visibility = View.GONE
         }
         adapter.updateChats(user.getChatList())
     }

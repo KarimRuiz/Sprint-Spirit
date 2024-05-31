@@ -27,8 +27,6 @@
                 android:id="@+id/chat_list"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
-                android:layout_marginStart="@dimen/margin_bigger"
-                android:layout_marginEnd="@dimen/margin_bigger"
                 />
 
         </FrameLayout>

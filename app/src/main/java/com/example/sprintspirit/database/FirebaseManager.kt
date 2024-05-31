@@ -32,6 +32,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.messaging.messaging
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.channels.awaitClose
@@ -122,6 +123,13 @@ class FirebaseManager() : DBManager {
                 // Update the document with the new chats map
                 userDocumentRef.update(USER_CHATS, currentChats).await()
 
+                //Subscribe to this posts topic so it can receive notifications
+                Firebase.messaging.subscribeToTopic(chatId)
+                    .addOnCompleteListener {task ->
+                        var msg = "Subscribed in GCM to topic: ${chatId}"
+                        Log.d(TAG, msg)
+                    }
+
                 Log.d(TAG, "User $email successfully subscribed to chat $chatId")
                 return true
             } else {
@@ -148,6 +156,13 @@ class FirebaseManager() : DBManager {
 
                 // Update the document with the new chats map
                 userDocumentRef.update(USER_CHATS, currentChats).await()
+
+                //Unubscribe to this posts topic so it can receive notifications
+                Firebase.messaging.subscribeToTopic(chatId)
+                    .addOnCompleteListener {task ->
+                        var msg = "Unubscribed in GCM from topic: ${chatId}"
+                        Log.d(TAG, msg)
+                    }
 
                 Log.d(TAG, "User $email successfully unsubscribed from chat $chatId")
                 true
