@@ -35,6 +35,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".features.chat.ChatActivity"
+            android:exported="false" />
+        <activity
             android:name=".features.post.ui.PostActivity"
             android:exported="false" />
 
@@ -66,6 +69,12 @@
         <activity
             android:name=".MainActivity"
             android:exported="true" />
+        <service android:name=".messaging.PushNotificationsService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -73,6 +82,9 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="CHATS_CHANNEL"/>
     </application>
 
 </manifest>

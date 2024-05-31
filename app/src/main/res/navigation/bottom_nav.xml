@@ -10,6 +10,12 @@
         android:name="com.example.sprintspirit.features.dashboard.home.HomeFragment"
         android:label="Home"
         tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/chatsFragment"
+        android:name="com.example.sprintspirit.features.dashboard.chats.ChatsFragment"
+        android:label="Chats"
+        tools:layout="@layout/fragment_chats"
+        />
     <activity
         android:id="@+id/runActivity"
         android:name="com.example.sprintspirit.features.run.ui.RunActivity"
