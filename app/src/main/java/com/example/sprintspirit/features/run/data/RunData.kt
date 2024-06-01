@@ -8,7 +8,7 @@ data class RunData(
     val user: String = "",
     var distance: Double = 0.0, //in km
     val startTime: Date = Date(),
-    val isPublic: Boolean = true,
+    var public: Boolean = true,
     var points: List<Map<String, GeoPoint>>? = null
 ){
     fun minutes(): Double{

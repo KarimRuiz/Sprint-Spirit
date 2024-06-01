@@ -440,7 +440,11 @@ class FirebaseManager() : DBManager {
     override fun deleteRun(run: RunData) {
         Log.d("FirebaseManager", "Deleting run...")
         firestore.collection(RUNS).document(run.id).delete()
-        firestore.collection(POSTS).whereEqualTo(SESSION_ID, run.id).get().addOnSuccessListener {
+        deletePostByRunId(run.id)
+    }
+
+    override fun deletePostByRunId(runId: String) {
+        firestore.collection(POSTS).whereEqualTo(SESSION_ID, runId).get().addOnSuccessListener {
             for (doc in it.documents){
                 doc.reference.delete()
             }

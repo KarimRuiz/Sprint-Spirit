@@ -45,4 +45,10 @@ class DashboardViewModel(
             repository.deleteRun(run)
         }
     }
+
+    fun deletePost(runId: String){
+        CoroutineScope(Dispatchers.IO).launch {
+            repository.deletePostByRunId(runId)
+        }
+    }
 }

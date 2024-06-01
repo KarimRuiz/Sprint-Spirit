@@ -1,6 +1,5 @@
 package com.example.sprintspirit.features.run.ui
 
-import android.content.Context
 import com.example.sprintspirit.data.Preferences
 import com.example.sprintspirit.database.DBManager
 import com.example.sprintspirit.features.dashboard.profile.data.UsersRepository
@@ -9,7 +8,6 @@ import com.example.sprintspirit.features.run.data.RunResponse
 import com.example.sprintspirit.ui.BaseViewModel
 import com.example.sprintspirit.util.Utils
 import com.google.firebase.firestore.GeoPoint
-import com.mapbox.maps.extension.style.expressions.dsl.generated.distance
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -45,7 +43,7 @@ class RunViewModel(
         run = RunData(
             user = "/users/" + prefs.email,
             startTime = Date(),
-            isPublic = false
+            public = false
         )
 
     }

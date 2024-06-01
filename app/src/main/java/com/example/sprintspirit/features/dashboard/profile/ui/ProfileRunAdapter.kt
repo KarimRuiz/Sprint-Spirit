@@ -1,7 +1,5 @@
 package com.example.sprintspirit.features.dashboard.profile.ui
 
-import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +15,6 @@ import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -25,13 +22,15 @@ import java.util.Date
 class ProfileRunAdapter(
     var runlist: MutableList<RunData>,
     var deleteCallback : (RunData) -> Unit,
-    var postCallback : (RunData) -> Unit
+    var postCallback : (RunData) -> Unit,
+    var deletePostCallback : (RunData) -> Unit
 ) : RecyclerView.Adapter<ProfileRunAdapter.ProfileRunHolder>(){
 
 
     class ProfileRunHolder(val binding: CardUserRunBinding,
                            val deleteCallback: (RunData) -> Unit,
-                           var postCallback : (RunData) -> Unit
+                           var postCallback : (RunData) -> Unit,
+                           var deletePostCallback: (RunData) -> Unit
     ) : RecyclerView.ViewHolder(binding.root), OnMapReadyCallback{
 
         private val mapView: MapView = binding.mapView
@@ -66,8 +65,10 @@ class ProfileRunAdapter(
             binding.tvTimeValue.text = timeString + " min"
             binding.tvPaceValue.text = String.format("%.2f", (get.distance / time)) + " min/km"
             binding.tvDateValue.text = SimpleDateFormat("dd-MM-yy").format(Date(firstTime))
-            if(get.isPublic){
+            if(get.public){
                 binding.sivRunIsPosted.visibility = View.VISIBLE
+            }else{
+                binding.sivRunIsPosted.visibility = View.GONE
             }
 
             binding.menuSettingsListener = menuSettingsListener()
@@ -95,27 +96,14 @@ class ProfileRunAdapter(
             }
         }
 
-        fun setMapLocation(latitude: Double, longitude: Double) {
-            Log.d("ProfileRunAdapter", "Map loading...")
-            binding.mapView.getMapAsync { googleMap ->
-                googleMap.setOnMapLoadedCallback {
-                    Log.d("ProfileRunAdapter", "Map loaded, adding marker...")
-                    val location = LatLng(latitude, longitude)
-                    googleMap.addMarker(MarkerOptions().position(location).title("Your Location"))
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 20f))
-                    Log.d("ProfileRunAdapter", "Map loaded.")
-                }
-            }
-        }
-
         override fun onMapReady(googleMap: GoogleMap) {
             map = googleMap ?: return
             setMapLocation()
         }
 
-        private fun showMenu(v: View){
+        private fun showRunMenu(v: View){
             val popupMenu = PopupMenu(v.context, v)
-            popupMenu.inflate(R.menu.menu_post_popup)
+            popupMenu.inflate(R.menu.menu_run_popup)
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId){
                     R.id.post_menu_delete ->{
@@ -134,9 +122,34 @@ class ProfileRunAdapter(
             popupMenu.show()
         }
 
+        private fun showPostMenu(v: View) {
+            val popupMenu = PopupMenu(v.context, v)
+            popupMenu.inflate(R.menu.menu_post_popup)
+            popupMenu.setOnMenuItemClickListener {
+                when (it.itemId){
+                    R.id.post_menu_delete ->{
+                        deleteCallback(run)
+                        true
+                    }
+                    R.id.post_menu_delete_post -> {
+                        deletePostCallback(run)
+                        true
+                    }
+                    else -> {
+                        false
+                    }
+                }
+            }
+            popupMenu.show()
+        }
+
         //LISTENERS
         private fun menuSettingsListener() = View.OnClickListener {
-            showMenu(it)
+            if(!run.public){
+                showRunMenu(it)
+            }else{
+                showPostMenu(it)
+            }
         }
 
     }
@@ -147,7 +160,7 @@ class ProfileRunAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileRunHolder {
         val binding = CardUserRunBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ProfileRunHolder(binding, deleteCallback, postCallback)
+        return ProfileRunHolder(binding, deleteCallback, postCallback, deletePostCallback)
     }
 
     override fun onBindViewHolder(holder: ProfileRunHolder, position: Int) {

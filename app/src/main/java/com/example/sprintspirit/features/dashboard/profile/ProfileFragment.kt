@@ -141,6 +141,9 @@ class ProfileFragment : BaseFragment() {
                 },
                 postCallback = {
                     navigator.navigateToPostRun(activity, it, true)
+                },
+                deletePostCallback = {
+                    deletePost(it, adapter.getPosOfRun(it))
                 }
             )
             (binding as FragmentProfileBinding).runProfileRv.adapter = adapter
@@ -153,6 +156,17 @@ class ProfileFragment : BaseFragment() {
         }else{
             Log.e(TAG, "fillRuns: COULDN'T GET RUNS")
         }
+    }
+
+    private fun deletePost(run: RunData, position: Int) {
+        showDeletePostConfirmationDialog(onConfirm = {
+            viewModel.deletePost(run.id)
+            run.public = false
+            adapter.runlist[position] = run
+            adapter.notifyItemChanged(position)
+        }, onCancel = {
+            adapter.notifyItemChanged(position)
+        })
     }
 
     private fun deleteRun(run: RunData, position: Int){
@@ -168,6 +182,21 @@ class ProfileFragment : BaseFragment() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle(ContextCompat.getString(requireContext(), R.string.Confirmation))
         builder.setMessage(ContextCompat.getString(requireContext(), R.string.Are_you_sure_delete_run))
+
+        builder.setPositiveButton(ContextCompat.getString(requireContext(), R.string.Confirm)) { dialog, which ->
+            onConfirm()
+        }
+        builder.setNegativeButton(ContextCompat.getString(requireContext(), R.string.Cancel)) { dialog, which ->
+            onCancel()
+        }
+
+        builder.show()
+    }
+
+    private fun showDeletePostConfirmationDialog(onConfirm: () -> Unit, onCancel: () -> Unit){
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle(ContextCompat.getString(requireContext(), R.string.Confirmation))
+        builder.setMessage(ContextCompat.getString(requireContext(), R.string.Are_you_sure_delete_post))
 
         builder.setPositiveButton(ContextCompat.getString(requireContext(), R.string.Confirm)) { dialog, which ->
             onConfirm()
