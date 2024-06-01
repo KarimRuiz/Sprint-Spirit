@@ -5,6 +5,7 @@ import android.location.Address
 import android.net.Uri
 import android.util.Log
 import androidx.core.graphics.drawable.toIcon
+import com.example.sprintspirit.database.filters.LocationFilter
 import com.example.sprintspirit.database.filters.TimeFilter
 import com.example.sprintspirit.features.chat.data.ChatUser
 import com.example.sprintspirit.features.dashboard.home.data.Post
@@ -21,6 +22,7 @@ import com.example.sprintspirit.features.chat.data.ChatResponse
 import com.example.sprintspirit.features.chat.data.Message
 import com.example.sprintspirit.features.signin.data.User
 import com.example.sprintspirit.features.signin.data.UserChat
+import com.example.sprintspirit.util.Utils.normalize
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
@@ -66,6 +68,9 @@ class FirebaseManager() : DBManager {
         val START_TIME = "startTime"
         val PUBLISH_DATE = "publishDate"
         val USER_CHATS = "chats"
+        val TOWN = "town"
+        val CITY = "city"
+        val STATE = "state"
 
         //NOT CATEGORIZED
         val USER = "user"
@@ -357,7 +362,75 @@ class FirebaseManager() : DBManager {
 
             response.posts = postsRes
         } catch (e: Exception) {
-            Log.d("FirebaseManager", "EXCEPTION GETTING POSTS: ${e}")
+            Log.d(TAG, "EXCEPTION GETTING POSTS: ${e}")
+            response.exception = e
+        }
+
+        return response
+    }
+
+    override suspend fun getPostsByLocation(location: LocationFilter, name: String, limit: Long): PostsResponse {
+        val response = PostsResponse()
+
+        try{
+            val postsRef = firestore.collection(POSTS)
+
+            val field = when (location) {
+                LocationFilter.TOWN -> TOWN
+                LocationFilter.CITY -> CITY
+                LocationFilter.STATE -> STATE
+                else -> null
+            }
+
+            val posts = if(field != null){
+                postsRef.whereEqualTo(field, name).limit(limit).get().await().documents.mapNotNull { snapShot ->
+                    snapShot.toObject(Post::class.java)?.apply {
+                        id = snapShot.id
+                    }
+                }
+            }else{
+                postsRef.limit(limit).get().await().documents.mapNotNull { snapShot ->
+                    snapShot.toObject(Post::class.java)?.apply {
+                        id = snapShot.id
+                    }
+                }
+            }
+
+            val postsRes: MutableList<Post> = mutableListOf()
+            posts.forEach {post ->
+                val userId = post.user.removePrefix("/users/")
+                val userDocRef = firestore.collection(USERS).document(userId)
+                val userData = userDocRef.get().await().toObject(User::class.java)
+
+                try {
+                    val ref = storage.child(IMAGES).child("$userId.jpg")
+                    userData?.profilePictureUrl = ref.downloadUrl.await()
+                }catch(e: Exception){
+                    Log.d("FirebaseManager", "EXCEPTION GETTING POSTS USERS: ${e}")
+                }
+
+                userData?.let {
+                    postsRes.add(Post(
+                        id = post.id,
+                        user = userId,
+                        userData = it,
+                        distance = post.distance,
+                        startTime = post.startTime,
+                        minutes = post.minutes,
+                        description = post.description,
+                        title = post.title,
+                        town = post.town,
+                        city = post.city,
+                        state = post.state,
+                        country = post.country,
+                        points = post.points
+                    ))
+                }
+            }
+
+            response.posts = postsRes
+        }catch(e: Exception){
+            Log.d(TAG, "EXCEPTION GETTING POSTS: ${e}")
             response.exception = e
         }
 
@@ -380,9 +453,9 @@ class FirebaseManager() : DBManager {
                 startTime = run.startTime,
                 minutes = run.getMinutes(),
                 title = title,
-                town = address.locality,
-                city = address.subAdminArea,
-                state = address.adminArea,
+                town = address.locality.normalize(),
+                city = address.subAdminArea.normalize(),
+                state = address.adminArea.normalize(),
                 country = address.countryCode,
                 description = description,
                 points = run.points

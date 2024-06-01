@@ -2,6 +2,7 @@ package com.example.sprintspirit.database
 
 import android.location.Address
 import android.net.Uri
+import com.example.sprintspirit.database.filters.LocationFilter
 import com.example.sprintspirit.database.filters.OrderFilter
 import com.example.sprintspirit.database.filters.TimeFilter
 import com.example.sprintspirit.features.chat.data.ChatResponse
@@ -63,6 +64,8 @@ interface DBManager {
     suspend fun saveRun(runResponse: RunResponse)
 
     suspend fun getPostsByTime(time: TimeFilter): PostsResponse
+
+    suspend fun getPostsByLocation(location: LocationFilter, name: String, limit: Long = 10): PostsResponse
 
     fun deleteRun(run: RunData)
 

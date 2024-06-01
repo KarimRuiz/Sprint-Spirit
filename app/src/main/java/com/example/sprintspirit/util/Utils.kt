@@ -8,7 +8,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.text.Editable
 import com.google.firebase.firestore.GeoPoint
-import java.util.Locale
+import java.text.Normalizer
 import java.util.regex.Pattern
 
 object Utils{
@@ -42,6 +42,26 @@ object Utils{
         val addresses = geocoder.getFromLocation(point.latitude, point.longitude, 1)
 
         return addresses?.firstOrNull()
+    }
+
+    fun String.removeNonSpacingMarks() =
+        Normalizer.normalize(this, Normalizer.Form.NFD)
+            .replace("\\p{Mn}+".toRegex(), "")
+
+    private fun removeTildes(input: String): String {
+        val tildes = mapOf(
+            'á' to 'a', 'é' to 'e', 'í' to 'i', 'ó' to 'o', 'ú' to 'u',
+            'Á' to 'A', 'É' to 'E', 'Í' to 'I', 'Ó' to 'O', 'Ú' to 'U'
+        )
+
+        return input.map { char ->
+            tildes[char] ?: char
+        }.joinToString("")
+    }
+
+
+    fun String.normalize() : String{
+        return this.lowercase().removeNonSpacingMarks()
     }
 
 }

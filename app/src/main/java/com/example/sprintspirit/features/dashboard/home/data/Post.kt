@@ -24,5 +24,11 @@ data class Post (
     var country: String = "",
     var points: List<Map<String, GeoPoint>>? = null
 ){
-
+    fun pace(): Double{
+        return if (distance > 0) {
+            minutes / distance
+        } else {
+            0.0
+        }
+    }
 }

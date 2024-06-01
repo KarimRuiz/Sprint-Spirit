@@ -24,6 +24,8 @@
     <color name="on_primary_night">#212121</color>
     <color name="on_secondary_night">#212121</color>
 
+    <color name="black60">#CC000000</color>
+    <color name="white60">#CCFFFFFF</color>
 
     <color name="run_path">#88FD00</color>
 </resources>

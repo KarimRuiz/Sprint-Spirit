@@ -35,4 +35,15 @@
     <string name="Chats">Chats</string>
     <string name="You_dont_have_chats">Todavía no tienes chats. Suscríbete a uno y empieza la conversación!</string>
     <string name="Your_chats">Tus chats</string>
+
+    <string-array name="place_filter_array">
+        <item>Ciudad</item>
+        <item>Provincia</item>
+        <item>Comunidad</item>
+    </string-array>
+    <string-array name="order_filter_array">
+        <item>New</item>
+        <item>Distance</item>
+        <item>Pace</item>
+    </string-array>
 </resources>
