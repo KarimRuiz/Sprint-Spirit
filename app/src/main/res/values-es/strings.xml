@@ -51,4 +51,8 @@
         <item>Semanal</item>
         <item>Anual</item>
     </string-array>
+    <string name="Confirmation">Confirmación</string>
+    <string name="Are_you_sure_delete_run">"¿Estás seguro de que quieres eliminar esta ruta? Las publicaciones asociadas también serán eliminadas. "</string>
+    <string name="Confirm">Confirmar</string>
+    <string name="Cancel">Cancelar</string>
 </resources>

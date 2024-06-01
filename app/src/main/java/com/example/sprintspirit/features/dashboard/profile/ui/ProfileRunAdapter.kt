@@ -23,7 +23,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 class ProfileRunAdapter(
-    var runlist:List<RunData>,
+    var runlist: MutableList<RunData>,
     var deleteCallback : (RunData) -> Unit,
     var postCallback : (RunData) -> Unit
 ) : RecyclerView.Adapter<ProfileRunAdapter.ProfileRunHolder>(){
@@ -66,6 +66,9 @@ class ProfileRunAdapter(
             binding.tvTimeValue.text = timeString + " min"
             binding.tvPaceValue.text = String.format("%.2f", (get.distance / time)) + " min/km"
             binding.tvDateValue.text = SimpleDateFormat("dd-MM-yy").format(Date(firstTime))
+            if(get.isPublic){
+                binding.sivRunIsPosted.visibility = View.VISIBLE
+            }
 
             binding.menuSettingsListener = menuSettingsListener()
         }
@@ -154,5 +157,16 @@ class ProfileRunAdapter(
     override fun getItemCount(): Int {
         return runlist.size
     }
+
+    fun removeRun(run: RunData) {
+        val position = runlist.indexOf(run)
+        if(position != -1){
+            runlist.removeAt(position)
+            notifyItemChanged(position)
+        }
+    }
+
+    fun getRunAt(position: Int) = runlist[position]
+    fun getPosOfRun(run: RunData) = runlist.indexOf(run)
 
 }

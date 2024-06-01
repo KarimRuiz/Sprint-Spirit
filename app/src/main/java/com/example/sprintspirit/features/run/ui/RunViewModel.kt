@@ -44,7 +44,8 @@ class RunViewModel(
         isRunning = true
         run = RunData(
             user = "/users/" + prefs.email,
-            startTime = Date()
+            startTime = Date(),
+            isPublic = false
         )
 
     }

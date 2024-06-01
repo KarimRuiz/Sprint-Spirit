@@ -51,4 +51,8 @@
         <item>Weekly</item>
         <item>Annual</item>
     </string-array>
+    <string name="Confirmation">Confirmation</string>
+    <string name="Are_you_sure_delete_run">Are you sure you want to delete this run? All posts associated will also be deleted.</string>
+    <string name="Confirm">Confirm</string>
+    <string name="Cancel">Cancel</string>
 </resources>

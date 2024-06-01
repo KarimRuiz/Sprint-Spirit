@@ -1,5 +1,10 @@
 package com.example.sprintspirit.features.dashboard.profile
 
+import android.app.AlertDialog
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -9,7 +14,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.sprintspirit.R
 import com.example.sprintspirit.data.Preferences
@@ -18,6 +26,7 @@ import com.example.sprintspirit.features.dashboard.DashboardViewModel
 import com.example.sprintspirit.features.dashboard.profile.data.ProfilePictureResponse
 import com.example.sprintspirit.features.dashboard.profile.data.UserResponse
 import com.example.sprintspirit.features.dashboard.profile.ui.ProfileRunAdapter
+import com.example.sprintspirit.features.run.data.RunData
 import com.example.sprintspirit.features.run.data.RunsResponse
 import com.example.sprintspirit.ui.BaseFragment
 import com.example.sprintspirit.util.SprintSpiritNavigator
@@ -126,21 +135,114 @@ class ProfileFragment : BaseFragment() {
 
     private fun fillRuns(runs: RunsResponse?) {
         if((runs != null) and (runs!!.runs != null)){
-            adapter = ProfileRunAdapter(runs.runs!!,
+            adapter = ProfileRunAdapter(runs.runs!!.toMutableList(),
                 deleteCallback = {
-                viewModel.deleteRun(it)
+                    deleteRun(it, adapter.getPosOfRun(it))
                 },
                 postCallback = {
                     navigator.navigateToPostRun(activity, it, true)
                 }
             )
             (binding as FragmentProfileBinding).runProfileRv.adapter = adapter
-            if(runs.runs!!.isEmpty())
-                    (binding as FragmentProfileBinding).tvProfileNoRuns.visibility = View.VISIBLE
+            if(runs.runs!!.isEmpty()){
+                (binding as FragmentProfileBinding).tvProfileNoRuns.visibility = View.VISIBLE
+            }else{
+                val itemTouchHelper = ItemTouchHelper(createItemTouchHelperCallback())
+                itemTouchHelper.attachToRecyclerView((binding as FragmentProfileBinding).runProfileRv)
+            }
         }else{
             Log.e(TAG, "fillRuns: COULDN'T GET RUNS")
         }
     }
+
+    private fun deleteRun(run: RunData, position: Int){
+        showDeleteConfirmationDialog(onConfirm = {
+            viewModel.deleteRun(run)
+            adapter.removeRun(run)
+        }, onCancel = {
+            adapter.notifyItemChanged(position)
+        })
+    }
+
+    private fun showDeleteConfirmationDialog(onConfirm: () -> Unit, onCancel: () -> Unit){
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle(ContextCompat.getString(requireContext(), R.string.Confirmation))
+        builder.setMessage(ContextCompat.getString(requireContext(), R.string.Are_you_sure_delete_run))
+
+        builder.setPositiveButton(ContextCompat.getString(requireContext(), R.string.Confirm)) { dialog, which ->
+            onConfirm()
+        }
+        builder.setNegativeButton(ContextCompat.getString(requireContext(), R.string.Cancel)) { dialog, which ->
+            onCancel()
+        }
+
+        builder.show()
+    }
+
+    private fun createItemTouchHelperCallback(): ItemTouchHelper.SimpleCallback {
+        return object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            private val deleteIcon: Drawable? = ContextCompat.getDrawable(requireContext(), R.drawable.ic_trash)?.apply {
+                setTint(Color.RED)
+            }
+            private val intrinsicWidth: Int = deleteIcon?.intrinsicWidth ?: 0
+            private val intrinsicHeight: Int = deleteIcon?.intrinsicHeight ?: 0
+            private val scaleFactor: Float = 2.5f
+
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val run = adapter.getRunAt(position)
+                deleteRun(run, position)
+            }
+
+            override fun onChildDraw(
+                c: Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
+            ) {
+                val itemView = viewHolder.itemView
+                val itemHeight = itemView.bottom - itemView.top
+
+                val scaledWidth = (intrinsicWidth * scaleFactor).toInt()
+                val scaledHeight = (intrinsicHeight * scaleFactor).toInt()
+
+                val iconTop = itemView.top + (itemHeight - scaledHeight) / 2
+                val iconMargin = (itemHeight - scaledHeight) / 2
+                val iconLeft: Int
+                val iconRight: Int
+
+                if (dX > 0) {
+                    iconLeft = itemView.left + iconMargin
+                    iconRight = itemView.left + iconMargin + scaledWidth
+                } else if (dX < 0) {
+                    iconLeft = itemView.right - iconMargin - scaledWidth
+                    iconRight = itemView.right - iconMargin
+                } else {
+                    iconLeft = itemView.right - iconMargin - scaledWidth
+                    iconRight = itemView.right - iconMargin
+                }
+
+                val iconBottom = iconTop + scaledHeight
+
+                deleteIcon?.setBounds(iconLeft, iconTop, iconRight, iconBottom)
+                deleteIcon?.draw(c)
+
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+            }
+        }
+    }
+
 
 
 }

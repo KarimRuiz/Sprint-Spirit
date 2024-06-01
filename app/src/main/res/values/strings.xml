@@ -58,4 +58,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="You_dont_have_chats">You dont have chats. Subscribe to one and start discussing!</string>
     <string name="Your_chats">Your chats</string>
+    <string name="Confirmation">Confirmation</string>
+    <string name="Are_you_sure_delete_run">Are you sure you want to delete this run? All posts associated will also be deleted.</string>
+    <string name="Confirm">Confirm</string>
+    <string name="Cancel">Cancel</string>
 </resources>
