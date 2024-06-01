@@ -43,6 +43,14 @@
         <item name="itemRippleColor">@color/on_primary</item>
     </style>
 
+    <style name="filtersButton">
+        <item name="android:background">@drawable/shape_filters_button_light</item>
+    </style>
+
+    <style name="filtersDrawerStyle">
+        <item name="android:background">@color/white60</item>
+    </style>
+
     <style name="topToolbar">
         <item name="android:background">@color/primary</item>
     </style>

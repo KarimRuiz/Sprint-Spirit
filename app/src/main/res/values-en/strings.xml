@@ -35,4 +35,20 @@
     <string name="Chats">Chats</string>
     <string name="You_dont_have_chats">You dont have chats. Subscribe to one and start discussing!</string>
     <string name="Your_chats">Your chats</string>
+
+    <string-array name="place_filter_array">
+        <item>Town</item>
+        <item>City</item>
+        <item>State</item>
+    </string-array>
+    <string-array name="order_filter_array">
+        <item>New</item>
+        <item>Distance</item>
+        <item>Pace</item>
+    </string-array>
+    <string-array name="stats_filter_array">
+        <item>Daily</item>
+        <item>Weekly</item>
+        <item>Annual</item>
+    </string-array>
 </resources>

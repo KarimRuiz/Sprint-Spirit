@@ -9,9 +9,9 @@ abstract class BaseViewModel : ViewModel(){
 
     fun loge(message: String = "Log_error") = Log.e(TAG, message)
 
-    fun logd(message: String = "Log_debug") = Log.e(TAG, message)
+    fun logd(message: String = "Log_debug") = Log.d(TAG, message)
 
-    fun logw(message: String = "Log_warning") = Log.e(TAG, message)
+    fun logw(message: String = "Log_warning") = Log.w(TAG, message)
 
     fun logwtf(message: String = "Log_WTF") = Log.wtf(TAG, message)
 

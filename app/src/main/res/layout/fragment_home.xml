@@ -20,45 +20,95 @@
             android:layout_marginEnd="@dimen/margin_big"
             android:background="@android:color/darker_gray" />
 
-        <FrameLayout
+        <androidx.drawerlayout.widget.DrawerLayout
+            android:id="@+id/drawer_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
+            android:layout_height="match_parent">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:background="@drawable/card_user_run_corner"
-                android:translationZ="1dp"
-                android:layout_margin="@dimen/margin_small"
-                >
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/textView2"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/runs_home_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:translationZ="0dp"
+                    android:layout_margin="@dimen/margin_small" />
+
+                <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_small"
-                    android:text="@string/Order_by" />
+                    android:layout_gravity="bottom|start"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginBottom="14dp">
 
-                <Spinner
-                    android:id="@+id/sp_home_order"
-                    android:layout_width="131dp"
-                    android:layout_height="wrap_content"
-                    />
+                    <ImageButton
+                        android:id="@+id/open_drawer_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_filter"
+                        style="@style/filtersButton"
+                        android:padding="@dimen/margin_x_bigger" />
 
-            </LinearLayout>
+                </FrameLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/runs_home_rv"
+            </FrameLayout>
+
+            <eightbitlab.com.blurview.BlurView
+                android:id="@+id/drawer_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:translationZ="0dp"
-                android:layout_margin="@dimen/margin_small"
-                />
+                android:layout_gravity="start"
+                style="@style/filtersDrawerStyle">
 
-        </FrameLayout>
+                <LinearLayout
+                    android:layout_width="280dp"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:background="@android:color/transparent"
+                    android:padding="@dimen/margin_big"
+                    tools:ignore="UselessParent">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Filtrar por:"
+                        android:layout_margin="@dimen/margin_small" />
+
+                    <Spinner
+                        android:id="@+id/sp_filter_by"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <EditText
+                        android:id="@+id/et_filter_by"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minWidth="200dp"
+                        android:maxWidth="400dp"
+                        />
+
+                    <androidx.legacy.widget.Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="15dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/Order_by"
+                        android:layout_margin="@dimen/margin_small" />
+
+                    <Spinner
+                        android:id="@+id/sp_order_by"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+            </eightbitlab.com.blurview.BlurView>
+
+        </androidx.drawerlayout.widget.DrawerLayout>
 
     </LinearLayout>
 

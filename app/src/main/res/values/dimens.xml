@@ -23,6 +23,7 @@
     <dimen name="margin_normal">8dp</dimen>
     <dimen name="margin_big">12dp</dimen>
     <dimen name="margin_bigger">16dp</dimen>
+    <dimen name="margin_x_bigger">19dp</dimen>
     <dimen name="margin_huge">32dp</dimen>
     <dimen name="margin_godzilla">64dp</dimen>
 

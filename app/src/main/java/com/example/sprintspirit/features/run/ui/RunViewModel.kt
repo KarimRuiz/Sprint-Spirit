@@ -21,7 +21,7 @@ class RunViewModel(
 ) : BaseViewModel() {
 
     companion object{
-        private val MIN_DISTANCE = 0.05 //min distance in kilometers that a route can have
+        private val MIN_DISTANCE = 0.0005 //min distance in kilometers that a route can have
     }
 
     private val dbManager: DBManager = DBManager.getCurrentDBManager()
@@ -36,7 +36,7 @@ class RunViewModel(
                 repository.saveRun(RunResponse(run))
             }
         }else{
-            throw RuntimeException("Could not upload run; runData: ${run}")
+            throw RuntimeException("Could not upload run; points: ${run.points?.size}; distance: ${run.distance}")
         }
     }
 
