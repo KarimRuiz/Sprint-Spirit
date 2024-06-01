@@ -10,8 +10,8 @@ class HomeRepository {
 
     private val manager = DBManager.getCurrentDBManager()
 
-    suspend fun getWeeklyStats(user: String): StatsResponse{
-        return manager.getWeeklyStats(user)
+    suspend fun getStats(user: String, filter: TimeFilter): StatsResponse{
+        return manager.getStats(user, filter)
     }
 
     suspend fun getPostsByFilter(time: TimeFilter): PostsResponse{

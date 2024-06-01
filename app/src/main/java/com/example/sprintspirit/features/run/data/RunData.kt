@@ -11,7 +11,7 @@ data class RunData(
     val isPublic: Boolean = true,
     var points: List<Map<String, GeoPoint>>? = null
 ){
-    fun getMinutes(): Double{
+    fun minutes(): Double{
         if(points == null || points!!.size < 2) return 0.0
 
         val t1 = points!!.first().toList().first().first.toString().toLong() //in milli

@@ -73,7 +73,7 @@ interface DBManager {
 
     /* STATS */
 
-    suspend fun getWeeklyStats(user: String): StatsResponse
+    suspend fun getStats(user: String, filter: TimeFilter = TimeFilter.WEEKLY): StatsResponse
 
     /* CHATS */
 

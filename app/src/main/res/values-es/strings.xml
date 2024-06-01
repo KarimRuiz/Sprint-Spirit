@@ -46,4 +46,9 @@
         <item>Distance</item>
         <item>Pace</item>
     </string-array>
+    <string-array name="stats_filter_array">
+        <item>Diaria</item>
+        <item>Semanal</item>
+        <item>Anual</item>
+    </string-array>
 </resources>

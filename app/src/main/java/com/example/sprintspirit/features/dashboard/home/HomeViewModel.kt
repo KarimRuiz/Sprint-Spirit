@@ -23,8 +23,12 @@ class HomeViewModel(
     val locationFilter: MutableLiveData<LocationFilter> = MutableLiveData(LocationFilter.CITY)
     val locationName: MutableLiveData<String> = MutableLiveData("")
 
-    val weeklyStats = liveData(Dispatchers.IO){
-        emit(repository.getWeeklyStats(user))
+    val statsFilter: MutableLiveData<TimeFilter> = MutableLiveData(TimeFilter.WEEKLY)
+
+    val stats = statsFilter.switchMap { filter ->
+        liveData(Dispatchers.IO){
+            emit(repository.getStats(user, filter))
+        }
     }
 
     val filteredRunsByData = timeFilter.switchMap { filter ->

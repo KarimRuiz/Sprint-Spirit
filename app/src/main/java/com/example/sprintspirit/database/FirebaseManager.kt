@@ -33,10 +33,8 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.messaging.messaging
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -451,7 +449,7 @@ class FirebaseManager() : DBManager {
                 user = run.user,
                 distance = run.distance,
                 startTime = run.startTime,
-                minutes = run.getMinutes(),
+                minutes = run.minutes(),
                 title = title,
                 town = address.locality.normalize(),
                 city = address.subAdminArea.normalize(),
@@ -472,29 +470,33 @@ class FirebaseManager() : DBManager {
 
     /* STATS */
 
-    override suspend fun getWeeklyStats(user: String): StatsResponse {
+    override suspend fun getStats(user: String, filter: TimeFilter): StatsResponse {
         val response = StatsResponse()
         try{
             var time = 0.0
             var distance = 0.0
 
             //get all runs
-            val runsQuery = firestore.collection(RUNS).whereEqualTo(USER, "/users/$user").get().await()
+            val minDate = Date(Date().time - filter.timeMillis())
+            val runsQuery = firestore.collection(RUNS).whereEqualTo(USER, "/users/$user").whereGreaterThan(
+                START_TIME, minDate).get().await()
             val runs = runsQuery.documents.mapNotNull {
                 it.toObject(RunData::class.java)
             }
 
             runs.forEach{run ->
-                time += run.getMinutes()
+                time += run.minutes()
                 distance += run.distance
             }
             val pace = if (distance > 0 && time > 0) {
-                time/60.0 / distance
+                time / distance
             } else {
                 0.0
             }
+
             response.stats = Stats(time/60.0, distance, pace)
         }catch(e:Exception){
+            Log.d(TAG, "Error getting weekly stats: ${e.toString()}")
             response.exception = e
         }
 

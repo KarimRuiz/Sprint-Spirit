@@ -91,12 +91,25 @@ class HomeFragment : BaseFragment() {
 
         binding.runsHomeRv.layoutManager = LinearLayoutManager(requireContext())
 
-        viewModel.weeklyStats.observe(viewLifecycleOwner, Observer {
+        ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.stats_filter_array,
+            android.R.layout.simple_spinner_dropdown_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.homeFragmentStats.spStats.adapter = adapter
+            binding.homeFragmentStats.spStats.setSelection(1)
+        }
+        binding.homeFragmentStats.spStats.onItemSelectedListener = OnStatsFilterChangedListener()
+
+        viewModel.stats.observe(viewLifecycleOwner, Observer {
             binding.homeFragmentStats.distance = String.format("%.2f", it.stats?.distance)
 
-            val totalMinutes = it.stats?.time
-            val hours = totalMinutes?.div(60)?.toInt()
-            val minutes = totalMinutes?.rem(60)?.toInt()
+            val totalHours = it.stats?.time
+            val hours = totalHours?.toInt() ?: 0
+            val minutes = ((totalHours?.rem(1) ?: 0.0) * 60).toInt()
+            logd("hours: ${hours}")
+            logd("minutes: ${minutes}")
             binding.homeFragmentStats.hours = hours.toString()
             binding.homeFragmentStats.minutes = minutes.toString()
 
@@ -145,14 +158,26 @@ class HomeFragment : BaseFragment() {
                     locationType = LocationFilter.EMPTY
                     viewModel.locationFilter.value = locationType
                 }
-
             }
-
-            handler.postDelayed(runnable!!, 1500)
+            handler.postDelayed(runnable!!, 750)
         }
 
         override fun afterTextChanged(s: Editable?) {}
 
+    }
+
+    private fun OnStatsFilterChangedListener() = object : AdapterView.OnItemSelectedListener {
+        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            val filter = when(position){
+                0 -> TimeFilter.DAILY
+                1 -> TimeFilter.WEEKLY
+                2 -> TimeFilter.YEARLY
+                else -> TimeFilter.WEEKLY
+            }
+            viewModel.statsFilter.value = filter
+        }
+
+        override fun onNothingSelected(parent: AdapterView<*>?) {}
     }
 
     private fun OnOrderSelectedListener() = object : AdapterView.OnItemSelectedListener {
@@ -164,7 +189,7 @@ class HomeFragment : BaseFragment() {
                 //0 -> viewModel.filteredRuns.value?.posts?.filter{it.run.isPublic}?.sortedByDescending { it.run.startTime }
                 0 -> viewModel.filteredRunsByLocation.value?.posts?.sortedByDescending { it.startTime }
                 1 -> viewModel.filteredRunsByLocation.value?.posts?.sortedByDescending { it.distance }
-                2 -> viewModel.filteredRunsByLocation.value?.posts?.sortedByDescending { it.pace() }
+                2 -> viewModel.filteredRunsByLocation.value?.posts?.sortedBy { it.pace() }
                 else -> viewModel.filteredRunsByLocation.value?.posts?.sortedBy { it.startTime }
             }
             sortedList?.take(10)

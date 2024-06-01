@@ -34,17 +34,18 @@
 
             <TextView
                 android:id="@+id/tv_stats_title"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_small"
                 android:text="@string/Your_stats"
                 android:textSize="@dimen/font_big"
+                android:layout_weight="1"
                 android:textStyle="bold" />
 
             <Spinner
-                android:id="@+id/spinner"
+                android:id="@+id/sp_stats"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"/>
         </LinearLayout>
 
         <TableLayout
