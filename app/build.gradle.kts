@@ -6,6 +6,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
     id("org.jetbrains.kotlin.kapt")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -14,7 +15,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.sprintspirit"
-        minSdk = 30
+        minSdk = 29
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -48,6 +49,9 @@ android {
 }
 
 dependencies {
+    //Loading indicator (https://github.com/ybq/Android-SpinKit)
+    implementation("com.github.ybq:Android-SpinKit:1.4.0")
+
     //Blur
     implementation("com.github.Dimezis:BlurView:version-2.0.3")
 
@@ -65,6 +69,7 @@ dependencies {
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-database")
     implementation("com.google.firebase:firebase-messaging")
+    implementation("com.google.firebase:firebase-crashlytics")
     implementation("com.google.firebase:firebase-analytics:")
 
     //Glide

@@ -65,6 +65,8 @@ class FirebaseManager() : DBManager {
         val USERNAME = "username"
         val START_TIME = "startTime"
         val PUBLISH_DATE = "publishDate"
+        val IS_PUBLIC = "public"
+        val SESSION_ID = "sessionId"
         val USER_CHATS = "chats"
         val TOWN = "town"
         val CITY = "city"
@@ -380,7 +382,7 @@ class FirebaseManager() : DBManager {
                 else -> null
             }
 
-            val posts = if(field != null){
+            val posts = if(field != null && name.isNotBlank()){
                 postsRef.whereEqualTo(field, name).limit(limit).get().await().documents.mapNotNull { snapShot ->
                     snapShot.toObject(Post::class.java)?.apply {
                         id = snapShot.id
@@ -438,7 +440,15 @@ class FirebaseManager() : DBManager {
     override fun deleteRun(run: RunData) {
         Log.d("FirebaseManager", "Deleting run...")
         firestore.collection(RUNS).document(run.id).delete()
+        deletePostByRunId(run.id)
+    }
 
+    override fun deletePostByRunId(runId: String) {
+        firestore.collection(POSTS).whereEqualTo(SESSION_ID, runId).get().addOnSuccessListener {
+            for (doc in it.documents){
+                doc.reference.delete()
+            }
+        }
     }
 
     //returns the post id
@@ -456,8 +466,12 @@ class FirebaseManager() : DBManager {
                 state = address.adminArea.normalize(),
                 country = address.countryCode,
                 description = description,
+                sessionId = run.id,
                 points = run.points
             )
+
+            //set its run to public
+            firestore.collection(RUNS).document(run.id).update(IS_PUBLIC, true)
 
             //val postRef = firestore.collection(POSTS).document().set(post).await()
             val postRef = firestore.collection(POSTS).add(post).await()

@@ -1,12 +1,15 @@
 package com.example.sprintspirit.features.run.location
 
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.example.sprintspirit.R
+import com.example.sprintspirit.data.Preferences
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,10 +30,29 @@ class LocationService: Service() {
 
     override fun onCreate() {
         super.onCreate()
+
+        createNotificationChannel()
+
         locationClient = DefaultLocationClient(
             applicationContext,
             LocationServices.getFusedLocationProviderClient(applicationContext)
         )
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channelName = "Running Channel"
+            val channelDescription = "Channel for running notifications"
+            val importance = NotificationManager.IMPORTANCE_LOW
+            val channel = NotificationChannel(CHANNEL_ID, channelName, importance).apply {
+                description = channelDescription
+                vibrationPattern = longArrayOf(0L)
+                enableVibration(false)
+            }
+
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -50,7 +72,8 @@ class LocationService: Service() {
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        locationClient.getLocationUpdates(10000L) //10 seconds
+        val refreshRate = Preferences(applicationContext).locationRefreshRate
+        locationClient.getLocationUpdates(refreshRate)
             .catch { e -> e.printStackTrace() }
             .onEach { location ->
                 val lat = location.latitude.toString().takeLast(3)

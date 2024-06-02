@@ -50,7 +50,8 @@
 
         <TableLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:showDividers="middle">
 
             <TableRow
                 android:layout_width="match_parent"
@@ -60,7 +61,7 @@
                     android:id="@+id/tv_stats_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/margin_bigger"
+                    android:layout_marginRight="@dimen/margin_godzilla"
                     android:text="@string/Time"
                     android:textSize="@dimen/font_normal" />
 
@@ -68,7 +69,7 @@
                     android:id="@+id/tv_stats_distance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/margin_bigger"
+                    android:layout_marginRight="@dimen/margin_godzilla"
                     android:text="@string/Distance"
                     android:textSize="@dimen/font_normal" />
 

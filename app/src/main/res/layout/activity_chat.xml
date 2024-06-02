@@ -8,10 +8,9 @@
 
         <include
             android:id="@+id/toolbar"
-            layout="@layout/toolbar_title_settings"
+            layout="@layout/toolbar_logo_go_back"
             />
 
-        <!-- Placeholder for dynamically added fragment -->
         <FrameLayout
             android:id="@+id/container"
             android:layout_width="match_parent"

@@ -1,6 +1,6 @@
 package com.example.sprintspirit.features.run.ui
 
-import android.content.Context
+import com.example.sprintspirit.R
 import com.example.sprintspirit.data.Preferences
 import com.example.sprintspirit.database.DBManager
 import com.example.sprintspirit.features.dashboard.profile.data.UsersRepository
@@ -9,7 +9,6 @@ import com.example.sprintspirit.features.run.data.RunResponse
 import com.example.sprintspirit.ui.BaseViewModel
 import com.example.sprintspirit.util.Utils
 import com.google.firebase.firestore.GeoPoint
-import com.mapbox.maps.extension.style.expressions.dsl.generated.distance
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,7 +20,7 @@ class RunViewModel(
 ) : BaseViewModel() {
 
     companion object{
-        private val MIN_DISTANCE = 0.0005 //min distance in kilometers that a route can have
+        val MIN_DISTANCE = 0.1 //min distance in kilometers that a route can have
     }
 
     private val dbManager: DBManager = DBManager.getCurrentDBManager()
@@ -44,7 +43,8 @@ class RunViewModel(
         isRunning = true
         run = RunData(
             user = "/users/" + prefs.email,
-            startTime = Date()
+            startTime = Date(),
+            public = false
         )
 
     }
@@ -68,6 +68,14 @@ class RunViewModel(
 
     fun runCanBeUploaded(): Boolean{
         return this::run.isInitialized && (run.points?.size ?: 0) > 2 && (run.distance > MIN_DISTANCE)
+    }
+
+    fun runCannotUploadReason(): Int{
+        logd("Run distance: ${run.distance}, min distance: ${MIN_DISTANCE}")
+        if(run.distance < MIN_DISTANCE){
+            return R.string.Run_min_distance
+        }
+        return -1
     }
 
     fun isRunning() = isRunning

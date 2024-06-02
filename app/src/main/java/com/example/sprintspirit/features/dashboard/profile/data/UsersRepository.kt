@@ -45,4 +45,8 @@ class UsersRepository{
         return manager.unSusbscribeToChat(userEmail, postId)
     }
 
+    suspend fun deletePostByRunId(runId: String) {
+        return manager.deletePostByRunId(runId)
+    }
+
 }

@@ -4,7 +4,7 @@
 
     <data>
         <variable
-            name="settingsListener"
+            name="goBackListener"
             type="android.view.View.OnClickListener" />
     </data>
 
@@ -19,12 +19,14 @@
         </androidx.appcompat.widget.Toolbar>
 
         <ImageView
-            android:id="@+id/iv_settings"
+            android:id="@+id/iv_go_back"
             android:layout_margin="4dp"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:onClick="@{settingsListener}"
-            app:srcCompat="@drawable/ic_settings" />
+            android:onClick="@{goBackListener}"
+            android:scaleX="-1"
+            android:adjustViewBounds="true"
+            app:srcCompat="@drawable/ic_arrow" />
 
         <ImageView
             android:id="@+id/iv_logo"

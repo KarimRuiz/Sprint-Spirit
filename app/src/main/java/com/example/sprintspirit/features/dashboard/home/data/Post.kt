@@ -22,6 +22,7 @@ data class Post (
     var city: String = "",
     var state: String = "",
     var country: String = "",
+    var sessionId: String = "",
     var points: List<Map<String, GeoPoint>>? = null
 ){
     fun pace(): Double{

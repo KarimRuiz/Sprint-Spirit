@@ -14,6 +14,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
@@ -168,19 +169,24 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
         binding.recordRunButton.setOnClickListener {
             logd("viewModel.isRunning(): ${viewModel.isRunning()}")
             if(viewModel.isRunning()){
-                Intent(applicationContext, LocationService::class.java).apply {
-                    action = LocationService.ACTION_STOP
-                    startService(this)
-                }
-                // Unregister receiver if registered
-                if (isReceiverRegistered) {
-                    unregisterReceiver(locationReceiver)
-                    isReceiverRegistered = false
-                }
+                showDeleteConfirmationDialog(onConfirm = {
+                    Intent(applicationContext, LocationService::class.java).apply {
+                        action = LocationService.ACTION_STOP
+                        startService(this)
+                    }
+                    // Unregister receiver if registered
+                    if (isReceiverRegistered) {
+                        unregisterReceiver(locationReceiver)
+                        isReceiverRegistered = false
+                    }
 
-                binding.recordRunStatus.text = "Record"
-                binding.recordRunButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.record_button))
-                postRun()
+                    binding.flRunRecordRedDot.visibility = View.GONE
+                    binding.recordRunStatus.text = "Record"
+                    binding.recordRunButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.record_button))
+                    postRun()
+                }, onCancel = {
+
+                })
             }else{
                 Intent(applicationContext, LocationService::class.java).apply{
                     action = LocationService.ACTION_START
@@ -190,6 +196,7 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
                     isReceiverRegistered = true
                 }
 
+                binding.flRunRecordRedDot.visibility = View.VISIBLE
                 binding.recordRunStatus.text = "Stop"
                 binding.recordRunButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.record_button_running))
                 viewModel.startRun()
@@ -197,11 +204,32 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
         }
     }
 
+    private fun showDeleteConfirmationDialog(onConfirm: () -> Unit, onCancel: () -> Unit){
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(ContextCompat.getString(this, R.string.Confirmation))
+        builder.setMessage(ContextCompat.getString(this, R.string.Are_you_sure_stop_recording))
+
+        builder.setPositiveButton(ContextCompat.getString(this, R.string.Confirm)) { dialog, which ->
+            onConfirm()
+        }
+        builder.setNegativeButton(ContextCompat.getString(this, R.string.Cancel)) { dialog, which ->
+            onCancel()
+        }
+
+        builder.show()
+    }
+
     private fun postRun() {
         try{
             viewModel.saveRun()
         }catch(e: Exception){
-            ErrorDialog(e.message?: "").show(supportFragmentManager, "ERROR_DIALOG")
+            val reason = viewModel.runCannotUploadReason()
+            if(reason != -1){
+                val minDistance = (RunViewModel.MIN_DISTANCE * 1000).toInt()
+                ErrorDialog(this.getString(reason, minDistance)).show(supportFragmentManager, "ERROR_DIALOG")
+            }else{
+                ErrorDialog(e.message?: "").show(supportFragmentManager, "ERROR_DIALOG")
+            }
         }
     }
 

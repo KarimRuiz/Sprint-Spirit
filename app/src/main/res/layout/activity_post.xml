@@ -8,7 +8,7 @@
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/toolbar_title_settings"
+        layout="@layout/toolbar_logo_go_back"
         />
 
     <fragment

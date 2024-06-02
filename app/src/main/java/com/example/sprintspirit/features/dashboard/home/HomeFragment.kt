@@ -12,23 +12,19 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.view.GravityCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.sprintspirit.R
 import com.example.sprintspirit.database.filters.LocationFilter
-import com.example.sprintspirit.database.filters.OrderFilter
 import com.example.sprintspirit.database.filters.TimeFilter
 import com.example.sprintspirit.databinding.FragmentHomeBinding
-import com.example.sprintspirit.databinding.FragmentProfileBinding
-import com.example.sprintspirit.features.dashboard.DashboardViewModel
 import com.example.sprintspirit.features.dashboard.home.data.Post
 import com.example.sprintspirit.features.dashboard.home.ui.HomeRunAdapter
-import com.example.sprintspirit.features.dashboard.profile.ui.ProfileRunAdapter
-import com.example.sprintspirit.features.run.data.RunData
 import com.example.sprintspirit.ui.BaseFragment
 import com.example.sprintspirit.util.SprintSpiritNavigator
 import com.example.sprintspirit.util.Utils.normalize
+import com.github.ybq.android.spinkit.style.ChasingDots
 
 class HomeFragment : BaseFragment() {
 
@@ -61,6 +57,10 @@ class HomeFragment : BaseFragment() {
     }
 
     private fun subscribeUi(binding: FragmentHomeBinding) {
+        val loadingAnim = ChasingDots()
+        binding.skvLoadingView.setIndeterminateDrawable(loadingAnim)
+        showLoading()
+
         binding.openDrawerButton.setOnClickListener{
             binding.drawerLayout.openDrawer(GravityCompat.START)
         }
@@ -90,6 +90,7 @@ class HomeFragment : BaseFragment() {
         binding.etFilterBy.addTextChangedListener(OnLocationSearchChanged())
 
         binding.runsHomeRv.layoutManager = LinearLayoutManager(requireContext())
+        binding.runsHomeRv.addOnChildAttachStateChangeListener(postAttacherListener())
 
         ArrayAdapter.createFromResource(
             requireContext(),
@@ -117,9 +118,14 @@ class HomeFragment : BaseFragment() {
         })
 
         viewModel.filteredRunsByLocation.observe(viewLifecycleOwner, Observer { posts ->
-            logd("Filtered runs by location observer triggered: ${posts.posts.size}, ${posts.exception.toString()}")
             if(posts != null){
                 logd("Updating...")
+                binding.tvNoPostsFound.visibility = View.GONE
+                if(posts.posts.isEmpty()){
+                    logd("POSTS ARE EMPTY! D:")
+                    binding.tvNoPostsFound.visibility = View.VISIBLE
+                    hideLoading()
+                }
                 adapter = HomeRunAdapter(posts.postsByTime(), requireContext()) {
                     onOpenRun(it)
                 }
@@ -129,10 +135,14 @@ class HomeFragment : BaseFragment() {
             }
         })
 
-        viewModel.filteredRunsByData.observe(viewLifecycleOwner, Observer{posts ->
-            logd("Filtered runs observer triggered: ${posts.posts.size}, ${posts.exception.toString()}")
+        /*viewModel.filteredRunsByData.observe(viewLifecycleOwner, Observer{posts ->
             if(posts != null){
                 logd("Updating...")
+                binding.tvNoPostsFound.visibility = View.GONE
+                if(posts.posts.isEmpty()){
+                    binding.tvNoPostsFound.visibility = View.VISIBLE
+                    hideLoading()
+                }
                 adapter = HomeRunAdapter(posts.postsByTime(), requireContext()) {
                     onOpenRun(it)
                 }
@@ -140,7 +150,7 @@ class HomeFragment : BaseFragment() {
             }else{
                 Log.e(TAG, "filteredRunsByData: COULDN'T GET RUNS: ${posts?.exception.toString()}")
             }
-        })
+        })*/
     }
 
     private fun OnLocationSearchChanged() = object : TextWatcher {
@@ -159,7 +169,9 @@ class HomeFragment : BaseFragment() {
                     viewModel.locationFilter.value = locationType
                 }
             }
+            showLoading()
             handler.postDelayed(runnable!!, 750)
+            showLoading()
         }
 
         override fun afterTextChanged(s: Editable?) {}
@@ -175,18 +187,16 @@ class HomeFragment : BaseFragment() {
                 else -> TimeFilter.WEEKLY
             }
             viewModel.statsFilter.value = filter
+            showLoading()
         }
 
         override fun onNothingSelected(parent: AdapterView<*>?) {}
     }
 
     private fun OnOrderSelectedListener() = object : AdapterView.OnItemSelectedListener {
-        val spinner = (binding as FragmentHomeBinding).spOrderBy
-
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             logd("SORTING...")
             val sortedList = when(position){
-                //0 -> viewModel.filteredRuns.value?.posts?.filter{it.run.isPublic}?.sortedByDescending { it.run.startTime }
                 0 -> viewModel.filteredRunsByLocation.value?.posts?.sortedByDescending { it.startTime }
                 1 -> viewModel.filteredRunsByLocation.value?.posts?.sortedByDescending { it.distance }
                 2 -> viewModel.filteredRunsByLocation.value?.posts?.sortedBy { it.pace() }
@@ -201,17 +211,12 @@ class HomeFragment : BaseFragment() {
             }
         }
 
-        override fun onNothingSelected(parent: AdapterView<*>?) {
-            TODO("Not yet implemented")
-        }
+        override fun onNothingSelected(parent: AdapterView<*>?) {}
 
     }
 
     private fun OnFilterSelectedListener() = object : AdapterView.OnItemSelectedListener {
-        val spinner = (binding as FragmentHomeBinding).spFilterBy
-
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            logd("selected: ${spinner.getItemAtPosition(position)}")
             locationType = when(position){
                 0 -> LocationFilter.TOWN
                 1 -> LocationFilter.CITY
@@ -220,15 +225,29 @@ class HomeFragment : BaseFragment() {
             }
             viewModel.locationName.value = locationSearch
             viewModel.locationFilter.value = locationType
+            showLoading()
         }
 
-        override fun onNothingSelected(parent: AdapterView<*>?) {
-            TODO("Not yet implemented")
-        }
+        override fun onNothingSelected(parent: AdapterView<*>?) {}
 
+    }
+
+    private fun postAttacherListener() = object : RecyclerView.OnChildAttachStateChangeListener {
+        override fun onChildViewAttachedToWindow(view: View) {
+            hideLoading()
+        }
+        override fun onChildViewDetachedFromWindow(view: View) {}
     }
 
     private fun onOpenRun(post: Post) {
         navigator.navigateToChat(activity, post)
+    }
+
+    private fun showLoading(){
+        (binding as FragmentHomeBinding).skvLoadingView.visibility = View.VISIBLE
+    }
+
+    private fun hideLoading(){
+        (binding as FragmentHomeBinding).skvLoadingView.visibility = View.GONE
     }
 }

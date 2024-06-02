@@ -44,6 +44,17 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true">
 
+                <com.stfalcon.chatkit.utils.ShapeImageView
+                    android:id="@+id/siv_run_is_posted"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_rounded_check"
+                    android:tint="#57AB2B"
+                    android:visibility="gone"
+                    card_view:layout_constraintBottom_toBottomOf="parent"
+                    card_view:layout_constraintStart_toStartOf="parent"
+                    />
+
                 <TextView
                     android:id="@+id/tv_date_value"
                     android:layout_width="wrap_content"
