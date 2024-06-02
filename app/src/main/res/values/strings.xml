@@ -6,6 +6,7 @@
     <string name="sprint_spirit_user_email" translatable="false">sprint_spirit_user_email</string>
     <string name="sprint_spirit_user_data" translatable="false">sprint_spirit_user_data</string>
     <string name="sprint_spirit_user_username" translatable="false">sprint_spirit_user_username</string>
+    <string name="sprint_spirit_location_refresh_rate" translatable="false">sprint_spirit_location_refresh_rate</string>
     <string name="Error">Error</string>
     <string name="Accept">Accept</string>
     <string name="Sign_in_error">An error ocurred while singing in</string>
@@ -51,6 +52,13 @@
         <item>Weekly</item>
         <item>Annual</item>
     </string-array>
+    <string-array name="location_rates_array">
+        <item>Lowest</item>
+        <item>Low</item>
+        <item>Normal</item>
+        <item>High</item>
+        <item>Highest</item>
+    </string-array>
     <string name="You_dont_have_runs">You don\'t have runs yet.</string>
     <string name="message_hint">message...</string>
     <string name="Chats">Chats</string>
@@ -66,4 +74,8 @@
     <string name="Are_you_sure_stop_recording">Are you sure you want to stop recording the route?</string>
     <string name="Cannot_upload_run">Cannot save route</string>
     <string name="Run_min_distance">Mininum distance for a route is %1$d meters</string>
+    <string name="Settings">Settings</string>
+    <string name="Location_refresh_rate">Location refresh rate</string>
+    <string name="Highest_refresh_warning">Setting this refresh rate will improve route accuracy, but will drain your device battery significantly faster.</string>
+    <string name="Lowest_refresh_warning">Setting this refresh rate will improve battery duration during recording, but will make your routes too inaccurate.</string>
 </resources>

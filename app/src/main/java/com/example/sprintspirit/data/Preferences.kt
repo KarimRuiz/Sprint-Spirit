@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.example.sprintspirit.R
+import com.example.sprintspirit.features.run.location.LocationRefreshRate
 import com.google.firebase.auth.FirebaseUser
 import com.google.gson.Gson
 import com.google.gson.JsonElement
@@ -39,5 +40,9 @@ class Preferences(val context: Context) {
                 putString(context.getString(R.string.sprint_spirit_user_data), json)
             }
         }
+
+    var locationRefreshRate: Long //in miliseconds
+        get() = sharedPreferences.getLong(context.getString(R.string.sprint_spirit_location_refresh_rate), LocationRefreshRate.NORMAL.getMilli())
+        set(value) = sharedPreferences.edit{ putLong(context.getString(R.string.sprint_spirit_location_refresh_rate), value) }
 
 }

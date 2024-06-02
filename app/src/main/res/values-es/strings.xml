@@ -51,6 +51,13 @@
         <item>Semanal</item>
         <item>Anual</item>
     </string-array>
+    <string-array name="location_rates_array">
+        <item>Más baja</item>
+        <item>Baja</item>
+        <item>Normal</item>
+        <item>Alta</item>
+        <item>Más alta</item>
+    </string-array>
     <string name="Confirmation">Confirmación</string>
     <string name="Are_you_sure_delete_run">"¿Estás seguro de que quieres eliminar esta ruta? Las publicaciones asociadas también serán eliminadas. "</string>
     <string name="Confirm">Confirmar</string>
@@ -59,4 +66,8 @@
     <string name="Are_you_sure_stop_recording">¿Estás seguro de que quieres terminar de grabar la ruta?</string>
     <string name="Cannot_upload_run">Error guardando ruta</string>
     <string name="Run_min_distance">La distancia mínima para guardar una ruta es de %1$d metros.</string>
+    <string name="Settings">Settings</string>
+    <string name="Location_refresh_rate">Tasa de refresco de la ubicación</string>
+    <string name="Highest_refresh_warning">Esta frecuencia de actualización mejorará la precisión de la ruta, pero agotará significativamente la batería de tu dispositivo.</string>
+    <string name="Lowest_refresh_warning">Esta frecuencia de actualización mejorará la duración de la batería durante la grabación, pero hará que tus rutas sean demasiado imprecisas.</string>
 </resources>
