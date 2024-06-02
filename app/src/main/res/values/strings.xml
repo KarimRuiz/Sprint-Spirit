@@ -78,4 +78,6 @@
     <string name="Location_refresh_rate">Location refresh rate</string>
     <string name="Highest_refresh_warning">Setting this refresh rate will improve route accuracy, but will drain your device battery significantly faster.</string>
     <string name="Lowest_refresh_warning">Setting this refresh rate will improve battery duration during recording, but will make your routes too inaccurate.</string>
+    <string name="Logout">Logout</string>
+    <string name="Are_you_sure_logout">Are you sure you want to log out?</string>
 </resources>

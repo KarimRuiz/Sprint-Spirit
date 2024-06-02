@@ -5,10 +5,10 @@
     <string name="Error">Error</string>
     <string name="Accept">Aceptar</string>
     <string name="Sign_in_error">A ocurrido un error iniciando sesión</string>
-    <string name="You_Dont_Have_An_Account">No tienes una cuenta? Crea una.</string>
+    <string name="You_Dont_Have_An_Account">¿No tienes una cuenta? Crea una.</string>
     <string name="Sign_up">Registro</string>
     <string name="Confirm_password">Confirmar contraseña</string>
-    <string name="Do_You_Have_An_Account">Tienes una cuenta? Inicia sesión</string>
+    <string name="Do_You_Have_An_Account">¿Tienes una cuenta? Inicia sesión</string>
     <string name="Sign_up_error">A ocurrido un error en el registro</string>
     <string name="Home">Inicio</string>
     <string name="Run">Correr</string>
@@ -19,10 +19,10 @@
     <string name="Height">Altura (cm)</string>
     <string name="Weight">Peso (kg)</string>
     <string name="Username">Nombre</string>
-    <string name="Weight_low_limit">"El peso tiene que ser menor que "</string>
-    <string name="Weight_high_limit">"El peso tiene que ser mayor que "</string>
-    <string name="Height_high_limit">"La altura tiene que ser mayor que "</string>
-    <string name="Height_low_limit">"La altura tiene que ser menor que "</string>
+    <string name="Weight_low_limit">El peso tiene que ser menor que </string>
+    <string name="Weight_high_limit">El peso tiene que ser mayor que </string>
+    <string name="Height_high_limit">La altura tiene que ser mayor que </string>
+    <string name="Height_low_limit">La altura tiene que ser menor que </string>
     <string name="Password_min_characters">La contraseña debe tener al menos 7 caracteres de largo.</string>
     <string name="Email_not_valid">El email no es válido.</string>
     <string name="Username_min_characters">El usuario debe tener al menos 7 caracteres de largo.</string>
@@ -59,7 +59,7 @@
         <item>Más alta</item>
     </string-array>
     <string name="Confirmation">Confirmación</string>
-    <string name="Are_you_sure_delete_run">"¿Estás seguro de que quieres eliminar esta ruta? Las publicaciones asociadas también serán eliminadas. "</string>
+    <string name="Are_you_sure_delete_run">¿Estás seguro de que quieres eliminar esta ruta? Las publicaciones asociadas también serán eliminadas.</string>
     <string name="Confirm">Confirmar</string>
     <string name="Cancel">Cancelar</string>
     <string name="Are_you_sure_delete_post">¿Estás seguro de que quieres elimintar la publicación asociada a esta ruta?</string>
@@ -70,4 +70,6 @@
     <string name="Location_refresh_rate">Tasa de refresco de la ubicación</string>
     <string name="Highest_refresh_warning">Esta frecuencia de actualización mejorará la precisión de la ruta, pero agotará significativamente la batería de tu dispositivo.</string>
     <string name="Lowest_refresh_warning">Esta frecuencia de actualización mejorará la duración de la batería durante la grabación, pero hará que tus rutas sean demasiado imprecisas.</string>
+    <string name="Logout">Cerrar sesión</string>
+    <string name="Are_you_sure_logout">¿Estás seguro de que quiere cerrar sesión?</string>
 </resources>
