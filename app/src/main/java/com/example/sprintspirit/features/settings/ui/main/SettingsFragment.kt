@@ -1,5 +1,6 @@
 package com.example.sprintspirit.features.settings.ui.main
 
+import android.app.AlertDialog
 import android.graphics.Color
 import android.opengl.Visibility
 import android.os.Bundle
@@ -11,12 +12,15 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.sprintspirit.R
 import com.example.sprintspirit.data.Preferences
+import com.example.sprintspirit.database.DBManager
 import com.example.sprintspirit.databinding.FragmentSettingsBinding
 import com.example.sprintspirit.features.run.location.LocationRefreshRate
 import com.example.sprintspirit.ui.BaseFragment
+import com.example.sprintspirit.util.SprintSpiritNavigator
 
 
 class SettingsFragment : BaseFragment() {
@@ -31,6 +35,7 @@ class SettingsFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this)[SettingsViewModel::class.java]
         sharedPreferences = Preferences(requireContext())
+        navigator = SprintSpiritNavigator(requireContext())
     }
 
     override fun onCreateView(
@@ -62,6 +67,29 @@ class SettingsFragment : BaseFragment() {
         }
         binding.spLocationRefreshRate.onItemSelectedListener = OnRefreshRateListener()
 
+        binding.btnLogout.setOnClickListener {
+            showConfirmationDialog(onConfirm = {
+                sharedPreferences.email =null
+                sharedPreferences.username = null
+                DBManager.getCurrentDBManager().signOut()
+                navigator.navigateToLogIn(activity, false)
+            }, onCancel = {})
+        }
+    }
+
+    private fun showConfirmationDialog(onConfirm: () -> Unit, onCancel: () -> Unit){
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle(ContextCompat.getString(requireContext(), R.string.Confirmation))
+        builder.setMessage(ContextCompat.getString(requireContext(), R.string.Are_you_sure_logout))
+
+        builder.setPositiveButton(ContextCompat.getString(requireContext(), R.string.Confirm)) { dialog, which ->
+            onConfirm()
+        }
+        builder.setNegativeButton(ContextCompat.getString(requireContext(), R.string.Cancel)) { dialog, which ->
+            onCancel()
+        }
+
+        builder.show()
     }
 
     private fun setWarning(tv: TextView, message: String?){

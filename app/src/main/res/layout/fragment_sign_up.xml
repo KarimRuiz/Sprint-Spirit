@@ -15,6 +15,10 @@
             name="writeText"
             type="androidx.databinding.adapters.TextViewBindingAdapter.AfterTextChanged"
             />
+        <variable
+            name="termsAndConditions"
+            type="android.view.View.OnClickListener"
+            />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -36,96 +40,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:id="@+id/edt_email"
-            style="@style/loginEditText"
-            android:layout_width="344dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="20dp"
-            android:drawableLeft="@drawable/ic_account"
-            android:hint="@string/Email"
-            android:inputType="textEmailAddress"
-            android:afterTextChanged="@{writeText}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.028"
-            app:layout_constraintStart_toStartOf="@+id/tv_signin"
-            app:layout_constraintTop_toBottomOf="@+id/tv_signin" />
-
-        <EditText
-            android:id="@+id/edt_username"
-            style="@style/loginEditText"
-            android:layout_width="344dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="88dp"
-            android:afterTextChanged="@{writeText}"
-            android:drawableLeft="@drawable/ic_account"
-            android:hint="@string/Username"
-            android:inputType="text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/tv_signin"
-            app:layout_constraintTop_toBottomOf="@+id/tv_signin" />
-
-        <EditText
-            android:id="@+id/edt_weight"
-            style="@style/loginEditText"
-            android:layout_width="167dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="20dp"
-            android:afterTextChanged="@{writeText}"
-            android:drawableLeft="@drawable/ic_account"
-            android:hint="@string/Weight"
-            android:inputType="numberDecimal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/tv_signin"
-            app:layout_constraintTop_toBottomOf="@+id/edt_username" />
-
-        <EditText
-            android:id="@+id/edt_height"
-            style="@style/loginEditText"
-            android:layout_width="164dp"
-            android:layout_height="51dp"
-            android:layout_marginTop="20dp"
-            android:afterTextChanged="@{writeText}"
-            android:drawableLeft="@drawable/ic_account"
-            android:hint="@string/Height"
-            android:inputType="number"
-            app:layout_constraintEnd_toEndOf="@+id/edt_username"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/edt_weight"
-            app:layout_constraintTop_toBottomOf="@+id/edt_username" />
-
-        <EditText
-            android:id="@+id/edt_password"
-            style="@style/loginEditText"
-            android:layout_width="344dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="16dp"
-            android:afterTextChanged="@{writeText}"
-            android:drawableLeft="@drawable/ic_arrow"
-            android:hint="@string/Password"
-            android:inputType="textPassword"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/tv_signin"
-            app:layout_constraintTop_toBottomOf="@+id/edt_weight" />
-
-        <EditText
-            android:id="@+id/edt_confirm_password"
-            style="@style/loginEditText"
-            android:layout_width="344dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="16dp"
-            android:afterTextChanged="@{writeText}"
-            android:drawableLeft="@drawable/ic_arrow"
-            android:hint="@string/Confirm_password"
-            android:inputType="textPassword"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/tv_signin"
-            app:layout_constraintTop_toBottomOf="@+id/edt_password" />
-
         <TextView
             android:id="@+id/tv_signin"
             android:layout_width="wrap_content"
@@ -139,24 +53,146 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
-        <Button
-            android:id="@+id/bt_Login"
-            android:layout_width="159dp"
-            android:layout_height="55dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
-            android:enabled="false"
-            android:onClick="@{signUpWithEmail}"
-            android:text="@string/Sign_up"
-            android:textSize="18sp"
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nestedScrollView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            app:layout_constraintBottom_toTopOf="@+id/tv_log_in"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edt_confirm_password" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_signin">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/margin_huge"
+                android:paddingEnd="@dimen/margin_huge">
+
+                <EditText
+                    android:id="@+id/edt_email"
+                    style="@style/loginEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="20dp"
+                    android:afterTextChanged="@{writeText}"
+                    android:drawableLeft="@drawable/ic_account"
+                    android:hint="@string/Email"
+                    android:inputType="textEmailAddress" />
+
+                <EditText
+                    android:id="@+id/edt_username"
+                    style="@style/loginEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="20dp"
+                    android:afterTextChanged="@{writeText}"
+                    android:drawableLeft="@drawable/ic_account"
+                    android:hint="@string/Username"
+                    android:inputType="text" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/edt_weight"
+                        style="@style/loginEditText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_weight="1"
+                        android:afterTextChanged="@{writeText}"
+                        android:drawableLeft="@drawable/ic_account"
+                        android:hint="@string/Weight"
+                        android:inputType="numberDecimal" />
+
+                    <View
+                        android:layout_width="15dp"
+                        android:layout_height="1dp" />
+
+                    <EditText
+                        android:id="@+id/edt_height"
+                        style="@style/loginEditText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="51dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_weight="1"
+                        android:afterTextChanged="@{writeText}"
+                        android:drawableLeft="@drawable/ic_account"
+                        android:hint="@string/Height"
+                        android:inputType="number" />
+
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/edt_password"
+                    style="@style/loginEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="16dp"
+                    android:afterTextChanged="@{writeText}"
+                    android:drawableLeft="@drawable/ic_arrow"
+                    android:hint="@string/Password"
+                    android:inputType="textPassword" />
+
+                <EditText
+                    android:id="@+id/edt_confirm_password"
+                    style="@style/loginEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="16dp"
+                    android:afterTextChanged="@{writeText}"
+                    android:drawableLeft="@drawable/ic_arrow"
+                    android:hint="@string/Confirm_password"
+                    android:inputType="textPassword" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/cb_terms"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/tv_ive_read_terms"
+                        style="@style/termAndConditions"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClickListener="@{termsAndConditions}"
+                        android:text="@string/I_have_read_the_terms"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/bt_Login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="55dp"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="16dp"
+                    android:enabled="false"
+                    android:onClick="@{signUpWithEmail}"
+                    android:text="@string/Sign_up"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
 
         <TextView
             android:id="@+id/tv_log_in"
             style="@style/accentMessage"
-            android:layout_width="424dp"
-            android:layout_height="35dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:padding="@dimen/margin_small"
             android:gravity="center"
             android:onClick="@{goToLogIn}"
             android:text="@string/Do_You_Have_An_Account"
@@ -164,5 +200,47 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.538"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <FrameLayout
+            android:id="@+id/terms_and_conditions_window"
+            style="@style/termAndConditionsPopUp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/margin_bigger"
+            android:padding="@dimen/margin_bigger"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:clickable="false"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/terms_pop_up_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    tools:text="POLÍTICA DE PRIVAos personales y a la libre circulación de estos datos (..." />
+
+            </androidx.core.widget.NestedScrollView>
+
+            <ImageView
+                android:id="@+id/terms_and_conditions_close_window"
+                style="@style/termAndConditionsCloseButton"
+                android:layout_gravity="bottom|center"
+                android:padding="@dimen/margin_normal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_close"
+                android:clickable="true"
+                />
+
+        </FrameLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
