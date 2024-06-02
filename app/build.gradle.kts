@@ -48,6 +48,9 @@ android {
 }
 
 dependencies {
+    //Loading indicator (https://github.com/ybq/Android-SpinKit)
+    implementation("com.github.ybq:Android-SpinKit:1.4.0")
+
     //Blur
     implementation("com.github.Dimezis:BlurView:version-2.0.3")
 

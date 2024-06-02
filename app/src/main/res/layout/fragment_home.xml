@@ -3,113 +3,137 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+        <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include
-            android:id="@+id/home_fragment_stats"
-            layout="@layout/include_profile_stats" />
+            <include
+                android:id="@+id/home_fragment_stats"
+                layout="@layout/include_profile_stats" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="@dimen/margin_big"
-            android:layout_marginEnd="@dimen/margin_big"
-            android:background="@android:color/darker_gray" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/margin_big"
+                android:layout_marginEnd="@dimen/margin_big"
+                android:background="@android:color/darker_gray" />
 
-        <androidx.drawerlayout.widget.DrawerLayout
-            android:id="@+id/drawer_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <FrameLayout
+            <androidx.drawerlayout.widget.DrawerLayout
+                android:id="@+id/drawer_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/runs_home_rv"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:translationZ="0dp"
-                    android:layout_margin="@dimen/margin_small" />
-
                 <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|start"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginBottom="14dp">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                    <ImageButton
-                        android:id="@+id/open_drawer_button"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/runs_home_rv"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:translationZ="0dp"
+                        android:layout_margin="@dimen/margin_small" />
+
+                    <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_filter"
-                        style="@style/filtersButton"
-                        android:padding="@dimen/margin_x_bigger" />
+                        android:layout_gravity="bottom|start"
+                        android:layout_marginStart="14dp"
+                        android:layout_marginBottom="14dp">
+
+                        <ImageButton
+                            android:id="@+id/open_drawer_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_filter"
+                            style="@style/filtersButton"
+                            android:padding="@dimen/margin_x_bigger" />
+
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/tv_no_posts_found"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No se han encontrado rutas."
+                        android:textSize="@dimen/font_large"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="@dimen/margin_bigger"
+                        android:visibility="gone"
+                        tools:visibility="visible"
+                        />
+
+                    <com.github.ybq.android.spinkit.SpinKitView
+                        android:id="@+id/skv_loading_view"
+                        android:layout_width="@dimen/loading_indicator"
+                        android:layout_height="@dimen/loading_indicator"
+                        android:layout_gravity="center"
+                        app:SpinKit_Color="@color/primary"
+                        android:visibility="gone"
+                        android:padding="10dp"
+                        style="@style/SpinKitView.Large.Circle"
+                        tools:visibility="visible"/>
 
                 </FrameLayout>
 
-            </FrameLayout>
-
-            <eightbitlab.com.blurview.BlurView
-                android:id="@+id/drawer_content"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="start"
-                style="@style/filtersDrawerStyle">
-
-                <LinearLayout
-                    android:layout_width="280dp"
+                <eightbitlab.com.blurview.BlurView
+                    android:id="@+id/drawer_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:background="@android:color/transparent"
-                    android:padding="@dimen/margin_big"
-                    tools:ignore="UselessParent">
+                    android:layout_gravity="start"
+                    style="@style/filtersDrawerStyle">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Filtrar por:"
-                        android:layout_margin="@dimen/margin_small" />
+                    <LinearLayout
+                        android:layout_width="280dp"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:background="@android:color/transparent"
+                        android:padding="@dimen/margin_big"
+                        tools:ignore="UselessParent">
 
-                    <Spinner
-                        android:id="@+id/sp_filter_by"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Filtrar por:"
+                            android:layout_margin="@dimen/margin_small" />
 
-                    <EditText
-                        android:id="@+id/et_filter_by"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minWidth="200dp"
-                        android:maxWidth="400dp"
-                        />
+                        <Spinner
+                            android:id="@+id/sp_filter_by"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
 
-                    <androidx.legacy.widget.Space
-                        android:layout_width="wrap_content"
-                        android:layout_height="15dp"/>
+                        <EditText
+                            android:id="@+id/et_filter_by"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:minWidth="200dp"
+                            android:maxWidth="400dp"
+                            />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/Order_by"
-                        android:layout_margin="@dimen/margin_small" />
+                        <androidx.legacy.widget.Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="15dp"/>
 
-                    <Spinner
-                        android:id="@+id/sp_order_by"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/Order_by"
+                            android:layout_margin="@dimen/margin_small" />
 
-                </LinearLayout>
+                        <Spinner
+                            android:id="@+id/sp_order_by"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
 
-            </eightbitlab.com.blurview.BlurView>
+                    </LinearLayout>
+
+                </eightbitlab.com.blurview.BlurView>
 
         </androidx.drawerlayout.widget.DrawerLayout>
 
     </LinearLayout>
+
 
 </layout>

@@ -27,4 +27,7 @@
     <dimen name="margin_huge">32dp</dimen>
     <dimen name="margin_godzilla">64dp</dimen>
 
+    <!-- LOADING INDICATOR -->
+    <dimen name="loading_indicator">80dp</dimen>
+
 </resources>
