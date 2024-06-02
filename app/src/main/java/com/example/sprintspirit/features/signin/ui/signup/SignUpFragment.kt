@@ -1,13 +1,21 @@
 package com.example.sprintspirit.features.signin.ui.signup
 
+import android.content.Context.LAYOUT_INFLATER_SERVICE
 import android.content.Intent
-import androidx.lifecycle.ViewModelProvider
+import android.os.Build
 import android.os.Bundle
+import android.text.Html
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnTouchListener
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.PopupWindow
+import androidx.core.text.HtmlCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.databinding.adapters.TextViewBindingAdapter
+import androidx.lifecycle.ViewModelProvider
 import com.example.sprintspirit.R
 import com.example.sprintspirit.database.DBManager
 import com.example.sprintspirit.databinding.FragmentSignUpBinding
@@ -15,6 +23,7 @@ import com.example.sprintspirit.features.signin.ui.signin.SignInActivity
 import com.example.sprintspirit.ui.BaseFragment
 import com.example.sprintspirit.util.SprintSpiritNavigator
 import com.example.sprintspirit.util.Utils
+
 
 class SignUpFragment : BaseFragment() {
 
@@ -81,13 +90,16 @@ class SignUpFragment : BaseFragment() {
             }
         }
 
+        binding.cbTerms.setOnCheckedChangeListener { buttonView, isChecked ->
+            checkAllDataIsFilled()
+        }
+
+        binding.termsAndConditions = View.OnClickListener {
+            OpenTermsAndConditions()
+        }
+
         binding.writeText = TextViewBindingAdapter.AfterTextChanged{
-            binding.btLogin.isEnabled =
-                (binding.edtPassword.text.length >= 6) and
-                Utils.isValidEmail(binding.edtEmail.text) and
-                weightInLimit(binding) and
-                heightInLimit(binding) and
-                (binding.edtPassword.text.toString() == binding.edtConfirmPassword.text.toString())
+            checkAllDataIsFilled()
         }
 
         binding.goToLogIn = View.OnClickListener {
@@ -115,6 +127,30 @@ class SignUpFragment : BaseFragment() {
                 },
                 { context?.let { it1 -> showAlert(it1.getString(R.string.Sign_up_error)) } }
             )
+        }
+    }
+
+    private fun checkAllDataIsFilled() {
+        val binding = binding as FragmentSignUpBinding
+        binding.btLogin.isEnabled =
+            (binding.edtPassword.text.length >= 6) and
+                    (binding.edtUsername.text.length >= 4) and
+                    Utils.isValidEmail(binding.edtEmail.text) and
+                    weightInLimit(binding) and
+                    heightInLimit(binding) and
+                    (binding.cbTerms.isChecked) and
+                    (binding.edtPassword.text.toString() == binding.edtConfirmPassword.text.toString())
+    }
+
+
+    private fun OpenTermsAndConditions() {
+        (binding as FragmentSignUpBinding).termsAndConditionsWindow.visibility = View.VISIBLE
+        val termsText = requireContext().getString(R.string.terms_complete_text)
+        (binding as FragmentSignUpBinding).termsPopUpText.text =
+            HtmlCompat.fromHtml(termsText, HtmlCompat.FROM_HTML_MODE_COMPACT).toString()
+
+        (binding as FragmentSignUpBinding).termsAndConditionsCloseWindow.setOnClickListener {
+            (binding as FragmentSignUpBinding).termsAndConditionsWindow.visibility = View.GONE
         }
     }
 

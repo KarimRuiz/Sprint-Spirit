@@ -72,4 +72,5 @@
     <string name="Lowest_refresh_warning">Esta frecuencia de actualización mejorará la duración de la batería durante la grabación, pero hará que tus rutas sean demasiado imprecisas.</string>
     <string name="Logout">Cerrar sesión</string>
     <string name="Are_you_sure_logout">¿Estás seguro de que quiere cerrar sesión?</string>
+    <string name="I_have_read_the_terms">He leído y acepto los términos y condiciones de uso</string>
 </resources>
