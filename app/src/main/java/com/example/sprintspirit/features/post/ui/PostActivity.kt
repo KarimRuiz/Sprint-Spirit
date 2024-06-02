@@ -2,8 +2,10 @@ package com.example.sprintspirit.features.post.ui
 
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import com.example.sprintspirit.R
 import com.example.sprintspirit.data.Preferences
+import com.example.sprintspirit.databinding.ActivityPostBinding
 import com.example.sprintspirit.features.run.data.RunData
 import com.example.sprintspirit.ui.BaseActivity
 import com.example.sprintspirit.util.SprintSpiritNavigator
@@ -16,8 +18,22 @@ class PostActivity : BaseActivity() {
         const val RUN = "PostActivity.RUN"
     }
 
+    private lateinit var binding: ActivityPostBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_post)
+
+        navigator = SprintSpiritNavigator(this)
+        binding = ActivityPostBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
+
+        subscribeUi()
+    }
+
+    private fun subscribeUi() {
+        binding.toolbar.goBackListener = View.OnClickListener {
+            navigator.goBack(this)
+        }
     }
 }

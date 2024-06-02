@@ -74,6 +74,10 @@ class SprintSpiritNavigator(val context: Context) {
         )
     }
 
+    fun goBack(activty: FragmentActivity?){
+        activty?.onBackPressedDispatcher?.onBackPressed()
+    }
+
     private fun navigateTo(
         activity: FragmentActivity?,
         intent: Intent,
