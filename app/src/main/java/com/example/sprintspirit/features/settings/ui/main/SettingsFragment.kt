@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.sprintspirit.R
 import com.example.sprintspirit.data.Preferences
+import com.example.sprintspirit.database.DBManager
 import com.example.sprintspirit.databinding.FragmentSettingsBinding
 import com.example.sprintspirit.features.run.location.LocationRefreshRate
 import com.example.sprintspirit.ui.BaseFragment
@@ -70,6 +71,7 @@ class SettingsFragment : BaseFragment() {
             showConfirmationDialog(onConfirm = {
                 sharedPreferences.email =null
                 sharedPreferences.username = null
+                DBManager.getCurrentDBManager().signOut()
                 navigator.navigateToLogIn(activity, false)
             }, onCancel = {})
         }
