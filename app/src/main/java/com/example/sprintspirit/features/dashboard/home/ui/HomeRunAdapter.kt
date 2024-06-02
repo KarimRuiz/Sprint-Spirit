@@ -1,6 +1,7 @@
 package com.example.sprintspirit.features.dashboard.home.ui
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -56,11 +57,15 @@ class HomeRunAdapter(var postList:List<Post>,
             val time: Double = (lastTime - firstTime) / 60000.0 //ms to min
 
             binding.tvUsername.text = get.userData.username
-            binding.tvDistanceValue.text = get.distance.toString() + " km"
+            binding.tvDistanceValue.text = String.format("%.2f", get.distance) + " km"
             val timeString = String.format("%d:%02d", (time*60).toInt()/60, (time*60).toInt()%60)
             binding.tvTimeValue.text = timeString + " min"
             binding.tvPaceValue.text = String.format("%.2f", (time / get.distance)) + " min/km"
             binding.tvDateValue.text = SimpleDateFormat("dd-MM-yy").format(get.startTime)
+            //title
+            Log.d("HomeRunAdapter", "Title: ${get.title}")
+            binding.tvTitle.text = get.title
+            binding.tvTitle.visibility = View.VISIBLE
             //description
             if(get.description.isNotBlank()){
                 binding.tvDescription.text = get.description

@@ -7,20 +7,95 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_home_run"
     android:layout_margin="12dp"
-    card_view:cardBackgroundColor="?attr/colorPrimary"
+    card_view:cardBackgroundColor="?attr/colorOnPrimary"
     card_view:cardCornerRadius="15dp"
     card_view:cardElevation="6dp"
     card_view:contentPadding="1dp">
 
-    <RelativeLayout
-        android:id="@+id/card_home_run_layout"
-        android:layout_width="387dp"
-        android:layout_height="225dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/margin_small">
 
+        <!--User and date-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/profile_fragment_card_view"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                android:paddingStart="@dimen/margin_normal"
+                app:cardCornerRadius="45dp">
+
+                <ImageView
+                    android:id="@+id/iv_home_profile_picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:srcCompat="@drawable/ic_account" />
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/tv_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pepe"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/margin_normal"
+                android:textSize="@dimen/font_normal"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tv_date_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_user_run_corner"
+                android:layout_marginEnd="@dimen/margin_normal"
+                android:padding="@dimen/margin_small"
+                android:text="12/5/2024"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
+
+        <!--Title and description-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/margin_normal">
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:textSize="@dimen/font_large"
+                android:text="Title"/>
+
+            <TextView
+                android:id="@+id/tv_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:text="Content description"/>
+
+        </LinearLayout>
+
+        <!--Map -->
         <com.google.android.gms.maps.MapView
             android:id="@+id/card_home_run_map"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="175dp"
+            android:layout_marginStart="@dimen/margin_normal"
+            android:layout_marginEnd="@dimen/margin_normal"
             android:layout_centerInParent="true"
             android:contentDescription="Run map"
             android:outlineAmbientShadowColor="#C13B3B"
@@ -32,173 +107,108 @@
             card_view:liteMode="true"
             card_view:mapType="hybrid" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout"
-            android:layout_width="wrap_content"
-            android:background="@drawable/card_user_run_corner"
-            android:layout_height="wrap_content">
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/profile_fragment_card_view"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="@dimen/margin_small"
-                android:layout_marginTop="@dimen/margin_small"
-                android:paddingStart="@dimen/margin_normal"
-                app:cardCornerRadius="45dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:id="@+id/iv_home_profile_picture"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:srcCompat="@drawable/ic_account" />
-
-            </androidx.cardview.widget.CardView>
-
-            <TableLayout
-                android:id="@+id/tableLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                android:paddingStart="@dimen/margin_normal"
-                android:paddingLeft="@dimen/margin_normal"
-                android:paddingEnd="@dimen/margin_normal"
-                android:paddingRight="@dimen/margin_normal"
-                android:paddingBottom="@dimen/margin_normal"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/profile_fragment_card_view">
-
-                <TableRow
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent">
-
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="@dimen/margin_small">
-
-                    <TextView
-                        android:id="@+id/tv_distance"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/margin_normal"
-                        android:text="@string/Distance"
-                        android:textColor="@color/black" />
-
-                    <TextView
-                        android:id="@+id/tv_distance_value"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="5 km"
-                        android:textColor="@color/black" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="@dimen/margin_small">
-
-                    <TextView
-                        android:id="@+id/tv_time"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/Time"
-                        android:textColor="@color/black" />
-
-                    <TextView
-                        android:id="@+id/tv_time_value"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="25 min"
-                        android:textColor="@color/black" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/tv_pace"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/Pace"
-                        android:textColor="@color/black" />
-
-                    <TextView
-                        android:id="@+id/tv_pace_value"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="5 min/km"
-                        android:textColor="@color/black" />
-                </TableRow>
-            </TableLayout>
-
-            <TextView
-                android:id="@+id/tv_username"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_small"
-                android:layout_marginTop="@dimen/margin_normal"
-                android:text="Pepe"
-                android:textColor="@color/black"
-                android:textSize="@dimen/font_normal"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/profile_fragment_card_view"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <FrameLayout
-            android:id="@+id/card_home_run_footer"
+        <!--Stats-->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true">
+            android:orientation="horizontal"
+            android:layout_marginStart="@dimen/margin_normal"
+            android:padding="@dimen/margin_normal">
 
+            <!-- Distance -->
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/tv_date_value"
+                    android:id="@+id/tv_distance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/card_user_run_corner"
-                    android:gravity="end"
-                    android:layout_gravity="bottom"
-                    android:padding="@dimen/margin_small"
-                    android:text="12/5/2024"
-                    android:textColor="@color/black"/>
+                    android:text="@string/Distance"/>
 
                 <TextView
-                    android:id="@+id/tv_description"
-                    android:layout_width="match_parent"
+                    android:id="@+id/tv_distance_value"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/card_user_run_corner"
-                    android:padding="@dimen/margin_small"
-                    android:visibility="gone"
-                    android:text="Content description"
-                    android:textColor="@color/black"/>
-
+                    android:layout_gravity="end"
+                    android:text="5 km"/>
             </LinearLayout>
 
-        </FrameLayout>
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="35dp"
+                android:background="#2C000000"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/margin_normal"
+                android:layout_marginEnd="@dimen/margin_normal"/>
 
-        <TextView
-            android:id="@+id/tv_go_to_chat"
+            <!-- Time -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Time"/>
+
+                <TextView
+                    android:id="@+id/tv_time_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:text="25 min"/>
+            </LinearLayout>
+
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="35dp"
+                android:background="#2C000000"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/margin_normal"
+                android:layout_marginEnd="@dimen/margin_normal"/>
+
+            <!-- Pace -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_pace"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Pace"/>
+
+                <TextView
+                    android:id="@+id/tv_pace_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:text="5 min/km"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!--Chat-->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:textAlignment="textEnd"
-            android:layout_alignParentBottom="true"
-            android:text="IR AL CHAT"/>
+            android:layout_marginStart="@dimen/margin_big"
+            android:paddingBottom="@dimen/margin_small"
+            >
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/tv_go_to_chat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Únete a la conversación"/>
 
+        </LinearLayout>
 
+    </LinearLayout>
 
 </androidx.cardview.widget.CardView>
