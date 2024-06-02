@@ -25,6 +25,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
+import java.text.SimpleDateFormat
 
 class PostDetailFragment : BaseFragment(), OnMapReadyCallback {
 
@@ -71,6 +72,7 @@ class PostDetailFragment : BaseFragment(), OnMapReadyCallback {
         binding.tvUsername.text = post.userData.username
         binding.tvTitle.text = post.title
         binding.tvDescription.text = post.description
+        binding.tvDate.text = SimpleDateFormat("dd-MM-yy").format(post.startTime)
 
         binding.postDetailDistance.text = String.format("%.2f",post.distance) + " km"
         val firstTime = post.points!!.first().keys.first().toLong()
