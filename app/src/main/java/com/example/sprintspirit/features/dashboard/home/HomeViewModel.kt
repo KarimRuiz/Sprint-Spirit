@@ -49,7 +49,7 @@ class HomeViewModel(
     }
 
     val filteredRunsByLocation = combinedLiveData.switchMap { (filter, name) ->
-        logd("Searching for ${name} in ${filter.toFieldName()}")
+        logd("Searching for $name in ${filter.toFieldName()}")
         liveData(Dispatchers.IO) {
             emit(repository.getPostsByFilter(filter, name))
         }

@@ -205,7 +205,8 @@
                 android:id="@+id/tv_go_to_chat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Únete a la conversación"/>
+                android:text="Únete a la conversación"
+                android:textColor="?attr/colorAccent"/>
 
         </LinearLayout>
 

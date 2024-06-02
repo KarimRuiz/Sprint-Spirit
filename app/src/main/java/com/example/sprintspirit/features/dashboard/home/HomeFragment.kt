@@ -11,29 +11,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.ProgressBar
 import androidx.core.view.GravityCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sprintspirit.R
 import com.example.sprintspirit.database.filters.LocationFilter
-import com.example.sprintspirit.database.filters.OrderFilter
 import com.example.sprintspirit.database.filters.TimeFilter
 import com.example.sprintspirit.databinding.FragmentHomeBinding
-import com.example.sprintspirit.databinding.FragmentProfileBinding
-import com.example.sprintspirit.features.dashboard.DashboardViewModel
 import com.example.sprintspirit.features.dashboard.home.data.Post
 import com.example.sprintspirit.features.dashboard.home.ui.HomeRunAdapter
-import com.example.sprintspirit.features.dashboard.profile.ui.ProfileRunAdapter
-import com.example.sprintspirit.features.run.data.RunData
 import com.example.sprintspirit.ui.BaseFragment
 import com.example.sprintspirit.util.SprintSpiritNavigator
 import com.example.sprintspirit.util.Utils.normalize
 import com.github.ybq.android.spinkit.style.ChasingDots
-import com.github.ybq.android.spinkit.style.DoubleBounce
-import com.github.ybq.android.spinkit.style.FoldingCube
 
 class HomeFragment : BaseFragment() {
 
@@ -131,6 +122,7 @@ class HomeFragment : BaseFragment() {
                 logd("Updating...")
                 binding.tvNoPostsFound.visibility = View.GONE
                 if(posts.posts.isEmpty()){
+                    logd("POSTS ARE EMPTY! D:")
                     binding.tvNoPostsFound.visibility = View.VISIBLE
                     hideLoading()
                 }
@@ -143,7 +135,7 @@ class HomeFragment : BaseFragment() {
             }
         })
 
-        viewModel.filteredRunsByData.observe(viewLifecycleOwner, Observer{posts ->
+        /*viewModel.filteredRunsByData.observe(viewLifecycleOwner, Observer{posts ->
             if(posts != null){
                 logd("Updating...")
                 binding.tvNoPostsFound.visibility = View.GONE
@@ -158,7 +150,7 @@ class HomeFragment : BaseFragment() {
             }else{
                 Log.e(TAG, "filteredRunsByData: COULDN'T GET RUNS: ${posts?.exception.toString()}")
             }
-        })
+        })*/
     }
 
     private fun OnLocationSearchChanged() = object : TextWatcher {

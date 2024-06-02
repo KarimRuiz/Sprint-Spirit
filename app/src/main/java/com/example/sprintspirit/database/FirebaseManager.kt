@@ -382,7 +382,7 @@ class FirebaseManager() : DBManager {
                 else -> null
             }
 
-            val posts = if(field != null){
+            val posts = if(field != null && name.isNotBlank()){
                 postsRef.whereEqualTo(field, name).limit(limit).get().await().documents.mapNotNull { snapShot ->
                     snapShot.toObject(Post::class.java)?.apply {
                         id = snapShot.id
