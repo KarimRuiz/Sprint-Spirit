@@ -56,4 +56,5 @@
     <string name="Confirm">Confirmar</string>
     <string name="Cancel">Cancelar</string>
     <string name="Are_you_sure_delete_post">¿Estás seguro de que quieres elimintar la publicación asociada a esta ruta?</string>
+    <string name="Are_you_sure_stop_recording">¿Estás seguro de que quieres terminar de grabar la ruta?</string>
 </resources>

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -12,53 +12,114 @@
             android:id="@+id/run_toolbar"
             layout="@layout/toolbar_logo" />
 
-        <!--<fragment
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment" />-->
+            android:orientation="vertical">
 
-        <com.mapbox.maps.MapView
-            android:id="@+id/mapView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:mapbox_cameraTargetLat="37.178"
-            app:mapbox_cameraTargetLng="-3.601"
-            app:mapbox_cameraZoom="8.0"
-            app:mapbox_cameraPitch="0.0"
-            app:mapbox_cameraBearing="0.0"
-            app:mapbox_locationComponentPuckBearing="heading"/>
+            <com.mapbox.maps.MapView
+                android:id="@+id/mapView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:mapbox_cameraTargetLat="37.178"
+                app:mapbox_cameraTargetLng="-3.601"
+                app:mapbox_cameraZoom="8.0"
+                app:mapbox_cameraPitch="0.0"
+                app:mapbox_cameraBearing="0.0"
+                app:mapbox_locationComponentPuckBearing="heading"/>
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
-            android:layout_marginBottom="@dimen/margin_normal">
-
-            <ImageView
-                android:id="@+id/record_run_button"
-                android:layout_width="@dimen/record_button_size"
-                android:layout_height="@dimen/record_button_size"
-                android:src="@drawable/record_button"
-                />
-
-            <TextView
-                android:id="@+id/record_run_status"
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/record_run_button"
-                android:layout_alignTop="@+id/record_run_button"
-                android:layout_alignRight="@+id/record_run_button"
-                android:layout_alignBottom="@+id/record_run_button"
-                android:textSize="@dimen/font_normal"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:gravity="center"
-                android:text="Record"
-                />
+                android:layout_gravity="bottom|center"
+                android:layout_marginBottom="@dimen/margin_normal">
 
-        </RelativeLayout>
+                <ImageView
+                    android:id="@+id/record_run_button"
+                    android:layout_width="@dimen/record_button_size"
+                    android:layout_height="@dimen/record_button_size"
+                    android:src="@drawable/record_button"
+                    />
 
-    </FrameLayout>
+                <TextView
+                    android:id="@+id/record_run_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/record_run_button"
+                    android:layout_alignTop="@+id/record_run_button"
+                    android:layout_alignRight="@+id/record_run_button"
+                    android:layout_alignBottom="@+id/record_run_button"
+                    android:textSize="@dimen/font_normal"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    android:text="Record"
+                    />
+
+            </RelativeLayout>
+
+            <!--RECORDING INDICATOR-->
+            <FrameLayout
+                android:id="@+id/fl_run_record_red_dot"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="21dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <View
+                    android:layout_width="80dp"
+                    android:layout_height="1dp"
+                    android:background="@color/gray"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="40dp"
+                    android:background="@color/gray"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_bigger"
+                    android:layout_marginStart="@dimen/margin_bigger">
+
+                    <View
+                        android:id="@+id/run_red_dot"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/record_red_dot"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/font_large"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:text="REC"
+                        app:layout_constraintStart_toEndOf="@id/run_red_dot"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="@id/run_red_dot"
+                        android:layout_marginStart="@dimen/margin_normal"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+            </FrameLayout>
+
+        </FrameLayout>
+
+    </LinearLayout>
 
 </layout>
