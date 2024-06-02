@@ -57,4 +57,6 @@
     <string name="Cancel">Cancelar</string>
     <string name="Are_you_sure_delete_post">¿Estás seguro de que quieres elimintar la publicación asociada a esta ruta?</string>
     <string name="Are_you_sure_stop_recording">¿Estás seguro de que quieres terminar de grabar la ruta?</string>
+    <string name="Cannot_upload_run">Error guardando ruta</string>
+    <string name="Run_min_distance">La distancia mínima para guardar una ruta es de %1$d metros.</string>
 </resources>

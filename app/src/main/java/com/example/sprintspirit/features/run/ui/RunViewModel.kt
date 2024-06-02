@@ -1,5 +1,6 @@
 package com.example.sprintspirit.features.run.ui
 
+import com.example.sprintspirit.R
 import com.example.sprintspirit.data.Preferences
 import com.example.sprintspirit.database.DBManager
 import com.example.sprintspirit.features.dashboard.profile.data.UsersRepository
@@ -19,7 +20,7 @@ class RunViewModel(
 ) : BaseViewModel() {
 
     companion object{
-        private val MIN_DISTANCE = 0.0005 //min distance in kilometers that a route can have
+        val MIN_DISTANCE = 0.1 //min distance in kilometers that a route can have
     }
 
     private val dbManager: DBManager = DBManager.getCurrentDBManager()
@@ -67,6 +68,14 @@ class RunViewModel(
 
     fun runCanBeUploaded(): Boolean{
         return this::run.isInitialized && (run.points?.size ?: 0) > 2 && (run.distance > MIN_DISTANCE)
+    }
+
+    fun runCannotUploadReason(): Int{
+        logd("Run distance: ${run.distance}, min distance: ${MIN_DISTANCE}")
+        if(run.distance < MIN_DISTANCE){
+            return R.string.Run_min_distance
+        }
+        return -1
     }
 
     fun isRunning() = isRunning

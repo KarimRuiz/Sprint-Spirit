@@ -223,7 +223,13 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
         try{
             viewModel.saveRun()
         }catch(e: Exception){
-            ErrorDialog(e.message?: "").show(supportFragmentManager, "ERROR_DIALOG")
+            val reason = viewModel.runCannotUploadReason()
+            if(reason != -1){
+                val minDistance = (RunViewModel.MIN_DISTANCE * 1000).toInt()
+                ErrorDialog(this.getString(reason, minDistance)).show(supportFragmentManager, "ERROR_DIALOG")
+            }else{
+                ErrorDialog(e.message?: "").show(supportFragmentManager, "ERROR_DIALOG")
+            }
         }
     }
 
