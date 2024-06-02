@@ -37,8 +37,8 @@
     <string name="Your_chats">Your chats</string>
 
     <string-array name="place_filter_array">
-        <item>Town</item>
         <item>City</item>
+        <item>Province</item>
         <item>State</item>
     </string-array>
     <string-array name="order_filter_array">
