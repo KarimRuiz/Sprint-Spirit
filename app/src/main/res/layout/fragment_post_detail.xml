@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="goToChat"
+            type="android.view.View.OnClickListener" />
+    </data>
+
+    <LinearLayout
+         android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/margin_bigger">
+
+        <!-- Title & Description -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_big"
+                tools:visibility="visible"
+                android:text="Title"/>
+
+            <TextView
+                android:id="@+id/tv_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_large"
+                tools:visibility="visible"
+                android:text="Description"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/margin_small"/>
+
+        <!-- User info -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/profile_fragment_card_view"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:paddingStart="@dimen/margin_normal"
+                app:cardCornerRadius="45dp">
+
+                <ImageView
+                    android:id="@+id/iv_home_profile_picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:srcCompat="@drawable/ic_account" />
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/tv_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Pepe"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/margin_normal"
+                android:textSize="@dimen/font_normal"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+        <!-- Data -->
+        <View
+            android:layout_width="1dp"
+            android:layout_height="@dimen/margin_normal"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#43646464"/>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="@dimen/margin_normal"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="2"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <!-- Distance -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/Distance"/>
+
+                    <TextView
+                        android:id="@+id/post_detail_distance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/font_normal"
+                        tools:text="5.34km"/>
+
+                </LinearLayout>
+
+                <!-- Pace -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/Pace"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_godzilla"
+                        android:layout_marginEnd="@dimen/margin_godzilla"
+                        android:weightSum="3"
+                        android:orientation="horizontal">
+
+
+                        <!-- max pace -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/font_small"
+                                android:text="Avg (min/km)"/>
+
+                            <TextView
+                                android:id="@+id/tv_pace_avg"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/font_normal"
+                                tools:text="20"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Time -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/Time"/>
+
+                    <TextView
+                        android:id="@+id/post_detail_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/font_normal"
+                        tools:text="5h:34min"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Map -->
+        <View
+            android:layout_width="1dp"
+            android:layout_height="@dimen/margin_normal"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#43646464"/>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="@dimen/margin_normal"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/post_detail_map"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="Map"
+                android:outlineAmbientShadowColor="#C13B3B"
+                android:outlineSpotShadowColor="#7B3A3A"
+                app:cameraZoom="8"
+                app:mapType="hybrid" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{goToChat}"
+                android:layout_gravity="bottom|end"
+                android:layout_marginBottom="@dimen/margin_normal"
+                android:layout_marginEnd="@dimen/margin_normal"
+                android:text="@string/Chat"
+                />
+
+        </FrameLayout>
+
+    </LinearLayout>
+</layout>

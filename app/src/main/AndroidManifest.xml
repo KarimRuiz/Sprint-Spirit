@@ -74,6 +74,10 @@
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
+            android:name=".features.post_detail.PostDetailActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
             android:exported="true" />

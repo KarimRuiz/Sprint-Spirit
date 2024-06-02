@@ -8,6 +8,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.text.Editable
 import com.google.firebase.firestore.GeoPoint
+import com.google.type.LatLng
 import java.text.Normalizer
 import java.util.regex.Pattern
 
@@ -47,6 +48,14 @@ object Utils{
     fun String.removeNonSpacingMarks() =
         Normalizer.normalize(this, Normalizer.Form.NFD)
             .replace("\\p{Mn}+".toRegex(), "")
+
+    fun com.google.android.gms.maps.model.LatLng.toGeoPoint(): GeoPoint{
+        return GeoPoint(this.latitude, this.longitude)
+    }
+
+    fun Double.kphToMinKm(): Double {
+        return if (this != 0.0) 60.0 / this else 0.0
+    }
 
     private fun removeTildes(input: String): String {
         val tildes = mapOf(
