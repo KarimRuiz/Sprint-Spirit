@@ -7,28 +7,41 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/chat_route_title"
-            android:layout_width="wrap_content"
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/chats_flexbox"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_huge"
-            android:layout_marginTop="@dimen/margin_big"
-            android:textSize="@dimen/font_normal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Ruta de Dílar"/>
+            app:alignContent="space_between"
+            app:alignItems="center"
+            android:layout_marginTop="@dimen/margin_bigger"
+            android:layout_marginStart="@dimen/margin_huge"
+            android:layout_marginEnd="@dimen/margin_bigger"
+            app:flexWrap="wrap">
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/chat_subscribed_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Suscrito"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginEnd="@dimen/margin_huge"
-            android:textSize="@dimen/font_normal"
-            android:visibility="gone"
-            />
+            <TextView
+                android:id="@+id/chat_route_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_large"
+                app:layout_flexGrow="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Ruta de Dílar"/>
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/chat_subscribed_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Suscrito"
+                android:layout_marginEnd="@dimen/margin_normal"
+                android:textSize="@dimen/font_normal"
+                android:visibility="gone"
+                tools:visibility="visible"
+                />
+
+        </com.google.android.flexbox.FlexboxLayout>
 
         <com.stfalcon.chatkit.messages.MessagesList
             android:id="@+id/messages_list"
@@ -37,7 +50,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/message_input"
-            app:layout_constraintTop_toBottomOf="@id/chat_route_title"
+            app:layout_constraintTop_toBottomOf="@id/chats_flexbox"
             />
 
         <com.stfalcon.chatkit.messages.MessageInput
@@ -47,6 +60,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:inputHintColor="#646464"
+            app:inputTextColor="#646464"
             app:inputHint="@string/message_hint"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
