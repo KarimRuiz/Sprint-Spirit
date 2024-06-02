@@ -27,26 +27,31 @@
         android:orientation="vertical"
         android:padding="@dimen/margin_big">
 
-        <LinearLayout
+        <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            app:alignContent="space_between"
+            app:alignItems="center"
+            app:flexWrap="wrap">
 
             <TextView
                 android:id="@+id/tv_stats_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small"
                 android:text="@string/Your_stats"
                 android:textSize="@dimen/font_big"
-                android:layout_weight="1"
+                app:layout_flexGrow="1"
+                android:maxLines="1"
                 android:textStyle="bold" />
 
             <Spinner
                 android:id="@+id/sp_stats"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
+                android:layout_height="wrap_content"
+                app:layout_order="1"
+                android:layout_gravity="end"
+                />
+        </com.google.android.flexbox.FlexboxLayout>
 
         <TableLayout
             android:layout_width="match_parent"
@@ -55,43 +60,46 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:weightSum="3"
+                >
 
                 <TextView
                     android:id="@+id/tv_stats_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/margin_godzilla"
                     android:text="@string/Time"
+                    android:layout_weight="1"
                     android:textSize="@dimen/font_normal" />
 
                 <TextView
                     android:id="@+id/tv_stats_distance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/margin_godzilla"
                     android:text="@string/Distance"
+                    android:layout_weight="1"
                     android:textSize="@dimen/font_normal" />
 
                 <TextView
                     android:id="@+id/tv_stats_pace"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/margin_bigger"
                     android:text="@string/Pace"
+                    android:layout_weight="1"
                     android:textSize="@dimen/font_normal" />
 
             </TableRow>
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:weightSum="3">
 
                 <TextView
                     android:id="@+id/tv_stats_time_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/margin_bigger"
+                    android:layout_weight="1"
                     android:text="@{hours + &quot;h &quot; + minutes + &quot;min&quot;}"
                     android:textSize="@dimen/font_normal" />
 
@@ -99,7 +107,7 @@
                     android:id="@+id/tv_stats_distance_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/margin_bigger"
+                    android:layout_weight="1"
                     android:text="@{distance + &quot;km&quot;}"
                     android:textSize="@dimen/font_normal" />
 
@@ -107,7 +115,7 @@
                     android:id="@+id/tv_stats_pace_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/margin_bigger"
+                    android:layout_weight="1"
                     android:text="@{pace + &quot;min/km&quot;}"
                     android:textSize="@dimen/font_normal" />
             </TableRow>
