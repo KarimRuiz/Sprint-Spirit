@@ -34,6 +34,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.messaging.messaging
 import com.google.firebase.storage.FirebaseStorage
 import com.mapbox.maps.logD
@@ -494,7 +495,7 @@ class FirebaseManager() : DBManager {
         return response
     }
 
-    override suspend fun getPostsByLocation(location: LocationFilter, name: String, limit: Long): PostsResponse {
+    /*override suspend fun getPostsByLocation(location: LocationFilter, name: String, following: List<String>, limit: Long): PostsResponse {
         val response = PostsResponse()
 
         try{
@@ -507,19 +508,22 @@ class FirebaseManager() : DBManager {
                 else -> null
             }
 
-            val posts = if(field != null && name.isNotBlank()){
-                postsRef.whereEqualTo(field, name).limit(limit).get().await().documents.mapNotNull { snapShot ->
-                    snapShot.toObject(Post::class.java)?.apply {
-                        id = snapShot.id
-                    }
-                }
-            }else{
-                postsRef.limit(limit).get().await().documents.mapNotNull { snapShot ->
-                    snapShot.toObject(Post::class.java)?.apply {
-                        id = snapShot.id
-                    }
-                }
+            if(field != null && name.isNotBlank()){
+                postsRef.whereEqualTo(field, name)
             }
+            if(following.isNotEmpty()){
+                val listOfUsers = following.map{
+                    "/users/$it"
+                }
+                Log.d(TAG, "list of users: ${listOfUsers}")
+                postsRef.whereIn(USER, listOfUsers)
+            }
+
+            val posts = postsRef.limit(limit).get().await().documents.mapNotNull { snapShot ->
+                    snapShot.toObject(Post::class.java)?.apply {
+                        id = snapShot.id
+                    }
+                }
 
             val postsRes: MutableList<Post> = mutableListOf()
             posts.forEach {post ->
@@ -560,7 +564,79 @@ class FirebaseManager() : DBManager {
         }
 
         return response
+    }*/
+
+    override suspend fun getPostsByLocation(location: LocationFilter, name: String, following: List<String>?, limit: Long): PostsResponse {
+        val response = PostsResponse()
+
+        try {
+            if(following != null && following.isEmpty()) return response
+            var query = firestore.collection(POSTS) as Query
+
+            val field = when (location) {
+                LocationFilter.TOWN -> TOWN
+                LocationFilter.CITY -> CITY
+                LocationFilter.STATE -> STATE
+                else -> null
+            }
+
+            if (field != null && name.isNotBlank()) {
+                query = query.whereEqualTo(field, name)
+            }
+
+            if (following != null) {
+                val listOfUsers = following.map { "/users/$it" }
+                Log.d(TAG, "list of users: $listOfUsers")
+                query = query.whereIn(USER, listOfUsers)
+            }
+
+            val posts = query.limit(limit).get().await().documents.mapNotNull { snapShot ->
+                snapShot.toObject(Post::class.java)?.apply {
+                    id = snapShot.id
+                }
+            }
+
+            val postsRes: MutableList<Post> = mutableListOf()
+            for (post in posts) {
+                val userId = post.user.removePrefix("/users/")
+                val userDocRef = firestore.collection(USERS).document(userId)
+                val userData = userDocRef.get().await().toObject(User::class.java)
+
+                try {
+                    val ref = storage.child(IMAGES).child("$userId.jpg")
+                    userData?.profilePictureUrl = ref.downloadUrl.await()
+                } catch (e: Exception) {
+                    Log.d("FirebaseManager", "EXCEPTION GETTING POSTS USERS: $e")
+                }
+
+                userData?.let {
+                    postsRes.add(Post(
+                        id = post.id,
+                        user = userId,
+                        userData = it,
+                        distance = post.distance,
+                        startTime = post.startTime,
+                        minutes = post.minutes,
+                        description = post.description,
+                        title = post.title,
+                        town = post.town,
+                        city = post.city,
+                        state = post.state,
+                        country = post.country,
+                        points = post.points
+                    ))
+                }
+            }
+
+            response.posts = postsRes
+        } catch (e: Exception) {
+            Log.d(TAG, "EXCEPTION GETTING POSTS: $e")
+            response.exception = e
+        }
+
+        return response
     }
+
 
     override fun deleteRun(run: RunData) {
         Log.d("FirebaseManager", "Deleting run...")

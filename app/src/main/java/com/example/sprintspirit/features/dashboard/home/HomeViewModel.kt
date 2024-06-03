@@ -10,20 +10,29 @@ import com.example.sprintspirit.database.filters.OrderFilter
 import com.example.sprintspirit.database.filters.TimeFilter
 import com.example.sprintspirit.features.dashboard.home.data.HomeRepository
 import com.example.sprintspirit.features.dashboard.home.data.Post
+import com.example.sprintspirit.features.dashboard.profile.data.UsersRepository
 import com.example.sprintspirit.ui.BaseViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
     private val repository: HomeRepository = HomeRepository(),
+    private val usersRepository: UsersRepository = UsersRepository(),
     private val user: String
 ) : BaseViewModel() {
+
 
     val timeFilter: MutableLiveData<TimeFilter> = MutableLiveData(TimeFilter.WEEKLY)
     val locationFilter: MutableLiveData<LocationFilter> = MutableLiveData(LocationFilter.CITY)
     val locationName: MutableLiveData<String> = MutableLiveData("")
 
+    val following: MutableLiveData<List<String>> = MutableLiveData(listOf())
+
     val statsFilter: MutableLiveData<TimeFilter> = MutableLiveData(TimeFilter.WEEKLY)
+
+    val currentUser = liveData(Dispatchers.IO){
+        emit(usersRepository.getCurrentUser())
+    }
 
     val stats = statsFilter.switchMap { filter ->
         liveData(Dispatchers.IO){
@@ -37,21 +46,28 @@ class HomeViewModel(
         }
     }
 
-    val combinedLiveData = MediatorLiveData<Pair<LocationFilter, String>>().apply {
+    val combinedLiveData = MediatorLiveData<Triple<LocationFilter, String, List<String>?>>().apply {
         addSource(locationFilter) { filter ->
             val name = locationName.value ?: ""
-            value = Pair(filter, name)
+            val following = following.value ?: listOf()
+            value = Triple(filter, name, following)
         }
         addSource(locationName) { name ->
             val filter = locationFilter.value ?: LocationFilter.CITY
-            value = Pair(filter, name)
+            val following = following.value
+            value = Triple(filter, name, following)
+        }
+        addSource(following){following ->
+            val name = locationName.value ?: ""
+            val filter = locationFilter.value ?: LocationFilter.CITY
+            value = Triple(filter, name, following)
         }
     }
 
-    val filteredRunsByLocation = combinedLiveData.switchMap { (filter, name) ->
-        logd("Searching for $name in ${filter.toFieldName()}")
+    val filteredRunsByLocation = combinedLiveData.switchMap { (filter, name, following) ->
+        logd("Searching for $name in ${filter.toFieldName()}, by following: ${following}")
         liveData(Dispatchers.IO) {
-            emit(repository.getPostsByFilter(filter, name))
+            emit(repository.getPostsByFilter(filter, name, following))
         }
     }
 

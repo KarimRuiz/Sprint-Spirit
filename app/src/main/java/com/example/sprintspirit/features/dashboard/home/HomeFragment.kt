@@ -21,6 +21,7 @@ import com.example.sprintspirit.database.filters.TimeFilter
 import com.example.sprintspirit.databinding.FragmentHomeBinding
 import com.example.sprintspirit.features.dashboard.home.data.Post
 import com.example.sprintspirit.features.dashboard.home.ui.HomeRunAdapter
+import com.example.sprintspirit.features.signin.data.User
 import com.example.sprintspirit.ui.BaseFragment
 import com.example.sprintspirit.util.SprintSpiritNavigator
 import com.example.sprintspirit.util.Utils.normalize
@@ -35,6 +36,8 @@ class HomeFragment : BaseFragment() {
     private var runnable: Runnable? = null
     private var locationSearch: String = ""
     private var locationType: LocationFilter = LocationFilter.EMPTY
+
+    private var following = listOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +57,13 @@ class HomeFragment : BaseFragment() {
         subscribeUi(binding as FragmentHomeBinding)
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.currentUser.observe(viewLifecycleOwner){
+            following = it.user?.following?.keys?.toList() ?: listOf()
+        }
     }
 
     private fun subscribeUi(binding: FragmentHomeBinding) {
@@ -88,6 +98,14 @@ class HomeFragment : BaseFragment() {
         binding.spOrderBy.onItemSelectedListener = OnOrderSelectedListener()
 
         binding.etFilterBy.addTextChangedListener(OnLocationSearchChanged())
+
+        binding.cbFilterFollowing.setOnCheckedChangeListener { buttonView, isChecked ->
+            if(isChecked){
+                viewModel.following.value = following
+            }else{
+                viewModel.following.value = null
+            }
+        }
 
         binding.runsHomeRv.layoutManager = LinearLayoutManager(requireContext())
         binding.runsHomeRv.addOnChildAttachStateChangeListener(postAttacherListener())

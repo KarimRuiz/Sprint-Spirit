@@ -18,8 +18,8 @@ class HomeRepository {
         return manager.getPostsByTime(time)
     }
 
-    suspend fun getPostsByFilter(location: LocationFilter, name: String): PostsResponse{
-        return manager.getPostsByLocation(location, name)
+    suspend fun getPostsByFilter(location: LocationFilter, name: String, following: List<String>?): PostsResponse{
+        return manager.getPostsByLocation(location, name, following)
     }
 
 }

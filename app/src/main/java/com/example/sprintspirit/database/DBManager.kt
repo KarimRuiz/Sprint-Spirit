@@ -67,7 +67,7 @@ interface DBManager {
 
     suspend fun getPostsByTime(time: TimeFilter): PostsResponse
 
-    suspend fun getPostsByLocation(location: LocationFilter, name: String, limit: Long = 10): PostsResponse
+    suspend fun getPostsByLocation(location: LocationFilter, name: String, following: List<String>?, limit: Long = 10): PostsResponse
 
     fun deleteRun(run: RunData)
     fun deletePostByRunId(runId: String)
