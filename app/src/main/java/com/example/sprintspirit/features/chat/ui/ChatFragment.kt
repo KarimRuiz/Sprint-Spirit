@@ -24,6 +24,7 @@ import com.example.sprintspirit.features.chat.data.Message
 import com.example.sprintspirit.features.chat.data.MessageUI
 import com.example.sprintspirit.features.signin.data.User
 import com.example.sprintspirit.ui.BaseFragment
+import com.example.sprintspirit.util.SprintSpiritNavigator
 import com.google.android.gms.tasks.Task
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessageInput
@@ -59,6 +60,7 @@ class ChatFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(ChatViewModel::class.java)
+        navigator = SprintSpiritNavigator(requireContext())
 
         arguments?.let {
             postId = it.getString(POST_ID)
@@ -107,6 +109,12 @@ class ChatFragment : BaseFragment() {
         }
 
         adapter = MessagesListAdapter(sharedPreferences.email, imageLoader)
+        adapter.registerViewClickListener(com.stfalcon.chatkit.R.id.messageUserAvatar) { _, message ->
+            navigator.navigateToProfileDetail(
+                activity = activity,
+                userId = message.user.id
+            )
+        }
         binding.messagesList.setAdapter(adapter)
 
         lifecycleScope.launch {
@@ -119,7 +127,6 @@ class ChatFragment : BaseFragment() {
                             adapter.addToStart(MessageUI(it), true)
                         }
                     }
-
                 }
             }
         }
