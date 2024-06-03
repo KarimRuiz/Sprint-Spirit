@@ -126,9 +126,11 @@ class HomeFragment : BaseFragment() {
                     binding.tvNoPostsFound.visibility = View.VISIBLE
                     hideLoading()
                 }
-                adapter = HomeRunAdapter(posts.postsByTime(), requireContext()) {
-                    onOpenRun(it)
-                }
+                adapter = HomeRunAdapter(
+                    postList = posts.postsByTime(),
+                    context = requireContext(),
+                    onOpenPost = { openPost(it) },
+                    onOpenChat = { openChat(it) })
                 binding.runsHomeRv.adapter = adapter
             }else{
                 Log.e(TAG, "filteredRunsByData: COULDN'T GET RUNS: ${posts?.exception.toString()}")
@@ -205,7 +207,11 @@ class HomeFragment : BaseFragment() {
             sortedList?.take(10)
             sortedList?.let { list ->
                 if (::adapter.isInitialized) {
-                    adapter = HomeRunAdapter(list, requireContext(), { onOpenRun(it) })
+                    adapter = HomeRunAdapter(
+                        postList = list,
+                        context = requireContext(),
+                        onOpenPost = { openPost(it) },
+                        onOpenChat = { openChat(it) })
                     (binding as FragmentHomeBinding).runsHomeRv.adapter = adapter
                 }
             }
@@ -239,7 +245,11 @@ class HomeFragment : BaseFragment() {
         override fun onChildViewDetachedFromWindow(view: View) {}
     }
 
-    private fun onOpenRun(post: Post) {
+    private fun openPost(post: Post){
+        navigator.navigateToPostDetail(activity, post)
+    }
+
+    private fun openChat(post: Post) {
         navigator.navigateToChat(activity, post)
     }
 

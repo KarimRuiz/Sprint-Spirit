@@ -73,4 +73,5 @@
     <string name="Logout">Logout</string>
     <string name="Are_you_sure_logout">Are you sure you want to log out?</string>
     <string name="I_have_read_the_terms">I have read and accept the Terms and Conditions.</string>
+    <string name="Chat">Chat</string>
 </resources>

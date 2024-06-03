@@ -3,19 +3,19 @@ package com.example.sprintspirit.features.run.location
 enum class LocationRefreshRate {
 
     LOWEST{
-        override fun getMilli() = 30000L
-    },
-    LOW{
-        override fun getMilli() = 20000L
-    },
-    NORMAL{
         override fun getMilli() = 15000L
     },
-    HIGH{
+    LOW{
         override fun getMilli() = 10000L
     },
-    HIGHEST{
+    NORMAL{
         override fun getMilli() = 5000L
+    },
+    HIGH{
+        override fun getMilli() = 2000L
+    },
+    HIGHEST{
+        override fun getMilli() = 1000L
     };
 
     abstract fun getMilli(): Long
@@ -27,7 +27,7 @@ enum class LocationRefreshRate {
                 milliseconds == HIGH.getMilli() -> HIGH
                 milliseconds == NORMAL.getMilli() -> NORMAL
                 milliseconds == LOW.getMilli() -> LOW
-                else -> LOWEST
+                else -> NORMAL
             }
         }
     }

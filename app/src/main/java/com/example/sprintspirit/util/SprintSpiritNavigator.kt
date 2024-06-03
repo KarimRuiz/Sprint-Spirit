@@ -7,6 +7,7 @@ import com.example.sprintspirit.features.chat.ChatActivity
 import com.example.sprintspirit.features.dashboard.DashboardActivity
 import com.example.sprintspirit.features.dashboard.home.data.Post
 import com.example.sprintspirit.features.post.ui.PostActivity
+import com.example.sprintspirit.features.post_detail.PostDetailActivity
 import com.example.sprintspirit.features.run.data.RunData
 import com.example.sprintspirit.features.settings.SettingsActivity
 import com.example.sprintspirit.features.signin.ui.signin.SignInActivity
@@ -42,6 +43,17 @@ class SprintSpiritNavigator(val context: Context) {
         PostActivity.runData = run
         navigateTo(activity,
             Intent(activity, PostActivity::class.java),
+            preserveStack)
+    }
+
+    fun navigateToPostDetail(
+        activity: FragmentActivity?,
+        post: Post,
+        preserveStack: Boolean? = true
+    ){
+        PostDetailActivity.post = post
+        navigateTo(activity,
+            Intent(activity, PostDetailActivity::class.java),
             preserveStack)
     }
 
