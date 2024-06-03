@@ -3,6 +3,7 @@ package com.example.sprintspirit.util
 import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.FragmentActivity
+import com.example.sprintspirit.data.Preferences
 import com.example.sprintspirit.features.chat.ChatActivity
 import com.example.sprintspirit.features.dashboard.DashboardActivity
 import com.example.sprintspirit.features.dashboard.home.data.Post
@@ -63,11 +64,17 @@ class SprintSpiritNavigator(val context: Context) {
         userId: String,
         preserveStack: Boolean? = true
     ){
-        val intent = Intent(activity, ProfileDetailActivity::class.java)
-        intent.putExtra(ProfileDetailActivity.PROFILE_DETAIL_USER_ID, userId)
-        navigateTo(activity,
-            intent,
-            preserveStack)
+        if(Preferences(context).email == userId){
+            val intent = Intent(activity, DashboardActivity::class.java)
+            intent.putExtra(DashboardActivity.NAVIGATE_TO, DashboardActivity.PROFILE_SECTION)
+            navigateTo(activity, intent, preserveStack)
+        }else{
+            val intent = Intent(activity, ProfileDetailActivity::class.java)
+            intent.putExtra(ProfileDetailActivity.PROFILE_DETAIL_USER_ID, userId)
+            navigateTo(activity,
+                intent,
+                preserveStack)
+        }
     }
 
     fun navigateToChat(

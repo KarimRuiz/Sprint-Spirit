@@ -1,5 +1,6 @@
 package com.example.sprintspirit.features.dashboard
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.Navigation
@@ -11,6 +12,14 @@ import com.example.sprintspirit.ui.BaseActivity
 import com.example.sprintspirit.util.SprintSpiritNavigator
 
 class DashboardActivity : BaseActivity() {
+
+    companion object{
+        const val NAVIGATE_TO = "DashBoardActivity_NavigateTo"
+
+        const val HOME_SECTION = "DashBoardActivity_NavigateTo_HomeSection"
+        const val PROFILE_SECTION = "DashBoardActivity_NavigateTo_ProfileSection"
+        const val CHATS_SECTION = "DashBoardActivity_NavigateTo_ChatsSection"
+    }
 
     private lateinit var binding: ActivityDashboardBinding
 
@@ -27,7 +36,27 @@ class DashboardActivity : BaseActivity() {
 
         setupBottomNavBar()
 
+        handleIntent(intent)
+
         subscribeUi()
+    }
+
+    private fun handleIntent(intent: Intent) {
+        val navigateTo = intent.getStringExtra(NAVIGATE_TO)
+        if (navigateTo != null) {
+            val bottomNavView = binding.bottomNavView
+            when (navigateTo) {
+                PROFILE_SECTION -> {
+                    bottomNavView.selectedItemId = R.id.profileFragment
+                }
+                CHATS_SECTION -> {
+                    bottomNavView.selectedItemId = R.id.chatsFragment
+                }
+                else -> {
+                    bottomNavView.selectedItemId = R.id.homeFragment
+                }
+            }
+        }
     }
 
     private fun subscribeUi() {
