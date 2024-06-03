@@ -46,7 +46,8 @@
                     android:id="@+id/ll_username"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
+                    android:layout_marginStart="@dimen/font_small"
                     app:layout_constraintBottom_toBottomOf="@+id/profile_fragment_card_view"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/profile_fragment_card_view"
@@ -56,10 +57,16 @@
                         android:id="@+id/tv_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_big"
-                        android:layout_gravity="center"
                         android:text=""
                         tools:text="Karim"
+                        android:textSize="@dimen/font_normal" />
+
+                    <TextView
+                        android:id="@+id/tv_following"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/User_doesnt_follow_anyone"
+                        android:textColor="?attr/colorAccent"
                         android:textSize="@dimen/font_normal" />
                 </LinearLayout>
 

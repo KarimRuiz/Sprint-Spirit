@@ -3,7 +3,6 @@ package com.example.sprintspirit.features.dashboard.profile
 import android.app.AlertDialog
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
@@ -28,7 +27,9 @@ import com.example.sprintspirit.features.dashboard.profile.data.UserResponse
 import com.example.sprintspirit.features.dashboard.profile.ui.ProfileRunAdapter
 import com.example.sprintspirit.features.run.data.RunData
 import com.example.sprintspirit.features.run.data.RunsResponse
+import com.example.sprintspirit.features.signin.data.User
 import com.example.sprintspirit.ui.BaseFragment
+import com.example.sprintspirit.ui.custom.popUpFollows.showFollows
 import com.example.sprintspirit.util.SprintSpiritNavigator
 import com.example.sprintspirit.util.Utils.isInternetAvailable
 
@@ -48,7 +49,6 @@ class ProfileFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
         viewModel = DashboardViewModel()
         viewModel.email = Preferences(requireContext()).email
-        getCurrentUser()
 
         getRuns()
 
@@ -67,7 +67,13 @@ class ProfileFragment : BaseFragment() {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        getCurrentUser()
+    }
+
     private fun getCurrentUser() {
+        viewModel.refreshCurrentUser()
         viewModel.currentUserLiveData.observe(this) {
             fillProfileData(it)
         }
@@ -128,8 +134,30 @@ class ProfileFragment : BaseFragment() {
         if(user != null){
             (binding as FragmentProfileBinding).tvName.text = user.user?.username ?: user.user?.email ?: ""
             getProfilePicture()
+            setFollowers(user.user)
         }else{
             Log.e(TAG, "fillProfileData: COULDN'T GET USER'S DATA")
+        }
+    }
+
+    private fun setFollowers(user: User?) {
+        if(user != null && user.following.isNotEmpty()){
+            val following = user.following
+            (binding as FragmentProfileBinding).tvFollowing.let{
+                it.text = getString(R.string.You_follow, following.size)
+                it.setOnClickListener {
+                    showFollows(requireContext(), user){ email ->
+                        navigator.navigateToProfileDetail(
+                            activity = activity,
+                            userId = email
+                        )
+                    }
+                }
+            }
+        }else{
+            (binding as FragmentProfileBinding).tvFollowing.let{
+                it.text = getString(R.string.You_dont_follow_anyone)
+            }
         }
     }
 

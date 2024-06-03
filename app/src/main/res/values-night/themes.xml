@@ -59,6 +59,24 @@
         <item name="itemRippleColor">@color/on_primary_night</item>
     </style>
 
+    <style name="CustomDialog" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:background">@drawable/rounded_corners_big</item>
+        <item name="android:backgroundTint">@color/primary_dark</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:buttonBarPositiveButtonStyle">@style/PositiveButton</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/NegativeButton</item>
+    </style>
+
+    <style name="PositiveButton" parent="Widget.AppCompat.Button">
+        <item name="android:backgroundTint">@color/on_primary_night</item>
+        <item name="backgroundTint">@color/on_primary_night</item>
+    </style>
+
+    <style name="NegativeButton" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:backgroundTint">#AF634C</item>
+        <item name="backgroundTint">#AF634C</item>
+    </style>
+
     <style name="filtersButton">
         <item name="android:background">@drawable/shape_filters_button_night</item>
     </style>

@@ -80,4 +80,8 @@
     <string name="Follow">Follow</string>
     <string name="Unfollow">Unfollow</string>
     <string name="Following">Following</string>
+    <string name="You_follow">You follow %1$d people</string>
+    <string name="You_dont_follow_anyone">You don\'t follow anyone</string>
+    <string name="User_doesnt_follow_anyone">They don\'t follow anyone</string>
+    <string name="User_follow">Follows %1$d people</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.example.sprintspirit.features.profile_detail.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import com.example.sprintspirit.features.dashboard.profile.data.ProfilePictureRe
 import com.example.sprintspirit.features.dashboard.profile.data.UserResponse
 import com.example.sprintspirit.features.signin.data.User
 import com.example.sprintspirit.ui.BaseFragment
+import com.example.sprintspirit.ui.custom.popUpFollows
 import com.example.sprintspirit.util.SprintSpiritNavigator
 
 class ProfileDetailFragment : BaseFragment() {
@@ -62,6 +64,11 @@ class ProfileDetailFragment : BaseFragment() {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        getUser()
+    }
+
     private fun subscribeUi(binding: FragmentProfileDetailBinding) {
         if(userId.isNullOrBlank()) {
             binding.tvProfileNoRuns.visibility = View.VISIBLE
@@ -69,12 +76,15 @@ class ProfileDetailFragment : BaseFragment() {
             return
         }
 
-        viewModel.user.observe(viewLifecycleOwner){
-            fillProfileData(it)
-        }
-
         viewModel.posts.observe(viewLifecycleOwner){
             fillPosts(it.posts)
+        }
+    }
+
+    private fun getUser() {
+        viewModel.user.observe(viewLifecycleOwner){
+            logd(it.toString())
+            fillProfileData(it)
         }
 
         viewModel.currentUser.observe(viewLifecycleOwner){
@@ -82,13 +92,13 @@ class ProfileDetailFragment : BaseFragment() {
             if(currentUser != null){
                 isFollowed = currentUser!!.follows(userId!!)
                 if(isFollowed){
-                    binding.btnFollow.text = getString(R.string.Unfollow)
+                    (binding as FragmentProfileDetailBinding).btnFollow.text = getString(R.string.Unfollow)
                 }else{
-                    binding.btnFollow.text = getString(R.string.Follow)
+                    (binding as FragmentProfileDetailBinding).btnFollow.text = getString(R.string.Follow)
                 }
-                setUpCurrentUserConfig(binding)
+                setUpCurrentUserConfig(binding as FragmentProfileDetailBinding)
             }else{
-                binding.btnFollow.visibility = View.GONE
+                (binding as FragmentProfileDetailBinding).btnFollow.visibility = View.GONE
             }
         }
     }
@@ -133,12 +143,34 @@ class ProfileDetailFragment : BaseFragment() {
 
     private fun fillProfileData(user: UserResponse?){
         if(user != null){
-            (binding as FragmentProfileDetailBinding).tvName.text = user.user?.username ?: user.user?.email ?: ""
+            (binding as FragmentProfileDetailBinding).tvName.text = user.user?.username ?: ""
             viewModel.profilePicture.observe(viewLifecycleOwner){
                 setProfilePicture(it)
             }
+            setFollowers(user.user)
         }else{
             logd("Coudln't retrieve ${userId} data")
+        }
+    }
+
+    private fun setFollowers(user: User?) {
+        if(user != null && user.following.isNotEmpty()){
+            val following = user.following
+            (binding as FragmentProfileDetailBinding).tvFollowing.let{
+                it.text = getString(R.string.User_follow, following.size)
+                it.setOnClickListener {
+                    popUpFollows.showFollows(requireContext(), user) { email ->
+                        navigator.navigateToProfileDetail(
+                            activity = activity,
+                            userId = email
+                        )
+                    }
+                }
+            }
+        }else{
+            (binding as FragmentProfileDetailBinding).tvFollowing.let{
+                it.text = getString(R.string.User_doesnt_follow_anyone)
+            }
         }
     }
 

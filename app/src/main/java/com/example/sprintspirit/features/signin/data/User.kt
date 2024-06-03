@@ -49,6 +49,19 @@ data class User(
 
         return map
     }
+
+    fun getFollowingList(): Map<String, UserFollow>{
+        val map = mutableMapOf<String, UserFollow>()
+
+        following.forEach {
+            val follow = it.value as HashMap<String, String>
+            val username = follow["username"] ?: ""
+
+            map[it.key] = UserFollow(username)
+        }
+
+        return map
+    }
 }
 
 data class UserFollow(

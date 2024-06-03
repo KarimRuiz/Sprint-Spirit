@@ -126,10 +126,15 @@ class FirebaseManager() : DBManager {
             if (documentSnapshot.exists()) {
                 val user = User(
                     documentSnapshot.get(USERNAME) as String,
-                    email,
+                    email = email,
                     weight = documentSnapshot.get(WEIGHT) as Double,
                     height = documentSnapshot.get(HEIGHT) as Double,
-                    chats = documentSnapshot.get(USER_CHATS) as? Map<String, UserChat>
+                    chats = documentSnapshot.get(USER_CHATS) as? Map<String, UserChat>,
+                    following = if(documentSnapshot.get(FOLLOWING) != null){
+                        documentSnapshot.get(FOLLOWING) as Map<String, UserFollow>
+                    }else{
+                        mapOf()
+                    }
                 )
                 Log.d(TAG, documentSnapshot.toString())
                 response.user = user
