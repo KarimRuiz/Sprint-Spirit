@@ -10,8 +10,11 @@ data class User(
     val weight: Double? = null,
     val height: Double? = null,
     val chats: Map<String, UserChat>? = mapOf(), //chat id - role(op, nop)
+    val following: Map<String, UserFollow> = mapOf(),
     var profilePictureUrl: Uri? = null
 ){
+    fun follows(userId: String) = following.containsKey(userId)
+
     fun isSubscribedToChat(chatId: String): Boolean{
         chats.let {
             if (it != null) {
@@ -47,6 +50,10 @@ data class User(
         return map
     }
 }
+
+data class UserFollow(
+    val username: String = ""
+)
 
 data class UserChat(
     val role: String = "NOP",

@@ -86,4 +86,7 @@
     <string name="User_no_posts">This user doesn\'t have posts yet.</string>
     <string name="Routes">Routes</string>
     <string name="User_not_found">User not found</string>
+    <string name="Follow">Follow</string>
+    <string name="Unfollow">Unfollow</string>
+    <string name="Following">Following</string>
 </resources>

@@ -24,6 +24,14 @@ class UsersRepository{
         return manager.getPostsByUser(email)
     }
 
+    suspend fun follow(followerId: String, followedId: String): Boolean {
+        return manager.followUser(followerId, followedId)
+    }
+
+    suspend fun unFollow(idThatUnFollows: String, idUnFollowed: String): Boolean {
+        return manager.unFollowUser(idThatUnFollows, idUnFollowed)
+    }
+
     suspend fun getUserRuns(usermail: String): RunsResponse{
         return manager.getRunsByUser(usermail)
     }

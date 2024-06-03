@@ -1,7 +1,6 @@
 package com.example.sprintspirit.features.profile_detail.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,14 +8,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.sprintspirit.R
-import com.example.sprintspirit.databinding.FragmentProfileBinding
 import com.example.sprintspirit.databinding.FragmentProfileDetailBinding
-import com.example.sprintspirit.features.dashboard.DashboardViewModel
 import com.example.sprintspirit.features.dashboard.home.data.Post
 import com.example.sprintspirit.features.dashboard.home.ui.HomeRunAdapter
 import com.example.sprintspirit.features.dashboard.profile.data.ProfilePictureResponse
 import com.example.sprintspirit.features.dashboard.profile.data.UserResponse
-import com.example.sprintspirit.features.post.ui.PostViewModel
+import com.example.sprintspirit.features.signin.data.User
 import com.example.sprintspirit.ui.BaseFragment
 import com.example.sprintspirit.util.SprintSpiritNavigator
 
@@ -38,6 +35,8 @@ class ProfileDetailFragment : BaseFragment() {
     private lateinit var adapter: HomeRunAdapter
 
     private var userId: String? = null
+    private var currentUser: User? = null
+    private var isFollowed: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,6 +75,40 @@ class ProfileDetailFragment : BaseFragment() {
 
         viewModel.posts.observe(viewLifecycleOwner){
             fillPosts(it.posts)
+        }
+
+        viewModel.currentUser.observe(viewLifecycleOwner){
+            currentUser = it.user
+            if(currentUser != null){
+                isFollowed = currentUser!!.follows(userId!!)
+                if(isFollowed){
+                    binding.btnFollow.text = getString(R.string.Unfollow)
+                }else{
+                    binding.btnFollow.text = getString(R.string.Follow)
+                }
+                setUpCurrentUserConfig(binding)
+            }else{
+                binding.btnFollow.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun setUpCurrentUserConfig(binding: FragmentProfileDetailBinding) {
+        binding.onClickFollow = onFollow()
+    }
+
+    private fun onFollow() = object : View.OnClickListener {
+        override fun onClick(v: View?) {
+            if(!isFollowed){
+                logd("Following user ${userId!!}")
+                viewModel.follow(sharedPreferences.email ?: "", userId!!)
+                (binding as FragmentProfileDetailBinding).btnFollow.text = getString(R.string.Unfollow)
+            }else{
+                logd("Unfollowing user ${userId!!}")
+                viewModel.unFollow(sharedPreferences.email ?: "", userId!!)
+                (binding as FragmentProfileDetailBinding).btnFollow.text = getString(R.string.Follow)
+            }
+            isFollowed = !isFollowed
         }
     }
 

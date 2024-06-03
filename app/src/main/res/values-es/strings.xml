@@ -77,4 +77,7 @@
     <string name="User_no_posts">Este usuario todavía no ha publicado ninguna ruta.</string>
     <string name="Routes">Rutas</string>
     <string name="User_not_found">Usuario no encontrado</string>
+    <string name="Follow">Seguir</string>
+    <string name="Unfollow">Dejar de seguir</string>
+    <string name="Following">Seguidos</string>
 </resources>

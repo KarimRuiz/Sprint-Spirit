@@ -22,6 +22,7 @@ import com.example.sprintspirit.features.chat.data.ChatResponse
 import com.example.sprintspirit.features.chat.data.Message
 import com.example.sprintspirit.features.signin.data.User
 import com.example.sprintspirit.features.signin.data.UserChat
+import com.example.sprintspirit.features.signin.data.UserFollow
 import com.example.sprintspirit.util.Utils.normalize
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Firebase
@@ -35,6 +36,7 @@ import com.google.firebase.database.database
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.messaging
 import com.google.firebase.storage.FirebaseStorage
+import com.mapbox.maps.logD
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -65,6 +67,7 @@ class FirebaseManager() : DBManager {
         val USERNAME = "username"
         val START_TIME = "startTime"
         val PUBLISH_DATE = "publishDate"
+        val FOLLOWING = "following"
         val IS_PUBLIC = "public"
         val SESSION_ID = "sessionId"
         val USER_CHATS = "chats"
@@ -96,7 +99,12 @@ class FirebaseManager() : DBManager {
                     email,
                     weight = documentSnapshot.get(WEIGHT) as Double,
                     height = documentSnapshot.get(HEIGHT) as Double,
-                    chats = documentSnapshot.get(USER_CHATS) as? Map<String, UserChat>
+                    chats = documentSnapshot.get(USER_CHATS) as? Map<String, UserChat>,
+                    following = if(documentSnapshot.get(FOLLOWING) != null){
+                        documentSnapshot.get(FOLLOWING) as Map<String, UserFollow>
+                    }else{
+                        mapOf()
+                    }
                 )
                 Log.d(TAG, documentSnapshot.toString())
                 response.user = user
@@ -126,7 +134,6 @@ class FirebaseManager() : DBManager {
                 Log.d(TAG, documentSnapshot.toString())
                 response.user = user
             } else {
-                // Handle case when document does not exist
                 response.exception = RuntimeException("User document not found")
             }
         } catch (e: Exception) {
@@ -141,19 +148,16 @@ class FirebaseManager() : DBManager {
             val documentSnapshot = userDocumentRef.get().await()
 
             if (documentSnapshot.exists()) {
-                // Retrieve the current chats map
                 val currentChats = documentSnapshot.get(USER_CHATS) as? MutableMap<String, UserChat> ?: mutableMapOf()
 
-                // Add or update the chat entry
                 currentChats[chatId] = UserChat(
                     role = if(asOp) "OP" else "NOP",
                     chatName = chatName
                 )
 
-                // Update the document with the new chats map
                 userDocumentRef.update(USER_CHATS, currentChats).await()
 
-                //Subscribe to this posts topic so it can receive notifications
+                //subscribe to this posts topic so it can receive notifications
                 Firebase.messaging.subscribeToTopic(chatId)
                     .addOnCompleteListener {task ->
                         var msg = "Subscribed in GCM to topic: ${chatId}"
@@ -178,16 +182,13 @@ class FirebaseManager() : DBManager {
             val documentSnapshot = userDocumentRef.get().await()
 
             if (documentSnapshot.exists()) {
-                // Retrieve the current chats map
                 val currentChats = documentSnapshot.get(USER_CHATS) as? MutableMap<String, UserChat> ?: mutableMapOf()
 
-                // Remove the chat entry
                 currentChats.remove(chatId)
 
-                // Update the document with the new chats map
                 userDocumentRef.update(USER_CHATS, currentChats).await()
 
-                //Unubscribe to this posts topic so it can receive notifications
+                //unubscribe to this posts topic so it can receive notifications
                 Firebase.messaging.subscribeToTopic(chatId)
                     .addOnCompleteListener {task ->
                         var msg = "Unubscribed in GCM from topic: ${chatId}"
@@ -203,6 +204,48 @@ class FirebaseManager() : DBManager {
         } catch (e: Exception) {
             Log.e(TAG, "Error unsubscribing user from chat", e)
             false
+        }
+    }
+    /* FOLLOWS */
+
+    override suspend fun followUser(followerId: String, followedId: String): Boolean {
+        try{
+            val followerSnap = firestore.collection(USERS).document(followerId).get().await()
+            val followedSnap = firestore.collection(USERS).document(followedId).get().await()
+
+            if(!followerSnap.exists() || !followedSnap.exists()) return false
+
+            val followingUsers = followerSnap.get(FOLLOWING) as? MutableMap<String, UserFollow> ?: mutableMapOf()
+            val followedUsername = followedSnap.get(USERNAME) as String
+            if(followedUsername.isBlank()) return false
+
+            followingUsers[followedId] = UserFollow(
+                username = followedUsername
+            )
+
+            firestore.collection(USERS).document(followerId).update(FOLLOWING, followingUsers).await()
+
+            return true
+        }catch(e: Exception){
+            Log.e(TAG, "Error following user: $e")
+            return false
+        }
+    }
+
+    override suspend fun unFollowUser(unfollowerId: String, unfollowedId: String): Boolean {
+        try{
+            val unfollowerSnap = firestore.collection(USERS).document(unfollowerId).get().await()
+            if(!unfollowerSnap.exists()) return false
+
+            val followingUsers = unfollowerSnap.get(FOLLOWING) as? MutableMap<String, UserFollow> ?: mutableMapOf()
+            followingUsers.remove(unfollowedId)
+
+            firestore.collection(USERS).document(unfollowerId).update(FOLLOWING, followingUsers).await()
+
+            return true
+        }catch(e: Exception){
+            Log.e(TAG, "Error unfollowing user: $e")
+            return false
         }
     }
 
