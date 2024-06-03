@@ -14,150 +14,172 @@
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/card_user_run"
         android:layout_margin="12dp"
-        card_view:cardBackgroundColor="?attr/colorPrimary"
+        card_view:cardBackgroundColor="?attr/colorOnPrimary"
         card_view:cardCornerRadius="15dp"
         card_view:cardElevation="6dp"
         card_view:contentPadding="1dp">
 
-        <RelativeLayout
-            android:id="@+id/relativeLayout"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="225dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <com.google.android.gms.maps.MapView
-                android:id="@+id/mapView"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_centerInParent="true"
-                android:contentDescription="Run map"
-                android:outlineAmbientShadowColor="#C13B3B"
-                android:outlineSpotShadowColor="#7B3A3A"
-                card_view:cameraZoom="8"
-                card_view:layout_constraintBottom_toBottomOf="parent"
-                card_view:layout_constraintEnd_toEndOf="parent"
-                card_view:layout_constraintStart_toStartOf="parent"
-                card_view:liteMode="true"
-                card_view:mapType="hybrid" />
+                android:layout_height="225dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true">
+                <com.google.android.gms.maps.MapView
+                    android:id="@+id/mapView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    card_view:cameraZoom="8"
+                    card_view:liteMode="true"
+                    card_view:mapType="hybrid" />
 
-                <com.stfalcon.chatkit.utils.ShapeImageView
-                    android:id="@+id/siv_run_is_posted"
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_rounded_check"
-                    android:tint="#57AB2B"
-                    android:visibility="gone"
-                    card_view:layout_constraintBottom_toBottomOf="parent"
-                    card_view:layout_constraintStart_toStartOf="parent"
-                    />
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/iv_run_card_menu"
+                        android:layout_width="@dimen/menu_width"
+                        android:layout_height="@dimen/menu_height"
+                        android:padding="5dp"
+                        android:onClickListener="@{menuSettingsListener}"
+                        android:background="@drawable/card_user_run_corner"
+                        android:layout_marginStart="@dimen/margin_normal"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:src="@drawable/ic_three_dots_menu"
+                        />
+
+                    <TextView
+                        android:id="@+id/siv_run_is_posted"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingEnd="@dimen/margin_small"
+                        android:background="@drawable/card_user_run_corner"
+                        android:drawableStart="@drawable/ic_rounded_check"
+                        android:drawableTint="?attr/colorPrimary"
+                        android:tint="?attr/colorPrimary"
+                        android:text="Posted"
+                        android:layout_marginStart="@dimen/margin_normal"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:layout_gravity="top|start"
+                        android:visibility="gone"
+                        tools:visibility="visible"
+                        />
+
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/tv_date_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="48dp"
                     android:background="@drawable/card_user_run_corner"
-                    android:padding="@dimen/margin_small"
-                    android:text="12/5/2024"
-                    android:textColor="@color/black"
-                    card_view:layout_constraintBottom_toBottomOf="parent"
-                    card_view:layout_constraintEnd_toEndOf="parent" />
+                    android:paddingEnd="@dimen/margin_small"
+                    android:paddingStart="@dimen/margin_small"
+                    android:layout_marginEnd="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_gravity="top|end"
+                    tools:text="12/5/2024"
+                    android:textColor="@color/black"/>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </FrameLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal">
 
-                <TableLayout
-                    android:id="@+id/tableLayout"
-                    card_view:layout_constraintStart_toStartOf="parent"
-                    card_view:layout_constraintTop_toTopOf="parent"
+                <!--Stats-->
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/margin_normal"
-                    android:background="@drawable/card_user_run_corner">
+                    android:orientation="horizontal"
+                    android:padding="@dimen/margin_normal">
 
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="@dimen/margin_small">
+                    <!-- Distance -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/tv_distance"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/margin_normal"
-                            android:text="@string/Distance"
-                            android:textColor="@color/black"/>
+                            android:text="@string/Distance"/>
 
                         <TextView
                             android:id="@+id/tv_distance_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="5 km"
-                            android:textColor="@color/black"/>
-                    </TableRow>
+                            android:layout_gravity="end"
+                            android:text="5 km"/>
+                    </LinearLayout>
 
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="@dimen/margin_small">
+                    <View
+                        android:layout_width="0.5dp"
+                        android:layout_height="35dp"
+                        android:background="#2C000000"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/margin_normal"
+                        android:layout_marginEnd="@dimen/margin_normal"/>
+
+                    <!-- Time -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/tv_time"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/Time"
-                            android:textColor="@color/black"/>
+                            android:text="@string/Time"/>
 
                         <TextView
                             android:id="@+id/tv_time_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="25 min"
-                            android:textColor="@color/black"/>
-                    </TableRow>
+                            android:layout_gravity="end"
+                            android:text="25 min"/>
+                    </LinearLayout>
 
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                    <View
+                        android:layout_width="0.5dp"
+                        android:layout_height="35dp"
+                        android:background="#2C000000"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/margin_normal"
+                        android:layout_marginEnd="@dimen/margin_normal"/>
+
+                    <!-- Pace -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/tv_pace"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/Pace"
-                            android:textColor="@color/black"/>
+                            android:text="@string/Pace"/>
 
                         <TextView
                             android:id="@+id/tv_pace_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="5 min/km"
-                            android:textColor="@color/black"/>
-                    </TableRow>
-                </TableLayout>
+                            android:layout_gravity="end"
+                            android:text="5 min/km"/>
+                    </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/iv_run_card_menu"
-                    android:layout_width="@dimen/menu_width"
-                    android:layout_height="@dimen/menu_height"
-                    android:padding="5dp"
-                    android:onClickListener="@{menuSettingsListener}"
-                    android:background="@drawable/card_user_run_corner"
-                    card_view:layout_constraintEnd_toEndOf="parent"
-                    card_view:layout_constraintTop_toTopOf="parent"
-                    android:src="@drawable/ic_three_dots_menu"
-                    />
+                </LinearLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
 
-        </RelativeLayout>
+        </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 </layout>

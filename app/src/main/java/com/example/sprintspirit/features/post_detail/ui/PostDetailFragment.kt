@@ -101,10 +101,11 @@ class PostDetailFragment : BaseFragment(), OnMapReadyCallback {
     private fun setUpMap() {
         if(!::map.isInitialized) return
 
-        // Build initial zoom level
+        //initial zoom level
         val builder = LatLngBounds.builder()
-        builder.include(path.first())
-        builder.include(path.last())
+        path.forEach{
+            builder.include(it)
+        }
         val bounds = builder.build()
         val padding = 75
 
@@ -191,6 +192,26 @@ class PostDetailFragment : BaseFragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         setUpMap()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (binding as FragmentPostDetailBinding).postDetailMap.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (binding as FragmentPostDetailBinding).postDetailMap.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        (binding as FragmentPostDetailBinding).postDetailMap.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        (binding as FragmentPostDetailBinding).postDetailMap.onLowMemory()
     }
 
 }

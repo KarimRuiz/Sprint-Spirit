@@ -84,4 +84,5 @@
     <string name="You_dont_follow_anyone">No sigues a nadie</string>
     <string name="User_doesnt_follow_anyone">No sigue a nadie</string>
     <string name="User_follow">Sigue a %1$d personas</string>
+    <string name="Your_routes">Tus rutas</string>
 </resources>

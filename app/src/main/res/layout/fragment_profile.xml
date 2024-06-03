@@ -68,7 +68,7 @@
             android:paddingStart="@dimen/margin_bigger"
             android:paddingLeft="@dimen/margin_big"
             android:paddingEnd="0dp"
-            android:text="Tus carreras"
+            android:text="@string/Your_routes"
             android:textSize="@dimen/font_big" />
 
         <FrameLayout
@@ -90,6 +90,7 @@
                 android:id="@+id/run_profile_rv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:requiresFadingEdge="vertical"
                 android:paddingLeft="@dimen/margin_big"
                 android:paddingEnd="@dimen/margin_big" />
 
