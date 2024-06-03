@@ -39,6 +39,7 @@
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="@+id/profile_fragment_card_view"
                 app:layout_constraintEnd_toEndOf="parent"
+                android:layout_margin="@dimen/margin_big"
                 app:layout_constraintStart_toEndOf="@+id/profile_fragment_card_view"
                 app:layout_constraintTop_toTopOf="@+id/profile_fragment_card_view">
 
@@ -46,8 +47,16 @@
                     android:id="@+id/tv_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_big"
-                    android:text="TextView"
+                    tools:text="Karim"
+                    android:textSize="@dimen/font_large"
+                    android:layout_marginBottom="@dimen/margin_small"/>
+
+                <TextView
+                    android:id="@+id/tv_following"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/You_dont_follow_anyone"
+                    android:textColor="?attr/colorAccent"
                     android:textSize="@dimen/font_normal" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -59,7 +68,7 @@
             android:paddingStart="@dimen/margin_bigger"
             android:paddingLeft="@dimen/margin_big"
             android:paddingEnd="0dp"
-            android:text="Tus carreras"
+            android:text="@string/Your_routes"
             android:textSize="@dimen/font_big" />
 
         <FrameLayout
@@ -81,6 +90,7 @@
                 android:id="@+id/run_profile_rv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:requiresFadingEdge="vertical"
                 android:paddingLeft="@dimen/margin_big"
                 android:paddingEnd="@dimen/margin_big" />
 

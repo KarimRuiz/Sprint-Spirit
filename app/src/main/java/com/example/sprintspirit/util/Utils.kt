@@ -11,6 +11,10 @@ import com.google.firebase.firestore.GeoPoint
 import com.google.type.LatLng
 import java.text.Normalizer
 import java.util.regex.Pattern
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 object Utils{
 
@@ -43,6 +47,21 @@ object Utils{
         val addresses = geocoder.getFromLocation(point.latitude, point.longitude, 1)
 
         return addresses?.firstOrNull()
+    }
+
+    fun haversineDistance(point1: GeoPoint, point2: GeoPoint): Double {
+        val R = 6371e3
+        val lat1 = Math.toRadians(point1.latitude)
+        val lat2 = Math.toRadians(point2.latitude)
+        val deltaLat = Math.toRadians(point2.latitude - point1.latitude)
+        val deltaLon = Math.toRadians(point2.longitude - point1.longitude)
+
+        val a = sin(deltaLat / 2) * sin(deltaLat / 2) +
+                cos(lat1) * cos(lat2) *
+                sin(deltaLon / 2) * sin(deltaLon / 2)
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+        return R * c //in meters
     }
 
     fun String.removeNonSpacingMarks() =

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.sprintspirit.R
 import com.example.sprintspirit.databinding.CardUserRunBinding
 import com.example.sprintspirit.features.run.data.RunData
+import com.example.sprintspirit.util.Utils.kphToMinKm
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -60,10 +61,11 @@ class ProfileRunAdapter(
             val lastTime = get.points!!.last().keys.first().toLong()
             val time: Double = (lastTime - firstTime) / 60000.0 //ms to min
 
-            binding.tvDistanceValue.text = get.distance.toString() + " km"
+            binding.tvDistanceValue.text = String.format("%.2f", get.distance) + " km"
             val timeString = String.format("%d:%02d", (time*60).toInt()/60, (time*60).toInt()%60)
             binding.tvTimeValue.text = timeString + " min"
-            binding.tvPaceValue.text = String.format("%.2f", (get.distance / time)) + " min/km"
+            val pace = get.averageSpeed().kphToMinKm()
+            binding.tvPaceValue.text = String.format("%.2f", pace) + " min/km"
             binding.tvDateValue.text = SimpleDateFormat("dd-MM-yy").format(Date(firstTime))
             if(get.public){
                 binding.sivRunIsPosted.visibility = View.VISIBLE
@@ -77,12 +79,13 @@ class ProfileRunAdapter(
         fun setMapLocation(){
             if(!::map.isInitialized) return
 
-            //Build zoom level
+            //build zoom level
             val builder = LatLngBounds.builder()
-            builder.include(path.first())
-            builder.include(path.last())
+            path.forEach{
+                builder.include(it)
+            }
             val bounds = builder.build()
-            val padding = 75
+            val padding = 150
 
             with(map){
                 //moveCamera(CameraUpdateFactory.newLatLngZoom(path[0], 13f))

@@ -67,7 +67,7 @@ interface DBManager {
 
     suspend fun getPostsByTime(time: TimeFilter): PostsResponse
 
-    suspend fun getPostsByLocation(location: LocationFilter, name: String, limit: Long = 10): PostsResponse
+    suspend fun getPostsByLocation(location: LocationFilter, name: String, following: List<String>?, limit: Long = 10): PostsResponse
 
     fun deleteRun(run: RunData)
     fun deletePostByRunId(runId: String)
@@ -89,4 +89,10 @@ interface DBManager {
     suspend fun susbscribeToChat(email: String, chatName: String, chatId: String, asOp: Boolean): Boolean
     suspend fun unSusbscribeToChat(email: String, chatId: String): Boolean
     suspend fun getUser(email: String): UserResponse
+
+    /* FOLLOWS */
+
+    suspend fun followUser(followerId: String, followedId: String): Boolean
+    suspend fun unFollowUser(unfollowerId: String, unfollowedId: String): Boolean
+
 }

@@ -38,6 +38,7 @@ class HomeRunAdapter(var postList:List<Post>,
         private val mapView: MapView = binding.cardHomeRunMap
         private lateinit var map: GoogleMap
         private lateinit var path: MutableList<LatLng>
+        private lateinit var post: Post
 
         init{
             with(mapView){
@@ -47,6 +48,7 @@ class HomeRunAdapter(var postList:List<Post>,
         }
 
         fun bind(get: Post){
+            post = get
             //Path
             path = mutableListOf()
             val geoPoints = get.points!!
@@ -103,10 +105,11 @@ class HomeRunAdapter(var postList:List<Post>,
         fun setMapLocation(){
             if(!::map.isInitialized) return
 
-            //Build zoom level
+            //build zoom level
             val builder = LatLngBounds.builder()
-            builder.include(path.first())
-            builder.include(path.last())
+            path.forEach{
+                builder.include(it)
+            }
             val bounds = builder.build()
             val padding = 75
 
@@ -117,7 +120,9 @@ class HomeRunAdapter(var postList:List<Post>,
                 val pathColor = ContextCompat.getColor(binding.root.context, R.color.run_path)
                 val options = PolylineOptions().addAll(path).color(pathColor)
                 map.addPolyline(options)
-                // setOnMapClickListener {}
+                setOnMapClickListener {
+                    onOpenPost(post)
+                }
             }
         }
 

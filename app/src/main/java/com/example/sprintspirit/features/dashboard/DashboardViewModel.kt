@@ -1,8 +1,12 @@
 package com.example.sprintspirit.features.dashboard
 
 import android.net.Uri
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import com.example.sprintspirit.database.DBManager
+import com.example.sprintspirit.features.dashboard.profile.data.UserResponse
 import com.example.sprintspirit.features.dashboard.profile.data.UsersRepository
 import com.example.sprintspirit.features.run.data.RunData
 import com.example.sprintspirit.features.run.data.RunResponse
@@ -16,13 +20,18 @@ class DashboardViewModel(
 ) : BaseViewModel() {
 
     var email: String? = null
+    private val _currentUserLiveData = MutableLiveData<UserResponse>()
+    val currentUserLiveData: LiveData<UserResponse> get() = _currentUserLiveData
 
     private val dbManager: DBManager = DBManager.getCurrentDBManager()
 
     private val user = dbManager.getAuthUser()
 
-    val currentUserLiveData = liveData(Dispatchers.IO){
-        emit(repository.getCurrentUser())
+    fun refreshCurrentUser() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val currentUser = repository.getCurrentUser()
+            _currentUserLiveData.postValue(currentUser)
+        }
     }
 
     val runs = liveData(Dispatchers.IO){

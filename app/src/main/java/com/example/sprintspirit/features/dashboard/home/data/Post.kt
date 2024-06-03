@@ -47,7 +47,7 @@ data class Post (
             val currentPoint = currentMap.values.first()
             val nextPoint = nextMap.values.first()
 
-            val distance = haversineDistance(currentPoint, nextPoint)
+            val distance = Utils.haversineDistance(currentPoint, nextPoint)
             val timeDiff = (nextTime - currentTime) / 1000.0 //ms to s
 
             totalDistance += distance
@@ -55,21 +55,6 @@ data class Post (
         }
 
         return if (totalTime != 0.0) (totalDistance / totalTime) * 3.6 else 0.0
-    }
-
-    fun haversineDistance(point1: GeoPoint, point2: GeoPoint): Double {
-        val R = 6371e3
-        val lat1 = Math.toRadians(point1.latitude)
-        val lat2 = Math.toRadians(point2.latitude)
-        val deltaLat = Math.toRadians(point2.latitude - point1.latitude)
-        val deltaLon = Math.toRadians(point2.longitude - point1.longitude)
-
-        val a = sin(deltaLat / 2) * sin(deltaLat / 2) +
-                cos(lat1) * cos(lat2) *
-                sin(deltaLon / 2) * sin(deltaLon / 2)
-        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
-
-        return R * c //in meters
     }
 
     fun pace(): Double{

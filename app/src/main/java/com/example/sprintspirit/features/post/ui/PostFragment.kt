@@ -72,10 +72,11 @@ class PostFragment : BaseFragment(), OnMapReadyCallback {
             }
         }
 
-        //Build zoom level
+        //build zoom level
         val builder = LatLngBounds.builder()
-        builder.include(path.first())
-        builder.include(path.last())
+        path.forEach{
+            builder.include(it)
+        }
         val bounds = builder.build()
         val padding = 75
 
