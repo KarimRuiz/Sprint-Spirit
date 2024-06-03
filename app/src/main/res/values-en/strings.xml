@@ -74,4 +74,7 @@
     <string name="Are_you_sure_logout">Are you sure you want to log out?</string>
     <string name="I_have_read_the_terms">I have read and accept the Terms and Conditions.</string>
     <string name="Chat">Chat</string>
+    <string name="User_no_posts">This user doesn\'t have posts yet.</string>
+    <string name="Routes">Routes</string>
+    <string name="User_not_found">User not found</string>
 </resources>

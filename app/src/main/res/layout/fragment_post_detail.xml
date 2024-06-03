@@ -7,6 +7,10 @@
         <variable
             name="goToChat"
             type="android.view.View.OnClickListener" />
+        <variable
+            name="onUserClick"
+            type="android.view.View.OnClickListener"
+            />
     </data>
 
     <LinearLayout
@@ -67,6 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:onClick="@{onUserClick}"
             android:gravity="center_vertical">
 
             <androidx.cardview.widget.CardView

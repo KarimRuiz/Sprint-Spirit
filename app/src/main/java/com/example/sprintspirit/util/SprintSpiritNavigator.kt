@@ -8,6 +8,7 @@ import com.example.sprintspirit.features.dashboard.DashboardActivity
 import com.example.sprintspirit.features.dashboard.home.data.Post
 import com.example.sprintspirit.features.post.ui.PostActivity
 import com.example.sprintspirit.features.post_detail.PostDetailActivity
+import com.example.sprintspirit.features.profile_detail.ProfileDetailActivity
 import com.example.sprintspirit.features.run.data.RunData
 import com.example.sprintspirit.features.settings.SettingsActivity
 import com.example.sprintspirit.features.signin.ui.signin.SignInActivity
@@ -54,6 +55,18 @@ class SprintSpiritNavigator(val context: Context) {
         PostDetailActivity.post = post
         navigateTo(activity,
             Intent(activity, PostDetailActivity::class.java),
+            preserveStack)
+    }
+
+    fun navigateToProfileDetail(
+        activity: FragmentActivity?,
+        userId: String,
+        preserveStack: Boolean? = true
+    ){
+        val intent = Intent(activity, ProfileDetailActivity::class.java)
+        intent.putExtra(ProfileDetailActivity.PROFILE_DETAIL_USER_ID, userId)
+        navigateTo(activity,
+            intent,
             preserveStack)
     }
 

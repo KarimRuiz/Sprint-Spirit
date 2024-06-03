@@ -65,6 +65,13 @@ class PostDetailFragment : BaseFragment(), OnMapReadyCallback {
             )
         }
 
+        binding.onUserClick = View.OnClickListener {
+            navigator.navigateToProfileDetail(
+                activity = activity,
+                userId = post.user
+            )
+        }
+
         with(binding.postDetailMap){
             onCreate(null)
             getMapAsync(this@PostDetailFragment)

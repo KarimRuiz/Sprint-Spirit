@@ -25,13 +25,15 @@ import java.text.SimpleDateFormat
 class HomeRunAdapter(var postList:List<Post>,
                      val context: Context,
                      val onOpenPost: (Post) -> Unit,
-                    val onOpenChat: (Post) -> Unit
+                    val onOpenChat: (Post) -> Unit,
+                    val showUser: Boolean = true
 ) : RecyclerView.Adapter<HomeRunAdapter.HomeRunHolder>() {
 
     class HomeRunHolder(val binding: CardHomeRunBinding,
                         val context: Context,
                         val onOpenPost: (Post) -> Unit,
-                        val goToChat: (Post) -> Unit
+                        val goToChat: (Post) -> Unit,
+                        val showUser: Boolean = true
         ) : RecyclerView.ViewHolder(binding.root), OnMapReadyCallback{
         private val mapView: MapView = binding.cardHomeRunMap
         private lateinit var map: GoogleMap
@@ -59,7 +61,18 @@ class HomeRunAdapter(var postList:List<Post>,
             val lastTime = geoPoints.last().keys.first().toLong()
             val time: Double = (lastTime - firstTime) / 60000.0 //ms to min
 
-            binding.tvUsername.text = get.userData.username
+            if(showUser){
+                binding.tvUsername.text = get.userData.username
+
+                //Profile Image
+                Glide.with(context)
+                    .load(get.userData.profilePictureUrl)
+                    .into(binding.ivHomeProfilePicture)
+                    .onLoadFailed(AppCompatResources.getDrawable(context, R.drawable.ic_account))
+            }else{
+                binding.llCardPostHeader.visibility = View.GONE
+            }
+
             binding.tvDistanceValue.text = String.format("%.2f", get.distance) + " km"
             val timeString = String.format("%d:%02d", (time*60).toInt()/60, (time*60).toInt()%60)
             binding.tvTimeValue.text = timeString + " min"
@@ -84,12 +97,6 @@ class HomeRunAdapter(var postList:List<Post>,
             binding.tvGoToChat.setOnClickListener {
                 goToChat(get)
             }
-
-            //Profile Image
-            Glide.with(context)
-                .load(get.userData.profilePictureUrl)
-                .into(binding.ivHomeProfilePicture)
-                .onLoadFailed(AppCompatResources.getDrawable(context, R.drawable.ic_account))
 
         }
 
@@ -123,7 +130,7 @@ class HomeRunAdapter(var postList:List<Post>,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeRunHolder {
         val binding = CardHomeRunBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return HomeRunHolder(binding, context, onOpenPost, onOpenChat)
+        return HomeRunHolder(binding, context, onOpenPost, onOpenChat, showUser)
     }
 
     override fun getItemCount(): Int {

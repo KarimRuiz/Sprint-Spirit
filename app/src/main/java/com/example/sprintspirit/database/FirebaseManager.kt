@@ -110,6 +110,31 @@ class FirebaseManager() : DBManager {
         return response
     }
 
+    override suspend fun getUser(email: String): UserResponse{
+        val response = UserResponse()
+        try {
+            val documentSnapshot = firestore.collection(USERS).document(email).get().await()
+
+            if (documentSnapshot.exists()) {
+                val user = User(
+                    documentSnapshot.get(USERNAME) as String,
+                    email,
+                    weight = documentSnapshot.get(WEIGHT) as Double,
+                    height = documentSnapshot.get(HEIGHT) as Double,
+                    chats = documentSnapshot.get(USER_CHATS) as? Map<String, UserChat>
+                )
+                Log.d(TAG, documentSnapshot.toString())
+                response.user = user
+            } else {
+                // Handle case when document does not exist
+                response.exception = RuntimeException("User document not found")
+            }
+        } catch (e: Exception) {
+            response.exception = e
+        }
+        return response
+    }
+
     override suspend fun susbscribeToChat(email: String, chatName: String, chatId: String, asOp: Boolean): Boolean {
         try{
             val userDocumentRef = firestore.collection(USERS).document(email)
@@ -304,6 +329,58 @@ class FirebaseManager() : DBManager {
         return response
     }
 
+    override suspend fun getPostsByUser(usermail: String): PostsResponse {
+        val response = PostsResponse()
+
+        try{
+            val postsRef = firestore.collection(POSTS)
+            val posts = postsRef.whereEqualTo(USER, "/${USERS}/${usermail}").get().await().documents.mapNotNull { snapShot ->
+                val post = snapShot.toObject(Post::class.java)
+                post?.id = snapShot.id
+                post
+            }
+
+            val postsRes: MutableList<Post> = mutableListOf()
+
+            posts.forEach {post ->
+                val userId = post.user.removePrefix("/users/")
+                val userDocRef = firestore.collection(USERS).document(userId)
+                val userData = userDocRef.get().await().toObject(User::class.java)
+
+                try {
+                    val ref = storage.child(IMAGES).child("$userId.jpg")
+                    userData?.profilePictureUrl = ref.downloadUrl.await()
+                }catch(e: Exception){
+                    Log.d(TAG, "EXCEPTION GETTING POSTS USERS: ${e}")
+                }
+
+                userData?.let {
+                    postsRes.add(Post(
+                        id = post.id,
+                        user = userId,
+                        userData = it,
+                        distance = post.distance,
+                        startTime = post.startTime,
+                        minutes = post.minutes,
+                        description = post.description,
+                        title = post.title,
+                        town = post.town,
+                        city = post.city,
+                        state = post.state,
+                        country = post.country,
+                        points = post.points
+                    ))
+                }
+            }
+
+            response.posts = postsRes
+        }catch (e: Exception){
+            response.exception = e
+        }
+
+        return response
+    }
+
     override suspend fun saveRun(runResponse: RunResponse) {
         try{
             if(runResponse.run != null){
@@ -338,7 +415,7 @@ class FirebaseManager() : DBManager {
                     val ref = storage.child(IMAGES).child("$userId.jpg")
                     userData?.profilePictureUrl = ref.downloadUrl.await()
                 }catch(e: Exception){
-                    Log.d("FirebaseManager", "EXCEPTION GETTING POSTS USERS: ${e}")
+                    Log.d(TAG, "EXCEPTION GETTING POSTS USERS: ${e}")
                 }
 
                 userData?.let {

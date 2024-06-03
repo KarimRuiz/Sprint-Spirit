@@ -30,8 +30,10 @@
 
         <!--User and date-->
         <LinearLayout
+            android:id="@+id/ll_card_post_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:onClick="@{onPostClick}"
             android:gravity="center_vertical">
 
             <androidx.cardview.widget.CardView

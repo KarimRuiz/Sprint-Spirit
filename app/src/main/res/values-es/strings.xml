@@ -74,4 +74,7 @@
     <string name="Are_you_sure_logout">¿Estás seguro de que quiere cerrar sesión?</string>
     <string name="I_have_read_the_terms">He leído y acepto los términos y condiciones de uso</string>
     <string name="Chat">Chat</string>
+    <string name="User_no_posts">Este usuario todavía no ha publicado ninguna ruta.</string>
+    <string name="Routes">Rutas</string>
+    <string name="User_not_found">Usuario no encontrado</string>
 </resources>

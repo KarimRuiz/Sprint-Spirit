@@ -3,6 +3,7 @@ package com.example.sprintspirit.features.dashboard.profile.data
 import android.net.Uri
 import android.util.Log
 import com.example.sprintspirit.database.DBManager
+import com.example.sprintspirit.features.dashboard.home.data.PostsResponse
 import com.example.sprintspirit.features.run.data.RunData
 import com.example.sprintspirit.features.run.data.RunResponse
 import com.example.sprintspirit.features.run.data.RunsResponse
@@ -13,6 +14,14 @@ class UsersRepository{
 
     suspend fun getCurrentUser(): UserResponse{
         return manager.getCurrentUser()
+    }
+
+    suspend fun getUser(email: String): UserResponse{
+        return manager.getUser(email)
+    }
+
+    suspend fun getPosts(email: String): PostsResponse{
+        return manager.getPostsByUser(email)
     }
 
     suspend fun getUserRuns(usermail: String): RunsResponse{

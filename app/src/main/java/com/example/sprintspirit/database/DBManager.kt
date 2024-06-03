@@ -61,6 +61,8 @@ interface DBManager {
 
     suspend fun getRunsByUser(usermail: String): RunsResponse
 
+    suspend fun getPostsByUser(usermail: String): PostsResponse
+
     suspend fun saveRun(runResponse: RunResponse)
 
     suspend fun getPostsByTime(time: TimeFilter): PostsResponse
@@ -86,4 +88,5 @@ interface DBManager {
 
     suspend fun susbscribeToChat(email: String, chatName: String, chatId: String, asOp: Boolean): Boolean
     suspend fun unSusbscribeToChat(email: String, chatId: String): Boolean
+    suspend fun getUser(email: String): UserResponse
 }
