@@ -13,6 +13,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sprintspirit.R
@@ -43,9 +44,8 @@ class HomeFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
         val email = sharedPreferences.email ?: ""
         navigator = SprintSpiritNavigator(requireContext())
-        viewModel = HomeViewModel(
-            user = email
-        )
+        viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        viewModel.user = email
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,9 +61,53 @@ class HomeFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
+
         viewModel.currentUser.observe(viewLifecycleOwner){
-            following = it.user?.following?.keys?.toList() ?: listOf()
+            logd("USER: ${it}")
+            following = if(it != null){
+                it.following.keys.toList()
+            }else{
+                listOf()
+            }
+            logd("following: ${following.toString()}")
+            if((binding as FragmentHomeBinding).cbFilterFollowing.isChecked){
+                viewModel.following.value = following
+            }else{
+                viewModel.following.value = null
+            }
+
+            (binding as FragmentHomeBinding).cbFilterFollowing.setOnCheckedChangeListener { buttonView, isChecked ->
+                showLoading()
+                if(isChecked){
+                    viewModel.following.value = following
+                }else{
+                    viewModel.following.value = null
+                }
+            }
+
+            viewModel.filteredRunsByLocation.observe(viewLifecycleOwner, Observer { posts ->
+                if(posts != null){
+                    logd("Updating...")
+                    (binding as FragmentHomeBinding).tvNoPostsFound.visibility = View.GONE
+                    if(posts.posts.isEmpty()){
+                        logd("POSTS ARE EMPTY! D:")
+                        (binding as FragmentHomeBinding).tvNoPostsFound.visibility = View.VISIBLE
+                        hideLoading()
+                    }
+                    adapter = HomeRunAdapter(
+                        postList = posts.postsByTime(),
+                        context = requireContext(),
+                        onOpenPost = { openPost(it) },
+                        onOpenChat = { openChat(it) })
+                    (binding as FragmentHomeBinding).runsHomeRv.adapter = adapter
+                }else{
+                    Log.e(TAG, "filteredRunsByData: COULDN'T GET RUNS: ${posts?.exception.toString()}")
+                }
+            })
+
         }
+        viewModel.fetchCurrentUser()
+
     }
 
     private fun subscribeUi(binding: FragmentHomeBinding) {
@@ -99,14 +143,6 @@ class HomeFragment : BaseFragment() {
 
         binding.etFilterBy.addTextChangedListener(OnLocationSearchChanged())
 
-        binding.cbFilterFollowing.setOnCheckedChangeListener { buttonView, isChecked ->
-            if(isChecked){
-                viewModel.following.value = following
-            }else{
-                viewModel.following.value = null
-            }
-        }
-
         binding.runsHomeRv.layoutManager = LinearLayoutManager(requireContext())
         binding.runsHomeRv.addOnChildAttachStateChangeListener(postAttacherListener())
 
@@ -135,42 +171,7 @@ class HomeFragment : BaseFragment() {
             binding.homeFragmentStats.pace = String.format("%.2f", it.stats?.pace)
         })
 
-        viewModel.filteredRunsByLocation.observe(viewLifecycleOwner, Observer { posts ->
-            if(posts != null){
-                logd("Updating...")
-                binding.tvNoPostsFound.visibility = View.GONE
-                if(posts.posts.isEmpty()){
-                    logd("POSTS ARE EMPTY! D:")
-                    binding.tvNoPostsFound.visibility = View.VISIBLE
-                    hideLoading()
-                }
-                adapter = HomeRunAdapter(
-                    postList = posts.postsByTime(),
-                    context = requireContext(),
-                    onOpenPost = { openPost(it) },
-                    onOpenChat = { openChat(it) })
-                binding.runsHomeRv.adapter = adapter
-            }else{
-                Log.e(TAG, "filteredRunsByData: COULDN'T GET RUNS: ${posts?.exception.toString()}")
-            }
-        })
 
-        /*viewModel.filteredRunsByData.observe(viewLifecycleOwner, Observer{posts ->
-            if(posts != null){
-                logd("Updating...")
-                binding.tvNoPostsFound.visibility = View.GONE
-                if(posts.posts.isEmpty()){
-                    binding.tvNoPostsFound.visibility = View.VISIBLE
-                    hideLoading()
-                }
-                adapter = HomeRunAdapter(posts.postsByTime(), requireContext()) {
-                    onOpenRun(it)
-                }
-                binding.runsHomeRv.adapter = adapter
-            }else{
-                Log.e(TAG, "filteredRunsByData: COULDN'T GET RUNS: ${posts?.exception.toString()}")
-            }
-        })*/
     }
 
     private fun OnLocationSearchChanged() = object : TextWatcher {
@@ -272,6 +273,7 @@ class HomeFragment : BaseFragment() {
     }
 
     private fun showLoading(){
+        logd("loading...")
         (binding as FragmentHomeBinding).skvLoadingView.visibility = View.VISIBLE
     }
 

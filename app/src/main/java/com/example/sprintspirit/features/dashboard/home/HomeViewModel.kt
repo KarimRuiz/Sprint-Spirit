@@ -1,5 +1,6 @@
 package com.example.sprintspirit.features.dashboard.home
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
@@ -11,27 +12,35 @@ import com.example.sprintspirit.database.filters.TimeFilter
 import com.example.sprintspirit.features.dashboard.home.data.HomeRepository
 import com.example.sprintspirit.features.dashboard.home.data.Post
 import com.example.sprintspirit.features.dashboard.profile.data.UsersRepository
+import com.example.sprintspirit.features.signin.data.User
 import com.example.sprintspirit.ui.BaseViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
     private val repository: HomeRepository = HomeRepository(),
-    private val usersRepository: UsersRepository = UsersRepository(),
-    private val user: String
+    private val usersRepository: UsersRepository = UsersRepository()
 ) : BaseViewModel() {
 
+    var user: String =""
+
+    private val _currentUser = MutableLiveData<User?>()
+    val currentUser: LiveData<User?> get() = _currentUser
 
     val timeFilter: MutableLiveData<TimeFilter> = MutableLiveData(TimeFilter.WEEKLY)
     val locationFilter: MutableLiveData<LocationFilter> = MutableLiveData(LocationFilter.CITY)
     val locationName: MutableLiveData<String> = MutableLiveData("")
 
-    val following: MutableLiveData<List<String>> = MutableLiveData(listOf())
+    val following: MutableLiveData<List<String>?> = MutableLiveData(null)
 
     val statsFilter: MutableLiveData<TimeFilter> = MutableLiveData(TimeFilter.WEEKLY)
 
-    val currentUser = liveData(Dispatchers.IO){
-        emit(usersRepository.getCurrentUser())
+    fun fetchCurrentUser() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val user = usersRepository.getCurrentUser()
+            logd("USer: ${user.toString()}")
+            _currentUser.postValue(user.user)
+        }
     }
 
     val stats = statsFilter.switchMap { filter ->
