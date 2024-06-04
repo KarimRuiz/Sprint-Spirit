@@ -42,6 +42,7 @@ class ProfileRunAdapter(
         init{
             with(mapView){
                 onCreate(null)
+                onResume()
                 getMapAsync(this@ProfileRunHolder)
             }
         }

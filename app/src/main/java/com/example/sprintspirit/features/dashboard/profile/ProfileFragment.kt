@@ -32,6 +32,7 @@ import com.example.sprintspirit.ui.BaseFragment
 import com.example.sprintspirit.ui.custom.popUpFollows.showFollows
 import com.example.sprintspirit.util.SprintSpiritNavigator
 import com.example.sprintspirit.util.Utils.isInternetAvailable
+import com.github.ybq.android.spinkit.style.ChasingDots
 
 class ProfileFragment : BaseFragment() {
 
@@ -82,6 +83,7 @@ class ProfileFragment : BaseFragment() {
     private fun getRuns() {
         viewModel.runs.observe(this){
             fillRuns(it)
+            hideLoading()
         }
     }
 
@@ -106,6 +108,10 @@ class ProfileFragment : BaseFragment() {
     }
 
     private fun subscribeUi(binding: FragmentProfileBinding) {
+        val loadingAnim = ChasingDots()
+        binding.skvLoadingView.setIndeterminateDrawable(loadingAnim)
+        showLoading()
+
         binding.runProfileRv.layoutManager = LinearLayoutManager(requireContext())
 
         binding.ivProfilePicture.setOnClickListener {
@@ -300,6 +306,12 @@ class ProfileFragment : BaseFragment() {
         }
     }
 
+    fun showLoading(){
+        (binding as FragmentProfileBinding).skvLoadingView.visibility = View.VISIBLE
+    }
 
+    fun hideLoading(){
+        (binding as FragmentProfileBinding).skvLoadingView.visibility = View.GONE
+    }
 
 }
