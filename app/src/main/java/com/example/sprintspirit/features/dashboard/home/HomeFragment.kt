@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sprintspirit.R
 import com.example.sprintspirit.database.filters.LocationFilter
+import com.example.sprintspirit.database.filters.OrderFilter
 import com.example.sprintspirit.database.filters.TimeFilter
 import com.example.sprintspirit.databinding.FragmentHomeBinding
 import com.example.sprintspirit.features.dashboard.home.data.Post
@@ -95,7 +96,7 @@ class HomeFragment : BaseFragment() {
                         hideLoading()
                     }
                     adapter = HomeRunAdapter(
-                        postList = posts.postsByTime(),
+                        postList = posts.posts,
                         context = requireContext(),
                         onOpenPost = { openPost(it) },
                         onOpenChat = { openChat(it) })
@@ -216,24 +217,15 @@ class HomeFragment : BaseFragment() {
 
     private fun OnOrderSelectedListener() = object : AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            logd("SORTING...")
-            val sortedList = when(position){
-                0 -> viewModel.filteredRunsByLocation.value?.posts?.sortedByDescending { it.startTime }
-                1 -> viewModel.filteredRunsByLocation.value?.posts?.sortedByDescending { it.distance }
-                2 -> viewModel.filteredRunsByLocation.value?.posts?.sortedBy { it.pace() }
-                else -> viewModel.filteredRunsByLocation.value?.posts?.sortedBy { it.startTime }
+            showLoading()
+            val order = when(position){
+                0 -> OrderFilter.NEW
+                1 -> OrderFilter.DISTANCE
+                2 -> OrderFilter.TIME
+                else -> OrderFilter.NEW
             }
-            sortedList?.take(10)
-            sortedList?.let { list ->
-                if (::adapter.isInitialized) {
-                    adapter = HomeRunAdapter(
-                        postList = list,
-                        context = requireContext(),
-                        onOpenPost = { openPost(it) },
-                        onOpenChat = { openChat(it) })
-                    (binding as FragmentHomeBinding).runsHomeRv.adapter = adapter
-                }
-            }
+
+            viewModel.orderFilter.value = order
         }
 
         override fun onNothingSelected(parent: AdapterView<*>?) {}

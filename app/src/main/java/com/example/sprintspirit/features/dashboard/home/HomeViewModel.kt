@@ -30,6 +30,8 @@ class HomeViewModel(
     val timeFilter: MutableLiveData<TimeFilter> = MutableLiveData(TimeFilter.WEEKLY)
     val locationFilter: MutableLiveData<LocationFilter> = MutableLiveData(LocationFilter.CITY)
     val locationName: MutableLiveData<String> = MutableLiveData("")
+    val orderFilter: MutableLiveData<OrderFilter> = MutableLiveData(OrderFilter.NEW)
+
 
     val following: MutableLiveData<List<String>?> = MutableLiveData(null)
 
@@ -55,29 +57,50 @@ class HomeViewModel(
         }
     }
 
-    val combinedLiveData = MediatorLiveData<Triple<LocationFilter, String, List<String>?>>().apply {
+    val combinedLiveData = MediatorLiveData<
+            Quadruple<LocationFilter,
+                    String,
+                    List<String>?,
+                    OrderFilter>
+            >().apply {
         addSource(locationFilter) { filter ->
             val name = locationName.value ?: ""
             val following = following.value ?: listOf()
-            value = Triple(filter, name, following)
+            val order = orderFilter.value ?: OrderFilter.NEW
+            value = Quadruple(filter, name, following, order)
         }
         addSource(locationName) { name ->
             val filter = locationFilter.value ?: LocationFilter.CITY
             val following = following.value
-            value = Triple(filter, name, following)
+            val order = orderFilter.value ?: OrderFilter.NEW
+            value = Quadruple(filter, name, following, order)
         }
         addSource(following){following ->
             val name = locationName.value ?: ""
             val filter = locationFilter.value ?: LocationFilter.CITY
-            value = Triple(filter, name, following)
+            val order = orderFilter.value ?: OrderFilter.NEW
+            value = Quadruple(filter, name, following, order)
+        }
+        addSource(orderFilter) {order ->
+            val name = locationName.value ?: ""
+            val filter = locationFilter.value ?: LocationFilter.CITY
+            val following = following.value
+            value = Quadruple(filter, name, following, order)
         }
     }
 
-    val filteredRunsByLocation = combinedLiveData.switchMap { (filter, name, following) ->
+    val filteredRunsByLocation = combinedLiveData.switchMap { (filter, name, following, order) ->
         logd("Searching for $name in ${filter.toFieldName()}, by following: ${following}")
         liveData(Dispatchers.IO) {
-            emit(repository.getPostsByFilter(filter, name, following))
+            emit(repository.getPostsByFilter(filter, name, following, order))
         }
     }
 
 }
+
+data class Quadruple<A, B, C, D>(
+    val first: A,
+    val second: B,
+    val third: C,
+    val fourth: D
+)

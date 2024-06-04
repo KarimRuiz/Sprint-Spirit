@@ -6,6 +6,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.core.graphics.drawable.toIcon
 import com.example.sprintspirit.database.filters.LocationFilter
+import com.example.sprintspirit.database.filters.OrderFilter
 import com.example.sprintspirit.database.filters.TimeFilter
 import com.example.sprintspirit.features.chat.data.ChatUser
 import com.example.sprintspirit.features.dashboard.home.data.Post
@@ -69,6 +70,8 @@ class FirebaseManager() : DBManager {
         val START_TIME = "startTime"
         val PUBLISH_DATE = "publishDate"
         val FOLLOWING = "following"
+        val DISTANCE = "distance"
+        val MINUTES = "minutes"
         val IS_PUBLIC = "public"
         val SESSION_ID = "sessionId"
         val USER_CHATS = "chats"
@@ -566,7 +569,12 @@ class FirebaseManager() : DBManager {
         return response
     }*/
 
-    override suspend fun getPostsByLocation(location: LocationFilter, name: String, following: List<String>?, limit: Long): PostsResponse {
+    override suspend fun getPostsByLocation(location: LocationFilter,
+                                            name: String,
+                                            following: List<String>?,
+                                            limit: Long,
+                                            orderBy: OrderFilter
+    ): PostsResponse {
         val response = PostsResponse()
 
         try {
@@ -590,10 +598,18 @@ class FirebaseManager() : DBManager {
                 query = query.whereIn(USER, listOfUsers)
             }
 
+            Log.d(TAG, "ordering by publish date")
+            query = query.orderBy(orderBy.columnName(), Query.Direction.DESCENDING)
+
             val posts = query.limit(limit).get().await().documents.mapNotNull { snapShot ->
                 snapShot.toObject(Post::class.java)?.apply {
                     id = snapShot.id
                 }
+            }
+
+            Log.d(TAG, "printing psots...")
+            posts.forEach {
+                Log.d(TAG, it.distance.toString())
             }
 
             val postsRes: MutableList<Post> = mutableListOf()
@@ -627,7 +643,7 @@ class FirebaseManager() : DBManager {
                     ))
                 }
             }
-
+            Log.d(TAG, postsRes.toString())
             response.posts = postsRes
         } catch (e: Exception) {
             Log.d(TAG, "EXCEPTION GETTING POSTS: $e")
