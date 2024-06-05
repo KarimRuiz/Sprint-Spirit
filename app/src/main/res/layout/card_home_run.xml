@@ -41,7 +41,6 @@
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_marginStart="@dimen/margin_small"
-                android:layout_marginTop="@dimen/margin_small"
                 android:paddingStart="@dimen/margin_normal"
                 app:cardCornerRadius="45dp">
 

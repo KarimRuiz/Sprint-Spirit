@@ -80,7 +80,7 @@ class HomeRunAdapter(var postList:List<Post>,
             binding.tvTimeValue.text = timeString + " min"
             val pace = get.averageSpeed().kphToMinKm()
             binding.tvPaceValue.text = String.format("%.2f", pace) + " min/km"
-            binding.tvDateValue.text = SimpleDateFormat("dd-MM-yy").format(get.startTime)
+            binding.tvDateValue.text = SimpleDateFormat("dd-MM-yy").format(get.publishDate)
 
             binding.onPostClick = View.OnClickListener {
                 onOpenPost(get)
