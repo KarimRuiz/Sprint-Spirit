@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="onApplyFilter"
+            type="android.view.View.OnClickListener" />
+    </data>
+
         <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -86,6 +92,24 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="start"
                     style="@style/filtersDrawerStyle">
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:layout_marginEnd="14dp"
+                        android:layout_marginBottom="14dp">
+
+                        <ImageButton
+                            android:id="@+id/btn_apply_filter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{onApplyFilter}"
+                            android:src="@drawable/ic_check"
+                            style="@style/filtersButton"
+                            android:padding="@dimen/margin_x_bigger" />
+
+                    </FrameLayout>
 
                     <LinearLayout
                         android:layout_width="280dp"

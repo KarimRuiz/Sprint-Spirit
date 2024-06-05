@@ -326,8 +326,8 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
                 val routeLayer = LineLayer("route-layer", "route-source").apply{
                     lineCap(LineCap.ROUND)
                     lineJoin(LineJoin.ROUND)
-                    lineOpacity(0.7)
-                    lineWidth(8.0)
+                    lineOpacity(1.0)
+                    lineWidth(10.0)
                     lineColor("#A7DCDC")
                 }
                 style.addLayer(routeLayer)
