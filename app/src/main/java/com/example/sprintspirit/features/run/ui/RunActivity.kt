@@ -22,8 +22,10 @@ import com.example.sprintspirit.R
 import com.example.sprintspirit.databinding.ActivityRunBinding
 import com.example.sprintspirit.features.run.location.LocationService
 import com.example.sprintspirit.ui.BaseActivity
+import com.example.sprintspirit.util.SprintSpiritNavigator
 import com.example.sprintspirit.util.Utils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.database.collection.LLRBNode
 import com.google.firebase.firestore.GeoPoint
 import com.mapbox.common.location.AccuracyLevel
 import com.mapbox.common.location.DeviceLocationProvider
@@ -31,10 +33,21 @@ import com.mapbox.common.location.IntervalSettings
 import com.mapbox.common.location.LocationObserver
 import com.mapbox.common.location.LocationProviderRequest
 import com.mapbox.common.location.LocationServiceFactory
+import com.mapbox.geojson.Feature
+import com.mapbox.geojson.FeatureCollection
+import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
+import com.mapbox.maps.extension.style.layers.addLayer
+import com.mapbox.maps.extension.style.layers.generated.LineLayer
+import com.mapbox.maps.extension.style.layers.properties.generated.LineCap
+import com.mapbox.maps.extension.style.layers.properties.generated.LineJoin
+import com.mapbox.maps.extension.style.sources.addGeoJSONSourceFeatures
+import com.mapbox.maps.extension.style.sources.addSource
+import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource
+import com.mapbox.maps.extension.style.sources.removeGeoJSONSourceFeatures
 import com.mapbox.maps.plugin.PuckBearing
 import com.mapbox.maps.plugin.gestures.gestures
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
@@ -51,6 +64,10 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
         private const val STOP_VIBRATION_TIME = 100L
         private const val START_VIBRATION_TIME = 1000L
 
+        private var coordinates: MutableList<Map<String, GeoPoint>> = mutableListOf()
+
+        private lateinit var routeSource: GeoJsonSource
+        private var routeCoordinates: MutableList<Point> = mutableListOf()
     }
 
     private lateinit var viewModel: RunViewModel
@@ -92,12 +109,24 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
                     }
                     val timeStamp = System.currentTimeMillis()
                     val runPoint = GeoPoint(location!!.latitude, location.longitude)
-                    viewModel.addCoord(runPoint, timeStamp)
+                    val map = mapOf<String, GeoPoint>().let {
+                        it.plus(Pair(timeStamp.toString(), runPoint))
+                    }
+                    coordinates.add(map)
                     logd("Location added to run: " + runPoint)
+
+                    val point = Point.fromLngLat(location.longitude, location.latitude)
+                    routeCoordinates.add(point)
+                    updateRouteLine()
                 }
             }
         }
     }
+
+     private fun updateRouteLine(){
+         val featureCollection = FeatureCollection.fromFeatures(arrayOf(Feature.fromGeometry(LineString.fromLngLats(routeCoordinates))))
+         routeSource.feature(Feature.fromGeometry(LineString.fromLngLats(routeCoordinates)))
+     }
 
     private val onIndicatorPositionChangedListener = OnIndicatorPositionChangedListener {
         // Jump to the current indicator position
@@ -113,8 +142,11 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
         super.onCreate(savedInstanceState)
         viewModel = RunViewModel(prefs = sharedPreferences)
         binding = ActivityRunBinding.inflate(layoutInflater)
+        navigator = SprintSpiritNavigator(this)
 
         requestPermissions()
+
+        routeSource = GeoJsonSource.Builder("route-source").build()
 
         locationProvider?.addLocationObserver(locationObserver)
 
@@ -131,10 +163,6 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
             //GPS is not enabled, show dialog to prompt user to enable it
             EnableLocationDialog(this).show(supportFragmentManager, "ENABLE_LOCATION_DIALOG")
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 
     private fun requestPermissions(){
@@ -198,6 +226,10 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
                     if(!isInternetAvailable()){
                         showNoInternetWarningOnUpload()
                     }
+
+                    navigator.navigateToHome(
+                        activity = this
+                    )
                 }, onCancel = {
 
                 })
@@ -248,6 +280,8 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
 
     private fun postRun() {
         try{
+            viewModel.run.points = coordinates
+            viewModel.run.distance = calculateDistance()
             viewModel.saveRun()
         }catch(e: Exception){
             val reason = viewModel.runCannotUploadReason()
@@ -273,7 +307,22 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
                 targetState = viewport.makeFollowPuckViewportState(),
                 transition = viewport.makeImmediateViewportTransition()
             )
-            mapboxMap.loadStyle(Style.OUTDOORS)
+            mapboxMap.loadStyle(Style.OUTDOORS) { style ->
+                routeSource = GeoJsonSource
+                    .Builder("route-source")
+                    .featureCollection(FeatureCollection.fromFeatures(arrayOf()))
+                    .build()
+                style.addSource(routeSource)
+
+                val routeLayer = LineLayer("route-layer", "route-source").apply{
+                    lineCap(LineCap.ROUND)
+                    lineJoin(LineJoin.ROUND)
+                    lineOpacity(0.7)
+                    lineWidth(8.0)
+                    lineColor("#A7DCDC")
+                }
+                style.addLayer(routeLayer)
+            }
         }
         binding.mapView.addView(mapView)
     }
@@ -286,7 +335,7 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
 
     override fun onStop() {
         super.onStop()
-        locationProvider?.removeLocationObserver(locationObserver);
+        locationProvider?.removeLocationObserver(locationObserver)
         binding.mapView.location
             .removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener)
     }
@@ -294,6 +343,20 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
     override fun onAbsentPermissionsNeutralClick(dialog: DialogFragment) {
         finish()
     }
+
+        private fun calculateDistance(): Double {
+            val points = mutableListOf<GeoPoint>()
+            coordinates.forEach {
+                points.add(it.values.first())
+            }
+            if (points.size < 2) return 0.0
+
+            var totalDistance = 0.0
+            for (i in 0 until points.size - 1) {
+                totalDistance += Utils.distanceBetween(points[i], points[i + 1])
+            }
+            return totalDistance
+        }
 
 }
 
