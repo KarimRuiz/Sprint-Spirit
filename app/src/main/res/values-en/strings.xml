@@ -85,4 +85,12 @@
     <string name="User_doesnt_follow_anyone">They don\'t follow anyone</string>
     <string name="User_follow">Follows %1$d people</string>
     <string name="Your_routes">Your routes</string>
+    <string name="No_internet">There is no Internet connection</string>
+    <string name="Internet_needed">You need an Internet connection to see this screen.</string>
+    <string name="Save_run_when_internet">Your route will be saved when you recover Internet connection</string>
+    <string name="Accept_location_permissions">Accept location permissions if you want to start recording an activity...</string>
+    <string name="Tracking_route">Tracking route...</string>
+    <string name="Tracking_location">Tracking route:</string>
+    <string name="Route_will_upload_when_internet">You don\'t have Internet connection. Route will be uploaded when you recover connection.</string>
+    <string name="Record">Record</string>
 </resources>

@@ -27,5 +27,7 @@
     <color name="black60">#CC000000</color>
     <color name="white60">#CCFFFFFF</color>
 
+    <color name="stop">#CCBC2020</color>
+
     <color name="run_path">#88FD00</color>
 </resources>

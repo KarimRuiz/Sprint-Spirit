@@ -65,8 +65,8 @@ class LocationService: Service() {
 
     private fun start() {
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Tracking route...")
-            .setContentText("Location: null")
+            .setContentTitle(applicationContext.getString(R.string.Tracking_route))
+            .setContentText(applicationContext.getString(R.string.Tracking_location))
             .setSmallIcon(R.drawable.ic_logo_no_text)
             .setOngoing(true)
 
@@ -79,7 +79,7 @@ class LocationService: Service() {
                 val lat = location.latitude.toString().takeLast(3)
                 val long = location.longitude.toString().takeLast(3)
                 val updatedNotification = notification.setContentText(
-                    "Location: ($lat, $long)"
+                    "${applicationContext.getString(R.string.Tracking_location)} ($lat, $long)"
                 )
                 notificationManager.notify(1, updatedNotification.build())
 
@@ -93,7 +93,8 @@ class LocationService: Service() {
     }
 
     private fun stop() {
-        stopForeground(STOP_FOREGROUND_REMOVE)
+        //stopForeground(STOP_FOREGROUND_REMOVE)
+        stopForeground(true)
         stopSelf()
     }
 

@@ -1,5 +1,8 @@
 package com.example.sprintspirit.ui
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +22,13 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         sharedPreferences = Preferences(this)
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_in_left)
+    }
+
+    fun isInternetAvailable(): Boolean {
+        val connectivityManager = this.baseContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork = connectivityManager.activeNetwork
+        val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
+        return networkCapabilities != null && networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
 
     fun loge(message: String = "Log_error") = Log.e(TAG, message)

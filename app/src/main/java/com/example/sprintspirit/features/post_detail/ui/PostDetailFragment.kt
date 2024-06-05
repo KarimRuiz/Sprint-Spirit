@@ -38,6 +38,8 @@ class PostDetailFragment : BaseFragment(), OnMapReadyCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requireInternet(compulsory = true)
+
         navigator = SprintSpiritNavigator(requireContext())
 
         post = PostDetailActivity.post!!

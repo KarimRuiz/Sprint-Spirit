@@ -498,77 +498,6 @@ class FirebaseManager() : DBManager {
         return response
     }
 
-    /*override suspend fun getPostsByLocation(location: LocationFilter, name: String, following: List<String>, limit: Long): PostsResponse {
-        val response = PostsResponse()
-
-        try{
-            val postsRef = firestore.collection(POSTS)
-
-            val field = when (location) {
-                LocationFilter.TOWN -> TOWN
-                LocationFilter.CITY -> CITY
-                LocationFilter.STATE -> STATE
-                else -> null
-            }
-
-            if(field != null && name.isNotBlank()){
-                postsRef.whereEqualTo(field, name)
-            }
-            if(following.isNotEmpty()){
-                val listOfUsers = following.map{
-                    "/users/$it"
-                }
-                Log.d(TAG, "list of users: ${listOfUsers}")
-                postsRef.whereIn(USER, listOfUsers)
-            }
-
-            val posts = postsRef.limit(limit).get().await().documents.mapNotNull { snapShot ->
-                    snapShot.toObject(Post::class.java)?.apply {
-                        id = snapShot.id
-                    }
-                }
-
-            val postsRes: MutableList<Post> = mutableListOf()
-            posts.forEach {post ->
-                val userId = post.user.removePrefix("/users/")
-                val userDocRef = firestore.collection(USERS).document(userId)
-                val userData = userDocRef.get().await().toObject(User::class.java)
-
-                try {
-                    val ref = storage.child(IMAGES).child("$userId.jpg")
-                    userData?.profilePictureUrl = ref.downloadUrl.await()
-                }catch(e: Exception){
-                    Log.d("FirebaseManager", "EXCEPTION GETTING POSTS USERS: ${e}")
-                }
-
-                userData?.let {
-                    postsRes.add(Post(
-                        id = post.id,
-                        user = userId,
-                        userData = it,
-                        distance = post.distance,
-                        startTime = post.startTime,
-                        minutes = post.minutes,
-                        description = post.description,
-                        title = post.title,
-                        town = post.town,
-                        city = post.city,
-                        state = post.state,
-                        country = post.country,
-                        points = post.points
-                    ))
-                }
-            }
-
-            response.posts = postsRes
-        }catch(e: Exception){
-            Log.d(TAG, "EXCEPTION GETTING POSTS: ${e}")
-            response.exception = e
-        }
-
-        return response
-    }*/
-
     override suspend fun getPostsByLocation(location: LocationFilter,
                                             name: String,
                                             following: List<String>?,
@@ -607,7 +536,6 @@ class FirebaseManager() : DBManager {
                 }
             }
 
-            Log.d(TAG, "printing psots...")
             posts.forEach {
                 Log.d(TAG, it.distance.toString())
             }

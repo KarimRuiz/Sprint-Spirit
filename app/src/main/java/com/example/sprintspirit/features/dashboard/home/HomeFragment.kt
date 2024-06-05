@@ -45,6 +45,7 @@ class HomeFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
         val email = sharedPreferences.email ?: ""
         navigator = SprintSpiritNavigator(requireContext())
+
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         viewModel.user = email
     }
@@ -62,7 +63,7 @@ class HomeFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-
+        requireInternet()
         viewModel.currentUser.observe(viewLifecycleOwner){
             logd("USER: ${it}")
             following = if(it != null){

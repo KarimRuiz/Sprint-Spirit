@@ -85,4 +85,12 @@
     <string name="User_doesnt_follow_anyone">No sigue a nadie</string>
     <string name="User_follow">Sigue a %1$d personas</string>
     <string name="Your_routes">Tus rutas</string>
+    <string name="No_internet">No hay conexión a internet</string>
+    <string name="Internet_needed">You need an Internet connection to see this screen.</string>
+    <string name="Save_run_when_internet">Tu ruta será guardada cuando recuperes la conexión a internet</string>
+    <string name="Accept_location_permissions">Acepta los permisos de ubicación si quieres empezar a grabar una ruta...</string>
+    <string name="Tracking_route">Grabando ruta...</string>
+    <string name="Tracking_location">"Grabando ruta: "</string>
+    <string name="Route_will_upload_when_internet">No tienes conexión a Internet. La ruta será guardada cuando recuperes la conexión.</string>
+    <string name="Record">Grabar</string>
 </resources>

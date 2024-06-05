@@ -22,6 +22,8 @@ import com.example.sprintspirit.R
 import com.example.sprintspirit.databinding.ActivityRunBinding
 import com.example.sprintspirit.features.run.location.LocationService
 import com.example.sprintspirit.ui.BaseActivity
+import com.example.sprintspirit.util.Utils
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.firestore.GeoPoint
 import com.mapbox.common.location.AccuracyLevel
 import com.mapbox.common.location.DeviceLocationProvider
@@ -44,6 +46,12 @@ import com.mapbox.maps.plugin.viewport.viewport
 class RunActivity : BaseActivity(), //PermissionsListener//,
     WarnPermissionsDialog.WarnPermissionsListener
     {
+
+    companion object{
+        private const val STOP_VIBRATION_TIME = 100L
+        private const val START_VIBRATION_TIME = 1000L
+
+    }
 
     private lateinit var viewModel: RunViewModel
     private lateinit var mapView: MapView
@@ -119,7 +127,7 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
         val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
 
-        if (!isGpsEnabled) {
+        if (!isGpsEnabled ){
             //GPS is not enabled, show dialog to prompt user to enable it
             EnableLocationDialog(this).show(supportFragmentManager, "ENABLE_LOCATION_DIALOG")
         }
@@ -127,7 +135,6 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
 
     override fun onResume() {
         super.onResume()
-        checkLocationEnabled()
     }
 
     private fun requestPermissions(){
@@ -156,7 +163,7 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
                 checkLocationEnabled()
             } else {
                 logd("Didn't get permissions")
-                 warnUserOfPermissions()
+                warnUserOfPermissions()
             }
         }
     }
@@ -169,7 +176,7 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
         binding.recordRunButton.setOnClickListener {
             logd("viewModel.isRunning(): ${viewModel.isRunning()}")
             if(viewModel.isRunning()){
-                showDeleteConfirmationDialog(onConfirm = {
+                showStopConfirmationDialog(onConfirm = {
                     Intent(applicationContext, LocationService::class.java).apply {
                         action = LocationService.ACTION_STOP
                         startService(this)
@@ -181,9 +188,16 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
                     }
 
                     binding.flRunRecordRedDot.visibility = View.GONE
-                    binding.recordRunStatus.text = "Record"
+                    binding.recordRunStatus.setTextColor(ContextCompat.getColor(this, R.color.white))
+                    binding.recordRunStatus.text = ContextCompat.getString(this, R.string.Record)
                     binding.recordRunButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.record_button))
                     postRun()
+
+                    Utils.vibrate(this, STOP_VIBRATION_TIME)
+
+                    if(!isInternetAvailable()){
+                        showNoInternetWarningOnUpload()
+                    }
                 }, onCancel = {
 
                 })
@@ -196,15 +210,18 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
                     isReceiverRegistered = true
                 }
 
+                Utils.vibrate(this, START_VIBRATION_TIME)
+
                 binding.flRunRecordRedDot.visibility = View.VISIBLE
-                binding.recordRunStatus.text = "Stop"
+                binding.recordRunStatus.setTextColor(ContextCompat.getColor(this, R.color.stop))
+                binding.recordRunStatus.text = "STOP"
                 binding.recordRunButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.record_button_running))
                 viewModel.startRun()
             }
         }
     }
 
-    private fun showDeleteConfirmationDialog(onConfirm: () -> Unit, onCancel: () -> Unit){
+    private fun showStopConfirmationDialog(onConfirm: () -> Unit, onCancel: () -> Unit){
         val builder = AlertDialog.Builder(this)
         builder.setTitle(ContextCompat.getString(this, R.string.Confirmation))
         builder.setMessage(ContextCompat.getString(this, R.string.Are_you_sure_stop_recording))
@@ -215,6 +232,16 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
         builder.setNegativeButton(ContextCompat.getString(this, R.string.Cancel)) { dialog, which ->
             onCancel()
         }
+
+        builder.show()
+    }
+
+    private fun showNoInternetWarningOnUpload(){
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(ContextCompat.getString(this, R.string.No_internet))
+        builder.setMessage(ContextCompat.getString(this, R.string.Route_will_upload_when_internet))
+
+        builder.setNeutralButton(ContextCompat.getString(this, R.string.Confirm)){_, _ ->}
 
         builder.show()
     }
@@ -280,7 +307,7 @@ class WarnPermissionsDialog(
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = AlertDialog.Builder(it)
-            builder.setMessage("Accept location permissions if you want to start recording an activity...")
+            builder.setMessage(requireContext().getString(R.string.Accept_location_permissions))
                 .setNeutralButton("Ok") { dialog, id ->
                     var intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                     var uri = Uri.fromParts("package", requireContext().packageName, null)
@@ -309,12 +336,12 @@ class EnableLocationDialog(
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity.let {
             val builder = AlertDialog.Builder(it)
-            builder.setMessage("Enable location if you want to start recording an activity...")
+            builder.setMessage(context?.getString(R.string.Save_run_when_internet))
                 .setPositiveButton("Enable") { dialog, id ->
                     val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                     activity.startActivity(intent)
                 }
-                .setNegativeButton("Cancel") { dialog, id ->
+                .setNegativeButton(context?.getString(R.string.Cancel) ?: "Cancelar") { dialog, id ->
                     activity.finish()
                 }
             builder.create()

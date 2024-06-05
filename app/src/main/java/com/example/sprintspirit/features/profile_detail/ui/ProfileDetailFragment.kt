@@ -44,6 +44,7 @@ class ProfileDetailFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requireInternet(compulsory = true)
         navigator = SprintSpiritNavigator(requireContext())
         viewModel = ViewModelProvider(this).get(ProfileDetailViewModel::class.java)
 

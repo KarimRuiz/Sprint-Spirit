@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.adapters.TextViewBindingAdapter.AfterTextChanged
 import com.example.sprintspirit.R
 import com.example.sprintspirit.databinding.FragmentPostBinding
+import com.example.sprintspirit.databinding.FragmentPostDetailBinding
 import com.example.sprintspirit.databinding.FragmentProfileBinding
 import com.example.sprintspirit.features.run.data.RunData
 import com.example.sprintspirit.ui.BaseFragment
@@ -31,9 +32,9 @@ class PostFragment : BaseFragment(), OnMapReadyCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requireInternet(compulsory = true)
         navigator = SprintSpiritNavigator(requireContext())
         viewModel = ViewModelProvider(this).get(PostViewModel::class.java)
-        // TODO: Use the ViewModel
 
         run = PostActivity.runData!!
     }
@@ -98,6 +99,7 @@ class PostFragment : BaseFragment(), OnMapReadyCallback {
 
     private fun postListener(): View.OnClickListener {
         return View.OnClickListener {
+            requireInternet(compulsory = true)
             viewModel.postRun() //TODO: get if postRun was sucessful or not
             activity?.finish() //TODO: navigateBack in SprintSpiritNavigator
         }
@@ -121,6 +123,26 @@ class PostFragment : BaseFragment(), OnMapReadyCallback {
         override fun afterTextChanged(s: Editable?) {
             viewModel.description = s.toString()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (binding as FragmentPostBinding).mapPostRun.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (binding as FragmentPostBinding).mapPostRun.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        (binding as FragmentPostBinding).mapPostRun.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        (binding as FragmentPostBinding).mapPostRun.onLowMemory()
     }
 
 }

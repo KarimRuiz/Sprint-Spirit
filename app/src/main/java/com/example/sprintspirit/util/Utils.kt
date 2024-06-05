@@ -6,6 +6,9 @@ import android.location.Geocoder
 import android.location.Location
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.text.Editable
 import com.google.firebase.firestore.GeoPoint
 import com.google.type.LatLng
@@ -44,7 +47,11 @@ object Utils{
 
     fun addressFromLocation(context: Context, point: GeoPoint): Address?{
         val geocoder = Geocoder(context)
-        val addresses = geocoder.getFromLocation(point.latitude, point.longitude, 1)
+        val addresses = try{
+            geocoder.getFromLocation(point.latitude, point.longitude, 1)
+        }catch(e: Exception){
+            null
+        }
 
         return addresses?.firstOrNull()
     }
@@ -90,6 +97,12 @@ object Utils{
 
     fun String.normalize() : String{
         return this.lowercase().removeNonSpacingMarks()
+    }
+
+    fun vibrate(context: Context, milli: Long) {
+        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        val effect = VibrationEffect.createOneShot(milli, VibrationEffect.DEFAULT_AMPLITUDE)
+        vibrator.vibrate(effect)
     }
 
 }
