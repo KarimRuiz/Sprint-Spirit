@@ -93,10 +93,17 @@ class PostDetailFragment : BaseFragment(), OnMapReadyCallback {
         //Pace
         binding.tvPaceAvg.text = String.format("%.2f", post.averageSpeed().kphToMinKm())
 
-        Glide.with(requireContext())
-            .load(post.userData.profilePictureUrl)
-            .into(binding.ivHomeProfilePicture)
-            .onLoadFailed(AppCompatResources.getDrawable(requireContext(), R.drawable.ic_account))
+        if(post.userData.profilePictureUrl == null){
+            Glide.with(requireContext())
+                .load(R.drawable.ic_account)
+                .into(binding.ivHomeProfilePicture)
+                .onLoadFailed(AppCompatResources.getDrawable(requireContext(), R.drawable.ic_account))
+        }else{
+            Glide.with(requireContext())
+                .load(post.userData.profilePictureUrl)
+                .into(binding.ivHomeProfilePicture)
+                .onLoadFailed(AppCompatResources.getDrawable(requireContext(), R.drawable.ic_account))
+        }
 
     }
 

@@ -93,4 +93,5 @@
     <string name="Tracking_location">Tracking route:</string>
     <string name="Route_will_upload_when_internet">You don\'t have Internet connection. Route will be uploaded when you recover connection.</string>
     <string name="Record">Record</string>
+    <string name="Enable_location">Please, enable location to record your route.</string>
 </resources>

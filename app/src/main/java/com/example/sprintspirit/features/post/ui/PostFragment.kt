@@ -112,6 +112,9 @@ class PostFragment : BaseFragment(), OnMapReadyCallback {
 
         override fun afterTextChanged(s: Editable?) {
             viewModel.title = s.toString()
+            val length = s?.length ?: 0
+            val isNotBlank = s?.isNotBlank() ?: false
+            (binding as FragmentPostBinding).btnPost.isEnabled = length > 5 && isNotBlank
         }
     }
 

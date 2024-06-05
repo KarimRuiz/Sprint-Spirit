@@ -403,7 +403,7 @@ class FirebaseManager() : DBManager {
                     val ref = storage.child(IMAGES).child("$userId.jpg")
                     userData?.profilePictureUrl = ref.downloadUrl.await()
                 }catch(e: Exception){
-                    Log.d(TAG, "EXCEPTION GETTING POSTS USERS: ${e}")
+                    Log.d(TAG, "EXCEPTION GETTING POSTS USERS: ${e}, user: ${userId}")
                 }
 
                 userData?.let {
@@ -550,9 +550,10 @@ class FirebaseManager() : DBManager {
                     val ref = storage.child(IMAGES).child("$userId.jpg")
                     userData?.profilePictureUrl = ref.downloadUrl.await()
                 } catch (e: Exception) {
-                    Log.d("FirebaseManager", "EXCEPTION GETTING POSTS USERS: $e")
+                    Log.d("FirebaseManager", "error getting profile image for user $userId: $e")
                 }
 
+                if(userData == null) Log.d(TAG, "userData is null")
                 userData?.let {
                     postsRes.add(Post(
                         id = post.id,

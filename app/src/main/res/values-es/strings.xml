@@ -30,7 +30,7 @@
     <string name="Internet_will_be_uploaded">No tienes conexión a internet. Se subirá cuando la conexión vuelva.</string>
     <string name="Your_stats">Tus estadísticas</string>
     <string name="Order_by">Ordenar por</string>
-    <string name="You_dont_have_runs">Todav\'ia no has grabado ninguna actividad.</string>
+    <string name="You_dont_have_runs">Todavía no has grabado ninguna actividad.</string>
     <string name="message_hint">mensaje...</string>
     <string name="Chats">Chats</string>
     <string name="You_dont_have_chats">Todavía no tienes chats. Suscríbete a uno y empieza la conversación!</string>
@@ -93,4 +93,5 @@
     <string name="Tracking_location">"Grabando ruta: "</string>
     <string name="Route_will_upload_when_internet">No tienes conexión a Internet. La ruta será guardada cuando recuperes la conexión.</string>
     <string name="Record">Grabar</string>
+    <string name="Enable_location">Por favor, activa la ubicación para comenzar a grabar la ruta.</string>
 </resources>

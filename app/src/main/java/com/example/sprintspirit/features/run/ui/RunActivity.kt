@@ -124,6 +124,7 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
     }
 
      private fun updateRouteLine(){
+         logd("UPDATED ROUTE LINE")
          val featureCollection = FeatureCollection.fromFeatures(arrayOf(Feature.fromGeometry(LineString.fromLngLats(routeCoordinates))))
          routeSource.feature(Feature.fromGeometry(LineString.fromLngLats(routeCoordinates)))
      }
@@ -143,6 +144,8 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
         viewModel = RunViewModel(prefs = sharedPreferences)
         binding = ActivityRunBinding.inflate(layoutInflater)
         navigator = SprintSpiritNavigator(this)
+
+        coordinates.clear()
 
         requestPermissions()
 
@@ -226,10 +229,11 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
                     if(!isInternetAvailable()){
                         showNoInternetWarningOnUpload()
                     }
-
-                    navigator.navigateToHome(
-                        activity = this
-                    )
+                    routeCoordinates.clear()
+                    binding.mapView.mapboxMap.getStyle { style ->
+                        style.removeStyleSource("route-source")
+                        style.removeStyleLayer("route-layer")
+                    }
                 }, onCancel = {
 
                 })
@@ -283,9 +287,14 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
             viewModel.run.points = coordinates
             viewModel.run.distance = calculateDistance()
             viewModel.saveRun()
+
+            navigator.navigateToHome(
+                activity = this
+            )
         }catch(e: Exception){
             val reason = viewModel.runCannotUploadReason()
             if(reason != -1){
+                logd("run cannot be uploaded")
                 val minDistance = (RunViewModel.MIN_DISTANCE * 1000).toInt()
                 ErrorDialog(this.getString(reason, minDistance)).show(supportFragmentManager, "ERROR_DIALOG")
             }else{
@@ -399,7 +408,7 @@ class EnableLocationDialog(
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity.let {
             val builder = AlertDialog.Builder(it)
-            builder.setMessage(context?.getString(R.string.Save_run_when_internet))
+            builder.setMessage(context?.getString(R.string.Enable_location))
                 .setPositiveButton("Enable") { dialog, id ->
                     val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                     activity.startActivity(intent)
@@ -419,7 +428,11 @@ class ErrorDialog(
         return activity.let {
             val builder = AlertDialog.Builder(it)
             builder.setMessage(message)
-                .setNeutralButton("Ok") { dialog, id -> }
+                .setNeutralButton("Ok") { dialog, id ->
+                    SprintSpiritNavigator(requireActivity()).navigateToHome(
+                        activity = requireActivity()
+                    )
+                }
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }
