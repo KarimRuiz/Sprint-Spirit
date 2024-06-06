@@ -90,6 +90,11 @@ class HomeFragment : BaseFragment() {
         //Filter by following
         binding.cbFilterFollowing.setOnCheckedChangeListener { _, isChecked ->
             filterByFollowing = isChecked
+            viewModel.following = if(filterByFollowing){
+                following
+            }else{
+                null
+            }
         }
 
         binding.runsHomeRv.layoutManager = LinearLayoutManager(requireContext())
@@ -110,11 +115,7 @@ class HomeFragment : BaseFragment() {
 
     private fun fetchPosts(){
         logd("Fetching posts")
-        viewModel.following = if(filterByFollowing){
-            following
-        }else{
-            null
-        }
+
         viewModel.orderBy = order
         viewModel.locationName = locationName
         viewModel.locationFilter = locationType
@@ -171,6 +172,7 @@ class HomeFragment : BaseFragment() {
             loge("Couldnt get posts: ${response.exception.toString()}")
         }
         val posts = response.posts
+        logd("got posts: $posts")
         binding.tvNoPostsFound.visibility = if(posts.isEmpty()){
             View.VISIBLE
         }else{
