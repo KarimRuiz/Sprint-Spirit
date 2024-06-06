@@ -564,7 +564,10 @@ class FirebaseManager() : DBManager {
         val response = PostsResponse()
 
         try {
+            Log.d(TAG, "Getting posts")
+            Log.d(TAG, "following: $following")
             if(following != null && following.isEmpty()) return response
+            Log.d(TAG, "following not null")
             var query = firestore.collection(POSTS) as Query
 
             val field = when (location) {
