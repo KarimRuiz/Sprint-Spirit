@@ -25,7 +25,7 @@ class RunViewModel(
 
     private val dbManager: DBManager = DBManager.getCurrentDBManager()
 
-    private lateinit var run: RunData
+    lateinit var run: RunData
     private var isRunning = false
 
     fun saveRun(){

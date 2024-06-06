@@ -5,7 +5,6 @@ data class PostsResponse (
     var exception: Exception? = null
 
 ){
-
     fun postsByTime(): List<Post> {
         return posts.sortedBy { it.startTime }
     }

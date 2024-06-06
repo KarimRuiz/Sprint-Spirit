@@ -82,6 +82,11 @@ class ChatFragment : BaseFragment() {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        requireInternet(compulsory = true)
+    }
+
     private fun subscribeUi(binding: FragmentChatBinding) {
         getCurrentUser()
 

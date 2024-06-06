@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.sprintspirit.R
+import com.example.sprintspirit.databinding.FragmentProfileBinding
 import com.example.sprintspirit.databinding.FragmentProfileDetailBinding
 import com.example.sprintspirit.features.dashboard.home.data.Post
 import com.example.sprintspirit.features.dashboard.home.ui.HomeRunAdapter
@@ -18,6 +19,7 @@ import com.example.sprintspirit.features.signin.data.User
 import com.example.sprintspirit.ui.BaseFragment
 import com.example.sprintspirit.ui.custom.popUpFollows
 import com.example.sprintspirit.util.SprintSpiritNavigator
+import com.github.ybq.android.spinkit.style.ChasingDots
 
 class ProfileDetailFragment : BaseFragment() {
 
@@ -42,6 +44,7 @@ class ProfileDetailFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requireInternet(compulsory = true)
         navigator = SprintSpiritNavigator(requireContext())
         viewModel = ViewModelProvider(this).get(ProfileDetailViewModel::class.java)
 
@@ -70,6 +73,10 @@ class ProfileDetailFragment : BaseFragment() {
     }
 
     private fun subscribeUi(binding: FragmentProfileDetailBinding) {
+        val loadingAnim = ChasingDots()
+        binding.skvLoadingView.setIndeterminateDrawable(loadingAnim)
+        showLoading()
+
         if(userId.isNullOrBlank()) {
             binding.tvProfileNoRuns.visibility = View.VISIBLE
             binding.tvProfileNoRuns.text = getString(R.string.User_not_found)
@@ -78,6 +85,7 @@ class ProfileDetailFragment : BaseFragment() {
 
         viewModel.posts.observe(viewLifecycleOwner){
             fillPosts(it.posts)
+            hideLoading()
         }
     }
 
@@ -195,5 +203,12 @@ class ProfileDetailFragment : BaseFragment() {
         navigator.navigateToChat(activity, post)
     }
 
+    fun showLoading(){
+        (binding as FragmentProfileDetailBinding).skvLoadingView.visibility = View.VISIBLE
+    }
+
+    fun hideLoading(){
+        (binding as FragmentProfileDetailBinding).skvLoadingView.visibility = View.GONE
+    }
 
 }

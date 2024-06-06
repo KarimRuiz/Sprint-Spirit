@@ -1,5 +1,6 @@
 package com.example.sprintspirit.features.dashboard.home
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
@@ -10,28 +11,88 @@ import com.example.sprintspirit.database.filters.OrderFilter
 import com.example.sprintspirit.database.filters.TimeFilter
 import com.example.sprintspirit.features.dashboard.home.data.HomeRepository
 import com.example.sprintspirit.features.dashboard.home.data.Post
+import com.example.sprintspirit.features.dashboard.home.data.PostsResponse
 import com.example.sprintspirit.features.dashboard.profile.data.UsersRepository
+import com.example.sprintspirit.features.signin.data.User
 import com.example.sprintspirit.ui.BaseViewModel
+import com.example.sprintspirit.util.Utils.normalize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
     private val repository: HomeRepository = HomeRepository(),
-    private val usersRepository: UsersRepository = UsersRepository(),
-    private val user: String
+    private val usersRepository: UsersRepository = UsersRepository()
 ) : BaseViewModel() {
 
+    var user: String =""
+
+    private val _currentUser = MutableLiveData<User?>()
+    val currentUser: LiveData<User?> get() = _currentUser
+
+    var locationFilter = LocationFilter.CITY
+    var locationName = ""
+    var orderBy = OrderFilter.NEW
+    var following: List<String>? = null
+
+    val statsFilter: MutableLiveData<TimeFilter> = MutableLiveData(TimeFilter.WEEKLY)
+
+    val stats = statsFilter.switchMap { filter ->
+        liveData(Dispatchers.IO){
+            emit(repository.getStats(user, filter))
+        }
+    }
+
+    fun fetchCurrentUser() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val user = usersRepository.getCurrentUser()
+            _currentUser.postValue(user.user)
+        }
+    }
+
+    private val _postFetchTrigger = MutableLiveData<Unit>()
+    val posts: LiveData<PostsResponse> = _postFetchTrigger.switchMap {
+        liveData(Dispatchers.IO) {
+            emit(repository.getPostsByFilter(
+                location = locationFilter,
+                name = locationName.normalize(),
+                following = following,
+                orderBy = orderBy
+            ))
+        }
+    }
+
+    fun fetchPosts() {
+        _postFetchTrigger.value = Unit
+    }
+
+}
+
+class HomeViewModelOld(
+    private val repository: HomeRepository = HomeRepository(),
+    private val usersRepository: UsersRepository = UsersRepository()
+) : BaseViewModel() {
+
+    var user: String =""
+
+    private val _currentUser = MutableLiveData<User?>()
+    val currentUser: LiveData<User?> get() = _currentUser
 
     val timeFilter: MutableLiveData<TimeFilter> = MutableLiveData(TimeFilter.WEEKLY)
     val locationFilter: MutableLiveData<LocationFilter> = MutableLiveData(LocationFilter.CITY)
     val locationName: MutableLiveData<String> = MutableLiveData("")
+    val orderFilter: MutableLiveData<OrderFilter> = MutableLiveData(OrderFilter.NEW)
 
-    val following: MutableLiveData<List<String>> = MutableLiveData(listOf())
+
+    val following: MutableLiveData<List<String>?> = MutableLiveData(null)
 
     val statsFilter: MutableLiveData<TimeFilter> = MutableLiveData(TimeFilter.WEEKLY)
 
-    val currentUser = liveData(Dispatchers.IO){
-        emit(usersRepository.getCurrentUser())
+    fun fetchCurrentUser() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val user = usersRepository.getCurrentUser()
+            logd("USer: ${user.toString()}")
+            _currentUser.postValue(user.user)
+        }
     }
 
     val stats = statsFilter.switchMap { filter ->
@@ -46,29 +107,50 @@ class HomeViewModel(
         }
     }
 
-    val combinedLiveData = MediatorLiveData<Triple<LocationFilter, String, List<String>?>>().apply {
+    val combinedLiveData = MediatorLiveData<
+            Quadruple<LocationFilter,
+                    String,
+                    List<String>?,
+                    OrderFilter>
+            >().apply {
         addSource(locationFilter) { filter ->
             val name = locationName.value ?: ""
             val following = following.value ?: listOf()
-            value = Triple(filter, name, following)
+            val order = orderFilter.value ?: OrderFilter.NEW
+            value = Quadruple(filter, name, following, order)
         }
         addSource(locationName) { name ->
             val filter = locationFilter.value ?: LocationFilter.CITY
             val following = following.value
-            value = Triple(filter, name, following)
+            val order = orderFilter.value ?: OrderFilter.NEW
+            value = Quadruple(filter, name, following, order)
         }
         addSource(following){following ->
             val name = locationName.value ?: ""
             val filter = locationFilter.value ?: LocationFilter.CITY
-            value = Triple(filter, name, following)
+            val order = orderFilter.value ?: OrderFilter.NEW
+            value = Quadruple(filter, name, following, order)
+        }
+        addSource(orderFilter) {order ->
+            val name = locationName.value ?: ""
+            val filter = locationFilter.value ?: LocationFilter.CITY
+            val following = following.value
+            value = Quadruple(filter, name, following, order)
         }
     }
 
-    val filteredRunsByLocation = combinedLiveData.switchMap { (filter, name, following) ->
+    val filteredRunsByLocation = combinedLiveData.switchMap { (filter, name, following, order) ->
         logd("Searching for $name in ${filter.toFieldName()}, by following: ${following}")
         liveData(Dispatchers.IO) {
-            emit(repository.getPostsByFilter(filter, name, following))
+            emit(repository.getPostsByFilter(filter, name, following, order))
         }
     }
 
 }
+
+data class Quadruple<A, B, C, D>(
+    val first: A,
+    val second: B,
+    val third: C,
+    val fourth: D
+)

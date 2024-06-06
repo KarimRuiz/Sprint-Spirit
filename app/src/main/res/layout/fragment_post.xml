@@ -18,22 +18,19 @@
             android:layout_height="match_parent"
             >
 
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_margin="@dimen/margin_big"
                     android:orientation="vertical"
+                    android:weightSum="3"
                     >
 
                     <EditText
                         android:id="@+id/edt_post_title"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/margin_normal"
                         android:ems="10"
                         android:inputType="text"
@@ -45,8 +42,7 @@
                     <EditText
                         android:id="@+id/edt_post_description"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/margin_normal"
                         android:ems="10"
                         android:inputType="text"
@@ -58,19 +54,21 @@
 
                     <com.google.android.gms.maps.MapView
                         android:id="@+id/map_post_run"
-                        android:layout_height="175dp"
+                        android:layout_height="wrap_content"
                         android:layout_width="match_parent"
+                        android:layout_weight="3"
                         android:background="@color/on_primary"
                         />
 
                 </LinearLayout>
 
-            </ScrollView>
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_post"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
+                android:enabled="false"
                 android:layout_marginEnd="@dimen/margin_big"
                 android:layout_marginBottom="@dimen/margin_big"
                 android:onClick="@{onPostListener}"

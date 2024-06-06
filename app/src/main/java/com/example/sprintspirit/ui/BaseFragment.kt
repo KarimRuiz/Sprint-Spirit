@@ -1,13 +1,18 @@
 package com.example.sprintspirit.ui
 
 import android.app.AlertDialog
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Bundle
 import android.util.Log
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import com.example.sprintspirit.R
 import com.example.sprintspirit.data.Preferences
 import com.example.sprintspirit.util.SprintSpiritNavigator
+
 
 abstract class BaseFragment : Fragment() {
 
@@ -24,6 +29,25 @@ abstract class BaseFragment : Fragment() {
             sharedPreferences = Preferences(requireContext())
         } catch(ise: IllegalStateException){
             logw(ise.localizedMessage ?: "unknown")
+        }
+    }
+
+    fun requireInternet(compulsory: Boolean = false){
+        if(activity !is BaseActivity) return
+        if(!(activity as BaseActivity).isInternetAvailable()){
+            val alertDialogBuilder = AlertDialog.Builder(context)
+            alertDialogBuilder.apply {
+                setTitle(context.getString(R.string.No_internet))
+                setMessage(context.getString(R.string.Internet_needed))
+                setPositiveButton("OK") { dialog, which ->
+                    dialog.dismiss()
+                    if(compulsory){
+                        (activity as BaseActivity).finish()
+                    }
+                }
+                setCancelable(false)
+                create().show()
+            }
         }
     }
 

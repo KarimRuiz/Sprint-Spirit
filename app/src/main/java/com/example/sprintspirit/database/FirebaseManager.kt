@@ -6,6 +6,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.core.graphics.drawable.toIcon
 import com.example.sprintspirit.database.filters.LocationFilter
+import com.example.sprintspirit.database.filters.OrderFilter
 import com.example.sprintspirit.database.filters.TimeFilter
 import com.example.sprintspirit.features.chat.data.ChatUser
 import com.example.sprintspirit.features.dashboard.home.data.Post
@@ -69,6 +70,8 @@ class FirebaseManager() : DBManager {
         val START_TIME = "startTime"
         val PUBLISH_DATE = "publishDate"
         val FOLLOWING = "following"
+        val DISTANCE = "distance"
+        val MINUTES = "minutes"
         val IS_PUBLIC = "public"
         val SESSION_ID = "sessionId"
         val USER_CHATS = "chats"
@@ -400,7 +403,7 @@ class FirebaseManager() : DBManager {
                     val ref = storage.child(IMAGES).child("$userId.jpg")
                     userData?.profilePictureUrl = ref.downloadUrl.await()
                 }catch(e: Exception){
-                    Log.d(TAG, "EXCEPTION GETTING POSTS USERS: ${e}")
+                    Log.d(TAG, "EXCEPTION GETTING POSTS USERS: ${e}, user: ${userId}")
                 }
 
                 userData?.let {
@@ -495,78 +498,12 @@ class FirebaseManager() : DBManager {
         return response
     }
 
-    /*override suspend fun getPostsByLocation(location: LocationFilter, name: String, following: List<String>, limit: Long): PostsResponse {
-        val response = PostsResponse()
-
-        try{
-            val postsRef = firestore.collection(POSTS)
-
-            val field = when (location) {
-                LocationFilter.TOWN -> TOWN
-                LocationFilter.CITY -> CITY
-                LocationFilter.STATE -> STATE
-                else -> null
-            }
-
-            if(field != null && name.isNotBlank()){
-                postsRef.whereEqualTo(field, name)
-            }
-            if(following.isNotEmpty()){
-                val listOfUsers = following.map{
-                    "/users/$it"
-                }
-                Log.d(TAG, "list of users: ${listOfUsers}")
-                postsRef.whereIn(USER, listOfUsers)
-            }
-
-            val posts = postsRef.limit(limit).get().await().documents.mapNotNull { snapShot ->
-                    snapShot.toObject(Post::class.java)?.apply {
-                        id = snapShot.id
-                    }
-                }
-
-            val postsRes: MutableList<Post> = mutableListOf()
-            posts.forEach {post ->
-                val userId = post.user.removePrefix("/users/")
-                val userDocRef = firestore.collection(USERS).document(userId)
-                val userData = userDocRef.get().await().toObject(User::class.java)
-
-                try {
-                    val ref = storage.child(IMAGES).child("$userId.jpg")
-                    userData?.profilePictureUrl = ref.downloadUrl.await()
-                }catch(e: Exception){
-                    Log.d("FirebaseManager", "EXCEPTION GETTING POSTS USERS: ${e}")
-                }
-
-                userData?.let {
-                    postsRes.add(Post(
-                        id = post.id,
-                        user = userId,
-                        userData = it,
-                        distance = post.distance,
-                        startTime = post.startTime,
-                        minutes = post.minutes,
-                        description = post.description,
-                        title = post.title,
-                        town = post.town,
-                        city = post.city,
-                        state = post.state,
-                        country = post.country,
-                        points = post.points
-                    ))
-                }
-            }
-
-            response.posts = postsRes
-        }catch(e: Exception){
-            Log.d(TAG, "EXCEPTION GETTING POSTS: ${e}")
-            response.exception = e
-        }
-
-        return response
-    }*/
-
-    override suspend fun getPostsByLocation(location: LocationFilter, name: String, following: List<String>?, limit: Long): PostsResponse {
+    override suspend fun getPostsByLocation(location: LocationFilter,
+                                            name: String,
+                                            following: List<String>?,
+                                            limit: Long,
+                                            orderBy: OrderFilter
+    ): PostsResponse {
         val response = PostsResponse()
 
         try {
@@ -590,10 +527,17 @@ class FirebaseManager() : DBManager {
                 query = query.whereIn(USER, listOfUsers)
             }
 
+            Log.d(TAG, "ordering by publish date")
+            query = query.orderBy(orderBy.columnName(), Query.Direction.DESCENDING)
+
             val posts = query.limit(limit).get().await().documents.mapNotNull { snapShot ->
                 snapShot.toObject(Post::class.java)?.apply {
                     id = snapShot.id
                 }
+            }
+
+            posts.forEach {
+                Log.d(TAG, it.distance.toString())
             }
 
             val postsRes: MutableList<Post> = mutableListOf()
@@ -606,9 +550,10 @@ class FirebaseManager() : DBManager {
                     val ref = storage.child(IMAGES).child("$userId.jpg")
                     userData?.profilePictureUrl = ref.downloadUrl.await()
                 } catch (e: Exception) {
-                    Log.d("FirebaseManager", "EXCEPTION GETTING POSTS USERS: $e")
+                    Log.d("FirebaseManager", "error getting profile image for user $userId: $e")
                 }
 
+                if(userData == null) Log.d(TAG, "userData is null")
                 userData?.let {
                     postsRes.add(Post(
                         id = post.id,
@@ -627,7 +572,7 @@ class FirebaseManager() : DBManager {
                     ))
                 }
             }
-
+            Log.d(TAG, postsRes.toString())
             response.posts = postsRes
         } catch (e: Exception) {
             Log.d(TAG, "EXCEPTION GETTING POSTS: $e")

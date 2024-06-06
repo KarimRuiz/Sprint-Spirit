@@ -22,6 +22,10 @@ import com.example.sprintspirit.R
 import com.example.sprintspirit.databinding.ActivityRunBinding
 import com.example.sprintspirit.features.run.location.LocationService
 import com.example.sprintspirit.ui.BaseActivity
+import com.example.sprintspirit.util.SprintSpiritNavigator
+import com.example.sprintspirit.util.Utils
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.database.collection.LLRBNode
 import com.google.firebase.firestore.GeoPoint
 import com.mapbox.common.location.AccuracyLevel
 import com.mapbox.common.location.DeviceLocationProvider
@@ -29,10 +33,21 @@ import com.mapbox.common.location.IntervalSettings
 import com.mapbox.common.location.LocationObserver
 import com.mapbox.common.location.LocationProviderRequest
 import com.mapbox.common.location.LocationServiceFactory
+import com.mapbox.geojson.Feature
+import com.mapbox.geojson.FeatureCollection
+import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
+import com.mapbox.maps.extension.style.layers.addLayer
+import com.mapbox.maps.extension.style.layers.generated.LineLayer
+import com.mapbox.maps.extension.style.layers.properties.generated.LineCap
+import com.mapbox.maps.extension.style.layers.properties.generated.LineJoin
+import com.mapbox.maps.extension.style.sources.addGeoJSONSourceFeatures
+import com.mapbox.maps.extension.style.sources.addSource
+import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource
+import com.mapbox.maps.extension.style.sources.removeGeoJSONSourceFeatures
 import com.mapbox.maps.plugin.PuckBearing
 import com.mapbox.maps.plugin.gestures.gestures
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
@@ -44,6 +59,16 @@ import com.mapbox.maps.plugin.viewport.viewport
 class RunActivity : BaseActivity(), //PermissionsListener//,
     WarnPermissionsDialog.WarnPermissionsListener
     {
+
+    companion object{
+        private const val STOP_VIBRATION_TIME = 100L
+        private const val START_VIBRATION_TIME = 1000L
+
+        private var coordinates: MutableList<Map<String, GeoPoint>> = mutableListOf()
+
+        private lateinit var routeSource: GeoJsonSource
+        private var routeCoordinates: MutableList<Point> = mutableListOf()
+    }
 
     private lateinit var viewModel: RunViewModel
     private lateinit var mapView: MapView
@@ -84,12 +109,25 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
                     }
                     val timeStamp = System.currentTimeMillis()
                     val runPoint = GeoPoint(location!!.latitude, location.longitude)
-                    viewModel.addCoord(runPoint, timeStamp)
+                    val map = mapOf<String, GeoPoint>().let {
+                        it.plus(Pair(timeStamp.toString(), runPoint))
+                    }
+                    coordinates.add(map)
                     logd("Location added to run: " + runPoint)
+
+                    val point = Point.fromLngLat(location.longitude, location.latitude)
+                    routeCoordinates.add(point)
+                    updateRouteLine()
                 }
             }
         }
     }
+
+     private fun updateRouteLine(){
+         logd("UPDATED ROUTE LINE")
+         val featureCollection = FeatureCollection.fromFeatures(arrayOf(Feature.fromGeometry(LineString.fromLngLats(routeCoordinates))))
+         routeSource.feature(Feature.fromGeometry(LineString.fromLngLats(routeCoordinates)))
+     }
 
     private val onIndicatorPositionChangedListener = OnIndicatorPositionChangedListener {
         // Jump to the current indicator position
@@ -105,8 +143,13 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
         super.onCreate(savedInstanceState)
         viewModel = RunViewModel(prefs = sharedPreferences)
         binding = ActivityRunBinding.inflate(layoutInflater)
+        navigator = SprintSpiritNavigator(this)
+
+        coordinates.clear()
 
         requestPermissions()
+
+        routeSource = GeoJsonSource.Builder("route-source").build()
 
         locationProvider?.addLocationObserver(locationObserver)
 
@@ -119,15 +162,10 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
         val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
 
-        if (!isGpsEnabled) {
+        if (!isGpsEnabled ){
             //GPS is not enabled, show dialog to prompt user to enable it
             EnableLocationDialog(this).show(supportFragmentManager, "ENABLE_LOCATION_DIALOG")
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        checkLocationEnabled()
     }
 
     private fun requestPermissions(){
@@ -156,7 +194,7 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
                 checkLocationEnabled()
             } else {
                 logd("Didn't get permissions")
-                 warnUserOfPermissions()
+                warnUserOfPermissions()
             }
         }
     }
@@ -169,7 +207,7 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
         binding.recordRunButton.setOnClickListener {
             logd("viewModel.isRunning(): ${viewModel.isRunning()}")
             if(viewModel.isRunning()){
-                showDeleteConfirmationDialog(onConfirm = {
+                showStopConfirmationDialog(onConfirm = {
                     Intent(applicationContext, LocationService::class.java).apply {
                         action = LocationService.ACTION_STOP
                         startService(this)
@@ -181,9 +219,21 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
                     }
 
                     binding.flRunRecordRedDot.visibility = View.GONE
-                    binding.recordRunStatus.text = "Record"
+                    binding.recordRunStatus.setTextColor(ContextCompat.getColor(this, R.color.white))
+                    binding.recordRunStatus.text = ContextCompat.getString(this, R.string.Record)
                     binding.recordRunButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.record_button))
                     postRun()
+
+                    Utils.vibrate(this, STOP_VIBRATION_TIME)
+
+                    if(!isInternetAvailable()){
+                        showNoInternetWarningOnUpload()
+                    }
+                    routeCoordinates.clear()
+                    binding.mapView.mapboxMap.getStyle { style ->
+                        style.removeStyleSource("route-source")
+                        style.removeStyleLayer("route-layer")
+                    }
                 }, onCancel = {
 
                 })
@@ -196,15 +246,18 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
                     isReceiverRegistered = true
                 }
 
+                Utils.vibrate(this, START_VIBRATION_TIME)
+
                 binding.flRunRecordRedDot.visibility = View.VISIBLE
-                binding.recordRunStatus.text = "Stop"
+                binding.recordRunStatus.setTextColor(ContextCompat.getColor(this, R.color.stop))
+                binding.recordRunStatus.text = "STOP"
                 binding.recordRunButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.record_button_running))
                 viewModel.startRun()
             }
         }
     }
 
-    private fun showDeleteConfirmationDialog(onConfirm: () -> Unit, onCancel: () -> Unit){
+    private fun showStopConfirmationDialog(onConfirm: () -> Unit, onCancel: () -> Unit){
         val builder = AlertDialog.Builder(this)
         builder.setTitle(ContextCompat.getString(this, R.string.Confirmation))
         builder.setMessage(ContextCompat.getString(this, R.string.Are_you_sure_stop_recording))
@@ -219,12 +272,29 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
         builder.show()
     }
 
+    private fun showNoInternetWarningOnUpload(){
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(ContextCompat.getString(this, R.string.No_internet))
+        builder.setMessage(ContextCompat.getString(this, R.string.Route_will_upload_when_internet))
+
+        builder.setNeutralButton(ContextCompat.getString(this, R.string.Confirm)){_, _ ->}
+
+        builder.show()
+    }
+
     private fun postRun() {
         try{
+            viewModel.run.points = coordinates
+            viewModel.run.distance = calculateDistance()
             viewModel.saveRun()
+
+            navigator.navigateToHome(
+                activity = this
+            )
         }catch(e: Exception){
             val reason = viewModel.runCannotUploadReason()
             if(reason != -1){
+                logd("run cannot be uploaded")
                 val minDistance = (RunViewModel.MIN_DISTANCE * 1000).toInt()
                 ErrorDialog(this.getString(reason, minDistance)).show(supportFragmentManager, "ERROR_DIALOG")
             }else{
@@ -246,7 +316,22 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
                 targetState = viewport.makeFollowPuckViewportState(),
                 transition = viewport.makeImmediateViewportTransition()
             )
-            mapboxMap.loadStyle(Style.OUTDOORS)
+            mapboxMap.loadStyle(Style.OUTDOORS) { style ->
+                routeSource = GeoJsonSource
+                    .Builder("route-source")
+                    .featureCollection(FeatureCollection.fromFeatures(arrayOf()))
+                    .build()
+                style.addSource(routeSource)
+
+                val routeLayer = LineLayer("route-layer", "route-source").apply{
+                    lineCap(LineCap.ROUND)
+                    lineJoin(LineJoin.ROUND)
+                    lineOpacity(1.0)
+                    lineWidth(10.0)
+                    lineColor("#A7DCDC")
+                }
+                style.addLayer(routeLayer)
+            }
         }
         binding.mapView.addView(mapView)
     }
@@ -259,7 +344,7 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
 
     override fun onStop() {
         super.onStop()
-        locationProvider?.removeLocationObserver(locationObserver);
+        locationProvider?.removeLocationObserver(locationObserver)
         binding.mapView.location
             .removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener)
     }
@@ -267,6 +352,20 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
     override fun onAbsentPermissionsNeutralClick(dialog: DialogFragment) {
         finish()
     }
+
+        private fun calculateDistance(): Double {
+            val points = mutableListOf<GeoPoint>()
+            coordinates.forEach {
+                points.add(it.values.first())
+            }
+            if (points.size < 2) return 0.0
+
+            var totalDistance = 0.0
+            for (i in 0 until points.size - 1) {
+                totalDistance += Utils.distanceBetween(points[i], points[i + 1])
+            }
+            return totalDistance
+        }
 
 }
 
@@ -280,7 +379,7 @@ class WarnPermissionsDialog(
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = AlertDialog.Builder(it)
-            builder.setMessage("Accept location permissions if you want to start recording an activity...")
+            builder.setMessage(requireContext().getString(R.string.Accept_location_permissions))
                 .setNeutralButton("Ok") { dialog, id ->
                     var intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                     var uri = Uri.fromParts("package", requireContext().packageName, null)
@@ -309,12 +408,12 @@ class EnableLocationDialog(
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity.let {
             val builder = AlertDialog.Builder(it)
-            builder.setMessage("Enable location if you want to start recording an activity...")
+            builder.setMessage(context?.getString(R.string.Enable_location))
                 .setPositiveButton("Enable") { dialog, id ->
                     val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                     activity.startActivity(intent)
                 }
-                .setNegativeButton("Cancel") { dialog, id ->
+                .setNegativeButton(context?.getString(R.string.Cancel) ?: "Cancelar") { dialog, id ->
                     activity.finish()
                 }
             builder.create()
@@ -329,7 +428,11 @@ class ErrorDialog(
         return activity.let {
             val builder = AlertDialog.Builder(it)
             builder.setMessage(message)
-                .setNeutralButton("Ok") { dialog, id -> }
+                .setNeutralButton("Ok") { dialog, id ->
+                    SprintSpiritNavigator(requireActivity()).navigateToHome(
+                        activity = requireActivity()
+                    )
+                }
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }
