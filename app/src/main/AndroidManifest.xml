@@ -81,6 +81,9 @@
         <activity android:name=".features.profile_detail.ProfileDetailActivity"
             android:screenOrientation="portrait"
             android:exported="false" />
+        <activity android:name=".features.admin.ui.AdminActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"

@@ -48,6 +48,7 @@ class ProfileFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        navigator = SprintSpiritNavigator(requireContext())
         viewModel = DashboardViewModel()
         viewModel.email = Preferences(requireContext()).email
 
@@ -141,6 +142,13 @@ class ProfileFragment : BaseFragment() {
             (binding as FragmentProfileBinding).tvName.text = user.user?.username ?: user.user?.email ?: ""
             getProfilePicture()
             setFollowers(user.user)
+
+            if(user.user?.isAdmin ?: false){
+                (binding as FragmentProfileBinding).btnAdminPanel.visibility = View.VISIBLE
+                (binding as FragmentProfileBinding).btnAdminPanel.setOnClickListener {
+                    navigator.navigateToAdminPanel(activity = activity)
+                }
+            }
         }else{
             Log.e(TAG, "fillProfileData: COULDN'T GET USER'S DATA")
         }

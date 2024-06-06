@@ -5,8 +5,7 @@ interface Report{}
 data class UserReport(
     private val type: String = "user", //message, post or user
     val reason: String = "",
-    val itemId: String = "", //if type is message, this is the chat's id
-    val messageId: String = ""
+    val itemId: String = ""
 ) : Report
 
 data class MessageReport(

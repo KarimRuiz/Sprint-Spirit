@@ -8,7 +8,10 @@ import androidx.core.graphics.drawable.toIcon
 import com.example.sprintspirit.database.filters.LocationFilter
 import com.example.sprintspirit.database.filters.OrderFilter
 import com.example.sprintspirit.database.filters.TimeFilter
+import com.example.sprintspirit.features.admin.data.MessageReport
+import com.example.sprintspirit.features.admin.data.PostReport
 import com.example.sprintspirit.features.admin.data.Report
+import com.example.sprintspirit.features.admin.data.UserReport
 import com.example.sprintspirit.features.chat.data.ChatUser
 import com.example.sprintspirit.features.dashboard.home.data.Post
 import com.example.sprintspirit.features.dashboard.home.data.PostsResponse
@@ -82,6 +85,10 @@ class FirebaseManager() : DBManager {
         val STATE = "state"
         val IS_BANNED = "isBanned"
         val IS_ADMIN = "isAdmin"
+        val TYPE = "type"
+        val REASON = "reason"
+        val ITEMID = "itemId"
+        val MESSAGEID = "messageId"
 
         //NOT CATEGORIZED
         val USER = "user"
@@ -561,7 +568,7 @@ class FirebaseManager() : DBManager {
                     val ref = storage.child(IMAGES).child("$userId.jpg")
                     userData?.profilePictureUrl = ref.downloadUrl.await()
                 } catch (e: Exception) {
-                    Log.d("FirebaseManager", "error getting profile image for user $userId: $e")
+                    Log.d(TAG, "error getting profile image for user $userId: $e")
                 }
 
                 if(userData == null) Log.d(TAG, "userData is null")
@@ -593,6 +600,42 @@ class FirebaseManager() : DBManager {
         return response
     }
 
+    override suspend fun getPost(id: String): Post? {
+        if(id.isBlank()) return null
+
+        var post = firestore.collection(POSTS).document(id).get().await().toObject(Post::class.java)
+            ?: return null
+        val userId = post.user.removePrefix("/users/")
+        val userDocRef = firestore.collection(USERS).document(userId)
+        val userData = userDocRef.get().await().toObject(User::class.java)
+
+        try {
+            val ref = storage.child(IMAGES).child("$userId.jpg")
+            userData?.profilePictureUrl = ref.downloadUrl.await()
+        } catch (e: Exception) {
+            Log.d(TAG, "error getting profile image for user $userId: $e")
+        }
+
+        if(userData == null) Log.d(TAG, "userData is null")
+        userData?.let {
+            post = Post(
+                id = post.id,
+                user = userId,
+                userData = it,
+                distance = post.distance,
+                startTime = post.startTime,
+                minutes = post.minutes,
+                description = post.description,
+                title = post.title,
+                town = post.town,
+                city = post.city,
+                state = post.state,
+                country = post.country,
+                points = post.points
+            )
+        }
+        return post
+    }
 
     override fun deleteRun(run: RunData) {
         Log.d("FirebaseManager", "Deleting run...")
@@ -739,6 +782,49 @@ class FirebaseManager() : DBManager {
     override suspend fun unBanUser(userId: String?) {
         if(userId == null || userId.isBlank()) return
         firestore.collection(USERS).document(userId).update(IS_BANNED, false).await()
+    }
+
+    override suspend fun getReports(): List<Report> {
+        val reports = mutableListOf<Report>()
+
+        val reportsRef = firestore.collection(REPORTS)
+        reportsRef.get().await().documents.mapNotNull { snapshot ->
+            if(snapshot.exists()){
+
+                val type = snapshot.get(TYPE) as String
+                val reason = snapshot.get(REASON) as String
+                val itemId = snapshot.get(ITEMID) as String
+                val report: Report
+                when(type){
+                    "message" -> {
+                        report = MessageReport(
+                            type = type,
+                            reason = reason,
+                            itemId = itemId,
+                            messageId = snapshot.get(MESSAGEID) as String
+                        )
+                    }
+                    "post" -> {
+                        report = PostReport(
+                            type = type,
+                            reason = reason,
+                            itemId = itemId
+                        )
+                    }
+                    else -> {
+                        report = UserReport(
+                            type = type,
+                            reason = reason,
+                            itemId = itemId
+                        )
+                    }
+                }
+                reports.add(report)
+
+            }
+        }
+
+        return reports.toList()
     }
 
 }

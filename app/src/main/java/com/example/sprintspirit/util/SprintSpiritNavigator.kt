@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.FragmentActivity
 import com.example.sprintspirit.data.Preferences
+import com.example.sprintspirit.features.admin.ui.AdminActivity
+import com.example.sprintspirit.features.admin.ui.AdminFragment
 import com.example.sprintspirit.features.chat.ChatActivity
 import com.example.sprintspirit.features.dashboard.DashboardActivity
 import com.example.sprintspirit.features.dashboard.home.data.Post
@@ -102,6 +104,16 @@ class SprintSpiritNavigator(val context: Context) {
         intent.putExtra(ChatActivity.CHAT_POST_TITLE, title)
         navigateTo(activity,
             intent,
+            preserveStack
+        )
+    }
+
+    fun navigateToAdminPanel(
+        activity: FragmentActivity?,
+        preserveStack: Boolean? = true
+    ){
+        navigateTo(activity,
+            Intent(activity, AdminActivity::class.java),
             preserveStack
         )
     }

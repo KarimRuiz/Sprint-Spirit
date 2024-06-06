@@ -8,6 +8,7 @@ import com.example.sprintspirit.database.filters.TimeFilter
 import com.example.sprintspirit.features.admin.data.Report
 import com.example.sprintspirit.features.chat.data.ChatResponse
 import com.example.sprintspirit.features.chat.data.Message
+import com.example.sprintspirit.features.dashboard.home.data.Post
 import com.example.sprintspirit.features.dashboard.home.data.PostsResponse
 import com.example.sprintspirit.features.dashboard.home.data.StatsResponse
 import com.example.sprintspirit.features.dashboard.profile.data.ProfilePictureResponse
@@ -74,6 +75,8 @@ interface DBManager {
                                    limit: Long = 10L,
                                    orderBy: OrderFilter): PostsResponse
 
+    suspend fun getPost(id: String): Post?
+
     fun deleteRun(run: RunData)
     fun deletePostByRunId(runId: String)
 
@@ -104,6 +107,9 @@ interface DBManager {
     suspend fun submitReport(report: Report)
 
     suspend fun banUser(userId: String?)
+
     suspend fun unBanUser(userId: String?)
+
+    suspend fun getReports(): List<Report>
 
 }
