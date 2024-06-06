@@ -420,10 +420,14 @@ class FirebaseManager() : DBManager {
         val response = RunsResponse()
 
         try{
-            response.runs = firestore.collection(RUNS).whereEqualTo(USER, "/${USERS}/${usermail}").get().await().documents.mapNotNull { snapShot ->
-                val runData = snapShot.toObject(RunData::class.java)
-                runData?.id = snapShot.id
-                runData
+            response.runs = firestore
+                .collection(RUNS)
+                .whereEqualTo(USER, "/${USERS}/${usermail}")
+                .orderBy(START_TIME, Query.Direction.DESCENDING)
+                .get().await().documents.mapNotNull { snapShot ->
+                    val runData = snapShot.toObject(RunData::class.java)
+                    runData?.id = snapShot.id
+                    runData
             }
         }catch (e: Exception){
             response.exception = e
