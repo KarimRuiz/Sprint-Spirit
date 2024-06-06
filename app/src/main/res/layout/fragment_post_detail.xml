@@ -11,6 +11,12 @@
             name="onUserClick"
             type="android.view.View.OnClickListener"
             />
+        <variable
+            name="onReport"
+            type="android.view.View.OnClickListener" />
+        <variable
+            name="onDelete"
+            type="android.view.View.OnClickListener" />
     </data>
 
     <LinearLayout
@@ -256,6 +262,30 @@
                 android:layout_marginEnd="@dimen/margin_normal"
                 android:text="@string/Chat"
                 />
+
+            <Button
+                android:id="@+id/btn_report"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reportar"
+                android:onClick="@{onReport}"
+                android:layout_marginStart="@dimen/margin_big"
+                android:layout_marginBottom="@dimen/margin_normal"
+                android:backgroundTint="#CA5F25"
+                android:layout_gravity="bottom|start"/>
+
+            <Button
+                android:id="@+id/btn_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Eliminar"
+                android:onClick="@{onDelete}"
+                android:layout_marginEnd="@dimen/margin_big"
+                android:backgroundTint="#CA5F25"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:visibility="gone"
+                tools:visibility="gone"
+                android:layout_gravity="bottom|start"/>
 
         </FrameLayout>
 

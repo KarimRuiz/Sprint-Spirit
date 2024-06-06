@@ -5,14 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.sprintspirit.R
 import com.example.sprintspirit.databinding.FragmentPostDetailBinding
 import com.example.sprintspirit.features.dashboard.home.data.Post
 import com.example.sprintspirit.features.post_detail.PostDetailActivity
 import com.example.sprintspirit.ui.BaseFragment
+import com.example.sprintspirit.ui.custom.ReportDialog
 import com.example.sprintspirit.util.SprintSpiritNavigator
 import com.example.sprintspirit.util.Utils
 import com.example.sprintspirit.util.Utils.distanceBetween
@@ -29,6 +32,8 @@ import java.text.SimpleDateFormat
 
 class PostDetailFragment : BaseFragment(), OnMapReadyCallback {
 
+    private lateinit var viewModel: PostDetailViewModel
+
     private lateinit var post: Post
     private lateinit var map: GoogleMap
     private lateinit var path: MutableList<LatLng>
@@ -39,7 +44,7 @@ class PostDetailFragment : BaseFragment(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requireInternet(compulsory = true)
-
+        viewModel = ViewModelProvider(this).get(PostDetailViewModel::class.java)
         navigator = SprintSpiritNavigator(requireContext())
 
         post = PostDetailActivity.post!!
@@ -104,6 +109,23 @@ class PostDetailFragment : BaseFragment(), OnMapReadyCallback {
                 .into(binding.ivHomeProfilePicture)
                 .onLoadFailed(AppCompatResources.getDrawable(requireContext(), R.drawable.ic_account))
         }
+
+        if(sharedPreferences.isAdmin){
+            binding.btnReport.visibility = View.GONE
+            binding.btnDelete.visibility = View.VISIBLE
+        }
+
+        if(!viewModel.postExists(post.id)){
+            Toast.makeText(
+                activity,
+                "Esta publicación ya no existe",
+                Toast.LENGTH_LONG
+            ).show()
+            navigator.goBack(activity)
+        }
+
+        binding.onReport = onReportPost()
+        binding.onDelete = onDeletePost()
 
     }
 
@@ -195,6 +217,28 @@ class PostDetailFragment : BaseFragment(), OnMapReadyCallback {
                 lastLatLng = latLng
                 lastTime = time
             }
+        }
+    }
+
+    private fun onReportPost() = object : View.OnClickListener {
+        override fun onClick(v: View?) {
+            ReportDialog(
+                context = requireContext(),
+                type = "post",
+                id = post.id
+            ).showDialog()
+        }
+    }
+
+    private fun onDeletePost() = object : View.OnClickListener {
+        override fun onClick(v: View?) {
+            viewModel.deletePost(post)
+            Toast.makeText(
+                activity,
+                "Publicación eliminada.",
+                Toast.LENGTH_LONG
+            ).show()
+            navigator.goBack(activity)
         }
     }
 

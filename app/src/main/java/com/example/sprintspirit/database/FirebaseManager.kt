@@ -433,6 +433,7 @@ class FirebaseManager() : DBManager {
                         startTime = post.startTime,
                         minutes = post.minutes,
                         description = post.description,
+                        sessionId = post.sessionId,
                         title = post.title,
                         town = post.town,
                         city = post.city,
@@ -497,6 +498,7 @@ class FirebaseManager() : DBManager {
                         startTime = post.startTime,
                         minutes = post.minutes,
                         description = post.description,
+                        sessionId = post.sessionId,
                         title = post.title,
                         town = post.town,
                         city = post.city,
@@ -581,6 +583,7 @@ class FirebaseManager() : DBManager {
                         startTime = post.startTime,
                         minutes = post.minutes,
                         description = post.description,
+                        sessionId = post.sessionId,
                         title = post.title,
                         town = post.town,
                         city = post.city,
@@ -626,6 +629,7 @@ class FirebaseManager() : DBManager {
                 startTime = post.startTime,
                 minutes = post.minutes,
                 description = post.description,
+                sessionId = post.sessionId,
                 title = post.title,
                 town = post.town,
                 city = post.city,
@@ -635,6 +639,18 @@ class FirebaseManager() : DBManager {
             )
         }
         return post
+    }
+
+    override suspend fun deletePost(post: Post) {
+        Log.d(TAG, "post: ${post}")
+        firestore.collection(POSTS).whereEqualTo(SESSION_ID, post.sessionId).get()
+            .addOnSuccessListener {
+            it.documents.forEach {doc ->
+                doc.reference.delete()
+                firestore.collection(RUNS).document(post.sessionId).update(IS_PUBLIC, false)
+            }
+        }
+
     }
 
     override fun deleteRun(run: RunData) {
