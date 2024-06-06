@@ -115,4 +115,10 @@ class ChatViewModel(
         }
     }
 
+    fun deleteMessage(postId: String?, id: Int) {
+        viewModelScope.launch {
+            repository.deleteMessage(postId, id)
+        }
+    }
+
 }

@@ -785,6 +785,28 @@ class FirebaseManager() : DBManager {
         Log.d("FireabseManager", "Message sent.")
     }
 
+    override suspend fun deleteMessage(postId: String?, id: Int) {
+        Log.d(TAG, "Deleting message with id $id on chat $postId")
+        if(postId == null) return
+        val messageRef = realtime.child(CHATS).child(postId).child(MESSAGES)
+        messageRef.addListenerForSingleValueEvent(
+            object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for(snap in snapshot.children){
+                        val valueMap = snap.value as? Map<String, Any>
+                        val messageId = valueMap?.get("id") as Long?
+                        if(messageId != null && id.toLong() == messageId){
+                            snap.ref.removeValue()
+                        }
+                    }
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    Log.w(TAG, "cancelled deletion of message", error.toException())
+                }
+            }
+        )
+    }
+
     /* BACKEND */
     override suspend fun submitReport(report: Report) {
         firestore.collection(REPORTS).add(report).await()

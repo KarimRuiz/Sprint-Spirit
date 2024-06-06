@@ -14,4 +14,8 @@ class ChatRepository {
 
     fun getUserPicture(email: String) = manager.getProfilePictureTask(email)
 
+    suspend fun deleteMessage(postId: String?, id: Int) {
+        manager.deleteMessage(postId, id)
+    }
+
 }

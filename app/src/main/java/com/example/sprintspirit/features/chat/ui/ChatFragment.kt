@@ -1,17 +1,14 @@
 package com.example.sprintspirit.features.chat.ui
 
+import android.app.AlertDialog
 import android.net.Uri
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
-import android.widget.RadioGroup
-import android.widget.RadioGroup.OnCheckedChangeListener
-import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
@@ -124,21 +121,20 @@ class ChatFragment : BaseFragment() {
             }
         }
 
-        adapter = MessagesListAdapter(sharedPreferences.email, imageLoader)
+        CustomOutcomingMessageViewHolder.highlightMessageId = highlightMessageId.toString()
+        val holdersConfig = MessagesListAdapter.HoldersConfig()
+        holdersConfig.setIncomingHolder(
+            CustomOutcomingMessageViewHolder::class.java,
+        )
+        adapter = MessagesListAdapter(sharedPreferences.email, holdersConfig, imageLoader)
         adapter.registerViewClickListener(com.stfalcon.chatkit.R.id.messageUserAvatar) { _, message ->
             navigator.navigateToProfileDetail(
                 activity = activity,
                 userId = message.user.id
             )
         }
-        adapter.setOnMessageLongClickListener {
-            ReportDialog(
-                context = requireContext(),
-                type = "message",
-                id = postId ?: "",
-                messageId = it.message.id.toString()
-            ).showDialog()
-        }
+        adapter.setOnMessageLongClickListener { onMessageLongClick(it) }
+
         binding.messagesList.setAdapter(adapter)
 
         lifecycleScope.launch {
@@ -169,6 +165,35 @@ class ChatFragment : BaseFragment() {
         }else{
             postName
         }
+    }
+
+    private fun onMessageLongClick(message: MessageUI) {
+        if(!sharedPreferences.isAdmin){
+            ReportDialog(
+                context = requireContext(),
+                type = "message",
+                id = postId ?: "",
+                messageId = message.message.id.toString()
+            ).showDialog()
+        }else{
+            showDeleteConfirmationDialog(){
+                viewModel.deleteMessage(postId, message.message.id)
+                adapter.delete(message)
+            }
+        }
+    }
+
+    private fun showDeleteConfirmationDialog(onConfirm: () -> Unit){
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Eliminar mensaje?")
+        builder.setMessage("Estás seguro de que deseas eliminar el mensaje?")
+
+        builder.setPositiveButton(ContextCompat.getString(requireContext(), R.string.Confirm)) { dialog, which ->
+            onConfirm()
+        }
+        builder.setNegativeButton(ContextCompat.getString(requireContext(), R.string.Cancel)) { _, _ -> }
+
+        builder.show()
     }
 
     private fun sendMessageListener() = object : MessageInput.InputListener{

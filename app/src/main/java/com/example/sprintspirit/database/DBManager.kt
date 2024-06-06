@@ -96,6 +96,8 @@ interface DBManager {
 
     suspend fun sendMessage(postId: String, message: Message, messageNum: Int)
 
+    suspend fun deleteMessage(postId: String?, id: Int)
+
     suspend fun susbscribeToChat(email: String, chatName: String, chatId: String, asOp: Boolean): Boolean
     suspend fun unSusbscribeToChat(email: String, chatId: String): Boolean
     suspend fun getUser(email: String): UserResponse
@@ -113,5 +115,6 @@ interface DBManager {
     suspend fun unBanUser(userId: String?)
 
     suspend fun getReports(): List<Report>
+
 
 }
