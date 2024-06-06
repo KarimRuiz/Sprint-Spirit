@@ -17,10 +17,11 @@ def listener(event):
             if isinstance(data, dict) and 'content' in data:
                 message_content = data['content']
                 message_sender = data['user']['username']
-                print(f'New message in chat {chat_id} by {message_sender}: {message_content}')
+                message_sender_email = data['user']['email']
+                print(f'New message in chat {chat_id} by {message_sender} with email {message_sender_email}: {message_content}')
                 print('Sending message...')
 
-                data = {"chatId": chat_id, "sender":message_sender, "content":message_content}
+                data = {"chatId": chat_id, "sender":message_sender, "sender_email": message_sender_email, "content":message_content}
 
                 fcm.sendPushToTopic(chat_id, data)
 

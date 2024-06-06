@@ -471,6 +471,7 @@ class FirebaseManager() : DBManager {
                         minutes = post.minutes,
                         description = post.description,
                         sessionId = post.sessionId,
+                        publishDate = post.publishDate,
                         title = post.title,
                         town = post.town,
                         city = post.city,
@@ -536,6 +537,7 @@ class FirebaseManager() : DBManager {
                         minutes = post.minutes,
                         description = post.description,
                         sessionId = post.sessionId,
+                        publishDate = post.publishDate,
                         title = post.title,
                         town = post.town,
                         city = post.city,
@@ -624,6 +626,7 @@ class FirebaseManager() : DBManager {
                         minutes = post.minutes,
                         description = post.description,
                         sessionId = post.sessionId,
+                        publishDate = post.publishDate,
                         title = post.title,
                         town = post.town,
                         city = post.city,
@@ -670,6 +673,7 @@ class FirebaseManager() : DBManager {
                 minutes = post.minutes,
                 description = post.description,
                 sessionId = post.sessionId,
+                publishDate = post.publishDate,
                 title = post.title,
                 town = post.town,
                 city = post.city,
@@ -794,7 +798,9 @@ class FirebaseManager() : DBManager {
         val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 try {
-                    val chat = snapshot.getValue(Chat::class.java)
+                    val chat = snapshot.getValue(Chat::class.java)?.apply {
+                        messages = snapshot.child(MESSAGES).children.map { it.getValue(Message::class.java)!! }.toMutableList()
+                    }
                     response.chat = chat
                     trySend(response)
                 } catch (e: Exception) {

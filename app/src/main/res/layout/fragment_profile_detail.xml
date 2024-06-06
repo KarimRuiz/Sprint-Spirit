@@ -116,10 +116,12 @@
                         android:id="@+id/btn_follow"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:maxWidth="100dp"
                         android:text="Seguir"
                         android:layout_gravity="end"
                         android:onClick="@{onClickFollow}"
                         android:layout_marginEnd="@dimen/margin_big"
+                        tools:text="Dejar de seguir"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/ll_username"/>
 

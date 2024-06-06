@@ -142,7 +142,7 @@ class ChatFragment : BaseFragment() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.chatResponse.collect{response ->
-                    logd("collected chat")
+                    logd("collected chat: $response")
                     response.chat?.messages?.forEach {
                         if(it != null && !it.isBanned){
                             logd("Message: ${it}")
