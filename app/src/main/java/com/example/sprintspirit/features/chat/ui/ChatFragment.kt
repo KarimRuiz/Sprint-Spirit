@@ -24,6 +24,7 @@ import com.example.sprintspirit.features.chat.data.Message
 import com.example.sprintspirit.features.chat.data.MessageUI
 import com.example.sprintspirit.features.signin.data.User
 import com.example.sprintspirit.ui.BaseFragment
+import com.example.sprintspirit.ui.custom.ReportDialog
 import com.example.sprintspirit.util.SprintSpiritNavigator
 import com.google.android.gms.tasks.Task
 import com.stfalcon.chatkit.commons.ImageLoader
@@ -37,12 +38,16 @@ class ChatFragment : BaseFragment() {
     companion object {
         private const val POST_ID = "CHAT_FRAGMENT_POST_ID"
         private const val POST_NAME = "CHAT_FRAGMENT_POST_NAME"
+        private const val CHAT_HIGHLIGHT_MESSAGE = "CHAT_FRAGMENT_HIGHLIGHT_MESSAGE"
 
-        fun newInstance(postId: String?, postTitle: String?): ChatFragment {
+        fun newInstance(postId: String?,
+                        postTitle: String?,
+                        highlightMessageId: String?): ChatFragment {
             val fragment = ChatFragment()
             val args = Bundle()
             args.putString(POST_ID, postId)
             args.putString(POST_NAME, postTitle)
+            args.putString(CHAT_HIGHLIGHT_MESSAGE, highlightMessageId)
             fragment.arguments = args
             return fragment
         }
@@ -54,6 +59,7 @@ class ChatFragment : BaseFragment() {
     private var messages = mutableListOf<MessageUI>()
     private var postId: String? = null
     private var postName: String? = null
+    private var highlightMessageId: Int? = null
     private lateinit var user: User
     private lateinit var userPicture: String
 
@@ -67,6 +73,11 @@ class ChatFragment : BaseFragment() {
             viewModel.postId = postId!!
             postName = it.getString(POST_NAME)
             viewModel.postTitle = postName ?: "Chat"
+            highlightMessageId = try{
+                it.getString(CHAT_HIGHLIGHT_MESSAGE)?.toInt() ?: -1
+            }catch (e: Exception){
+                -1
+            }
         }
     }
 
@@ -120,6 +131,14 @@ class ChatFragment : BaseFragment() {
                 userId = message.user.id
             )
         }
+        adapter.setOnMessageLongClickListener {
+            ReportDialog(
+                context = requireContext(),
+                type = "message",
+                id = postId ?: "",
+                messageId = it.message.id.toString()
+            ).showDialog()
+        }
         binding.messagesList.setAdapter(adapter)
 
         lifecycleScope.launch {
@@ -129,9 +148,13 @@ class ChatFragment : BaseFragment() {
                     response.chat?.messages?.forEach {
                         if(it != null && !it.isBanned){
                             logd("Message: ${it}")
-                            if(!messages.contains(MessageUI(it))){
-                                messages.add(MessageUI(it))
-                                adapter.addToStart(MessageUI(it), true)
+                            var message = MessageUI(it)
+                            if(!messages.contains(message)){
+                                if(it.id == highlightMessageId){
+                                    message.highlight = true
+                                }
+                                messages.add(message)
+                                adapter.addToStart(message, true)
                             }
                         }
                     }

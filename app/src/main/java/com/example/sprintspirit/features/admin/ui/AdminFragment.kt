@@ -65,7 +65,12 @@ class AdminFragment : BaseFragment() {
                     )
                 },
                 onGoToMessage = { chatId, messageId ->
-
+                    navigator.navigateToChat(
+                        activity = activity,
+                        postId = chatId,
+                        title = "",//TODO: REMOVE THIS?
+                        highlightMessageId = messageId
+                    )
                 },
                 onGoToPost = {
                     viewModel.postId = it

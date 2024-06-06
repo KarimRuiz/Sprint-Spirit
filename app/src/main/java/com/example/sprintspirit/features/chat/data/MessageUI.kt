@@ -1,10 +1,13 @@
 package com.example.sprintspirit.features.chat.data
 
+import android.text.Highlights
+import android.util.Log
 import com.stfalcon.chatkit.commons.models.IMessage
 import java.util.Date
 
 class MessageUI(
-    val message: Message
+    val message: Message,
+    var highlight: Boolean = false
 ) : IMessage {
     override fun getId(): String{
         return message.content.plus(message.user.email)

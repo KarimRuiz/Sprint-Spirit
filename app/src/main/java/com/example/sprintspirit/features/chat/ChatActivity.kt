@@ -13,6 +13,7 @@ class ChatActivity : BaseActivity() {
     companion object{
         const val CHAT_POST_ID = "chat_activity_post_id"
         const val CHAT_POST_TITLE = "chat_activity_post_title"
+        const val CHAT_HIGHLIGHT_MESSAGE = "CHAT_ACTIVITY_HIGHLIGHT_MESSAGE"
     }
 
     private lateinit var binding: ActivityChatBinding
@@ -27,9 +28,10 @@ class ChatActivity : BaseActivity() {
 
         val postId = intent.extras?.getString(CHAT_POST_ID)
         val postTitle = intent.extras?.getString(CHAT_POST_TITLE)
+        val highlightMessageId = intent.extras?.getString(CHAT_HIGHLIGHT_MESSAGE)
 
         if (savedInstanceState == null) {
-            val fragment = ChatFragment.newInstance(postId, postTitle)
+            val fragment = ChatFragment.newInstance(postId, postTitle, highlightMessageId)
             supportFragmentManager.beginTransaction()
                 .replace(R.id.container, fragment)
                 .commit()
