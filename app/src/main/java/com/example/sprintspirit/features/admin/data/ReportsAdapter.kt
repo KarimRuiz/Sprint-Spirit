@@ -30,6 +30,7 @@ class ReportsAdapter(
                     }else{
                         "No se ha especificado motivo."
                     }
+                    binding.reporter.text = "Reporte por: ${rep.reporter}"
                     binding.btnGoToReference.text = "Ir al usuario"
                     binding.goToReference = View.OnClickListener {
                         onGoToUser(rep.itemId)
@@ -42,6 +43,7 @@ class ReportsAdapter(
                     }else{
                         "No se ha especificado motivo."
                     }
+                    binding.reporter.text = "Reporte por: ${rep.reporter}"
                     binding.btnGoToReference.text = "Ir al mensaje"
                     binding.goToReference = View.OnClickListener {
                         onGoToMessage(rep.itemId, rep.messageId)
@@ -54,6 +56,7 @@ class ReportsAdapter(
                     }else{
                         "No se ha especificado motivo."
                     }
+                    binding.reporter.text = "Reporte por: ${rep.reporter}"
                     binding.btnGoToReference.text = "Ir al post"
                     binding.goToReference = View.OnClickListener {
                         onGoToPost(rep.itemId)

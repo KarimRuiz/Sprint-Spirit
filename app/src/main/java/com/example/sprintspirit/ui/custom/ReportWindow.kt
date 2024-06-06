@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import com.example.sprintspirit.R
+import com.example.sprintspirit.data.Preferences
 import com.example.sprintspirit.database.DBManager
 import com.example.sprintspirit.databinding.DialogReportBinding
 import com.example.sprintspirit.features.admin.data.MessageReport
@@ -39,6 +40,7 @@ class ReportDialog(
             dialog.dismiss()
         }
 
+        val reporter = Preferences(context).email ?: ""
         binding.onReport = View.OnClickListener {
             val db = DBManager.getCurrentDBManager()
             var report: Report
@@ -46,6 +48,7 @@ class ReportDialog(
                 "message" -> {
                     report = MessageReport(
                         type = type,
+                        reporter = reporter,
                         reason = binding.edtContent.text.toString(),
                         itemId = id,
                         messageId = messageId)
@@ -53,12 +56,14 @@ class ReportDialog(
                 "user" -> {
                     report = UserReport(
                         type = type,
+                        reporter = reporter,
                         reason = binding.edtContent.text.toString(),
                         itemId = id)
                 }
                 else -> {
                     report = PostReport(
                         type = type,
+                        reporter = reporter,
                         reason = binding.edtContent.text.toString(),
                         itemId = id)
                 }

@@ -685,6 +685,19 @@ class FirebaseManager() : DBManager {
         return post
     }
 
+    override suspend fun getPostRunById(runId: String): Post? {
+        val query = firestore.collection(POSTS)
+            .whereEqualTo(SESSION_ID, runId)
+            .get().await()
+
+        if (query.isEmpty) {
+            return null
+        }
+
+        val documentSnapshot = query.documents.first()
+        return documentSnapshot.toObject(Post::class.java)
+    }
+
     override suspend fun deletePost(post: Post) {
         Log.d(TAG, "post: ${post}")
         firestore.collection(POSTS).whereEqualTo(SESSION_ID, post.sessionId).get()

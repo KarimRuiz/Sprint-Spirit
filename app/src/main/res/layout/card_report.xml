@@ -14,8 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/font_normal"
-        card:cardElevation="5dp"
-        android:backgroundTint="@color/transparent">
+        card:cardElevation="5dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -29,6 +28,13 @@
                 android:layout_height="wrap_content"
                 tools:text="Email: karnedo@proton.me"
                 android:textSize="@dimen/font_normal"
+                />
+
+            <TextView
+                android:id="@+id/reporter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Reporte por: karnedo@proton.me"
                 />
 
             <TextView

@@ -20,4 +20,8 @@ class PostRepository() {
     suspend fun deletePost(post: Post){
         return manager.deletePost(post)
     }
+
+    suspend fun getPostByRunId(runId: String): Post? {
+        return manager.getPostRunById(runId)
+    }
 }
