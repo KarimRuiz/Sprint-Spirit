@@ -13,6 +13,9 @@
         <variable
             name="onReport"
             type="android.view.View.OnClickListener" />
+        <variable
+            name="onBan"
+            type="android.view.View.OnClickListener" />
     </data>
 
     <FrameLayout
@@ -94,6 +97,19 @@
                         android:layout_marginEnd="@dimen/margin_big"
                         android:backgroundTint="#CA5F25"
                         app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/btn_follow"/>
+
+                    <Button
+                        android:id="@+id/btn_ban"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Banear"
+                        android:layout_gravity="end"
+                        android:onClick="@{onBan}"
+                        android:layout_marginEnd="@dimen/margin_big"
+                        android:backgroundTint="#CA5F25"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:visibility="gone"
                         app:layout_constraintTop_toBottomOf="@+id/btn_follow"/>
 
                     <Button

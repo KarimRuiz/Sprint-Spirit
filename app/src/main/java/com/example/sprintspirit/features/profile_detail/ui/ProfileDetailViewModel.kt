@@ -50,4 +50,18 @@ class ProfileDetailViewModel (
         }
     }
 
+    //ADMIN
+
+    fun banUser(userId: String?) {
+        viewModelScope.launch {
+            repository.banUser(userId)
+        }
+    }
+
+    fun unBanUser(userId: String?) {
+        viewModelScope.launch {
+            repository.unBanUser(userId)
+        }
+    }
+
 }

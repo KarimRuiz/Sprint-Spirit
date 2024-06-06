@@ -103,4 +103,7 @@ interface DBManager {
     /* BACKEND */
     suspend fun submitReport(report: Report)
 
+    suspend fun banUser(userId: String?)
+    suspend fun unBanUser(userId: String?)
+
 }

@@ -731,4 +731,14 @@ class FirebaseManager() : DBManager {
         firestore.collection(REPORTS).add(report).await()
     }
 
+    override suspend fun banUser(userId: String?) {
+        if(userId == null || userId.isBlank()) return
+        firestore.collection(USERS).document(userId).update(IS_BANNED, true).await()
+    }
+
+    override suspend fun unBanUser(userId: String?) {
+        if(userId == null || userId.isBlank()) return
+        firestore.collection(USERS).document(userId).update(IS_BANNED, false).await()
+    }
+
 }

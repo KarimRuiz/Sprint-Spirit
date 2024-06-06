@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.sprintspirit.R
+import com.example.sprintspirit.databinding.FragmentPostDetailBinding
 import com.example.sprintspirit.databinding.FragmentProfileBinding
 import com.example.sprintspirit.databinding.FragmentProfileDetailBinding
 import com.example.sprintspirit.features.dashboard.home.data.Post
@@ -43,6 +44,7 @@ class ProfileDetailFragment : BaseFragment() {
     private var userId: String? = null
     private var currentUser: User? = null
     private var isFollowed: Boolean = false
+    private var user: User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,16 +92,44 @@ class ProfileDetailFragment : BaseFragment() {
             hideLoading()
         }
 
+        if(sharedPreferences.isAdmin){
+            binding.btnReport.visibility = View.GONE
+            binding.btnBan.visibility = View.VISIBLE
+        }
+
         binding.onReport = onReportUser()
+        binding.onBan = onBanUser()
+    }
+
+    private fun onBanUser() = object : View.OnClickListener {
+        override fun onClick(v: View?) {
+            logd("Banning/unbanning user...")
+            val isBanned = user?.isBanned ?: false
+            if(isBanned){
+                viewModel.unBanUser(userId)
+            }else{
+                viewModel.banUser(userId)
+            }
+            if(user != null){
+                user!!.isBanned = !isBanned
+                if(isBanned){
+                    (binding as FragmentProfileDetailBinding).btnBan.text = "Banear"
+                }else{
+                    (binding as FragmentProfileDetailBinding).btnBan.text = "Desbanear"
+                }
+            }
+        }
     }
 
     private fun getUser() {
         viewModel.user.observe(viewLifecycleOwner){
             logd("USER: ${it.user}")
             if(it.user?.isBanned ?: false){
-                showBanned()
+                if(!sharedPreferences.isAdmin) showBanned()
+                (binding as FragmentProfileDetailBinding).btnBan.text = "Desbanear"
             }
             logd(it.toString())
+            user = it.user
             fillProfileData(it)
         }
 

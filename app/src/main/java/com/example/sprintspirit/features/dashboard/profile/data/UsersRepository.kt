@@ -66,4 +66,14 @@ class UsersRepository{
         return manager.deletePostByRunId(runId)
     }
 
+    //ADMIN
+    suspend fun banUser(userId: String?) {
+        manager.banUser(userId)
+    }
+
+    suspend fun unBanUser(userId: String?) {
+        manager.unBanUser(userId)
+    }
+
+
 }
