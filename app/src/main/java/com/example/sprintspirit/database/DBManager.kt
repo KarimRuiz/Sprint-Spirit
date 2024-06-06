@@ -5,6 +5,7 @@ import android.net.Uri
 import com.example.sprintspirit.database.filters.LocationFilter
 import com.example.sprintspirit.database.filters.OrderFilter
 import com.example.sprintspirit.database.filters.TimeFilter
+import com.example.sprintspirit.features.admin.data.Report
 import com.example.sprintspirit.features.chat.data.ChatResponse
 import com.example.sprintspirit.features.chat.data.Message
 import com.example.sprintspirit.features.dashboard.home.data.PostsResponse
@@ -98,5 +99,8 @@ interface DBManager {
 
     suspend fun followUser(followerId: String, followedId: String): Boolean
     suspend fun unFollowUser(unfollowerId: String, unfollowedId: String): Boolean
+
+    /* BACKEND */
+    suspend fun submitReport(report: Report)
 
 }

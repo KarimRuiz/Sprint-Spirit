@@ -7,6 +7,7 @@
     <string name="sprint_spirit_user_data" translatable="false">sprint_spirit_user_data</string>
     <string name="sprint_spirit_user_username" translatable="false">sprint_spirit_user_username</string>
     <string name="sprint_spirit_location_refresh_rate" translatable="false">sprint_spirit_location_refresh_rate</string>
+    <string name="sprint_spirit_is_administrator" translatable="false">sprint_spirit_is_administrator</string>
     <string name="Error">Error</string>
     <string name="Accept">Accept</string>
     <string name="Sign_in_error">An error ocurred while singing in</string>

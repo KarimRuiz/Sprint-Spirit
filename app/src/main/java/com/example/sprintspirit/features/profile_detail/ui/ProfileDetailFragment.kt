@@ -1,5 +1,6 @@
 package com.example.sprintspirit.features.profile_detail.ui
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,6 +18,7 @@ import com.example.sprintspirit.features.dashboard.profile.data.ProfilePictureRe
 import com.example.sprintspirit.features.dashboard.profile.data.UserResponse
 import com.example.sprintspirit.features.signin.data.User
 import com.example.sprintspirit.ui.BaseFragment
+import com.example.sprintspirit.ui.custom.ReportDialog
 import com.example.sprintspirit.ui.custom.popUpFollows
 import com.example.sprintspirit.util.SprintSpiritNavigator
 import com.github.ybq.android.spinkit.style.ChasingDots
@@ -87,10 +89,16 @@ class ProfileDetailFragment : BaseFragment() {
             fillPosts(it.posts)
             hideLoading()
         }
+
+        binding.onReport = onReportUser()
     }
 
     private fun getUser() {
         viewModel.user.observe(viewLifecycleOwner){
+            logd("USER: ${it.user}")
+            if(it.user?.isBanned ?: false){
+                showBanned()
+            }
             logd(it.toString())
             fillProfileData(it)
         }
@@ -109,6 +117,18 @@ class ProfileDetailFragment : BaseFragment() {
                 (binding as FragmentProfileDetailBinding).btnFollow.visibility = View.GONE
             }
         }
+    }
+
+    private fun showBanned() {
+        val alertDialogBuilder = AlertDialog.Builder(context)
+        alertDialogBuilder.setMessage("Este usuario está baneado. No es posible ver su perfil")
+        alertDialogBuilder.setPositiveButton("OK") { dialog, _ ->
+            dialog.dismiss()
+            navigator.navigateToHome(activity = activity)
+        }
+
+        val alertDialog: AlertDialog = alertDialogBuilder.create()
+        alertDialog.show()
     }
 
     private fun setUpCurrentUserConfig(binding: FragmentProfileDetailBinding) {
@@ -192,6 +212,16 @@ class ProfileDetailFragment : BaseFragment() {
             }
         }else{
             logd("Coudln't retrieve ${userId} picture")
+        }
+    }
+
+    private fun onReportUser() = object : View.OnClickListener {
+        override fun onClick(v: View?) {
+            ReportDialog(
+                context = requireContext(),
+                type = "user",
+                id = userId ?: ""
+            ).showDialog()
         }
     }
 

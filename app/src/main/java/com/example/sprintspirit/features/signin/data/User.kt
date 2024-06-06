@@ -9,6 +9,8 @@ data class User(
     val email: String? = null,
     val weight: Double? = null,
     val height: Double? = null,
+    val isAdmin: Boolean? = false,
+    val isBanned: Boolean? = false,
     val chats: Map<String, UserChat>? = mapOf(), //chat id - role(op, nop)
     val following: Map<String, UserFollow> = mapOf(),
     var profilePictureUrl: Uri? = null

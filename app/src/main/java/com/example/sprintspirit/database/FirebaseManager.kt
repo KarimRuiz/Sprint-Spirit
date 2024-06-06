@@ -8,6 +8,7 @@ import androidx.core.graphics.drawable.toIcon
 import com.example.sprintspirit.database.filters.LocationFilter
 import com.example.sprintspirit.database.filters.OrderFilter
 import com.example.sprintspirit.database.filters.TimeFilter
+import com.example.sprintspirit.features.admin.data.Report
 import com.example.sprintspirit.features.chat.data.ChatUser
 import com.example.sprintspirit.features.dashboard.home.data.Post
 import com.example.sprintspirit.features.dashboard.home.data.PostsResponse
@@ -57,6 +58,7 @@ class FirebaseManager() : DBManager {
         val USERS = "users"
         val RUNS = "sessions"
         val POSTS = "posts"
+        val REPORTS = "reports"
 
         //REALTIME ROOTS
         val CHATS = "routeChats"
@@ -78,6 +80,8 @@ class FirebaseManager() : DBManager {
         val TOWN = "town"
         val CITY = "city"
         val STATE = "state"
+        val IS_BANNED = "isBanned"
+        val IS_ADMIN = "isAdmin"
 
         //NOT CATEGORIZED
         val USER = "user"
@@ -108,15 +112,18 @@ class FirebaseManager() : DBManager {
                         documentSnapshot.get(FOLLOWING) as Map<String, UserFollow>
                     }else{
                         mapOf()
-                    }
+                    },
+                    isBanned = documentSnapshot.get(IS_BANNED) as Boolean? ?: false,
+                    isAdmin = documentSnapshot.get(IS_ADMIN) as Boolean? ?: false
                 )
                 Log.d(TAG, documentSnapshot.toString())
                 response.user = user
             } else {
-                // Handle case when document does not exist
+                Log.e(TAG, "Couldnt find current user!")
                 response.exception = RuntimeException("User document not found")
             }
         } catch (e: Exception) {
+            Log.e(TAG, "Error getting current user: ${e}")
             response.exception = e
         }
         return response
@@ -138,14 +145,18 @@ class FirebaseManager() : DBManager {
                         documentSnapshot.get(FOLLOWING) as Map<String, UserFollow>
                     }else{
                         mapOf()
-                    }
+                    },
+                    isBanned = documentSnapshot.get(IS_BANNED) as Boolean? ?: false,
+                    isAdmin = documentSnapshot.get(IS_ADMIN) as Boolean? ?: false
                 )
                 Log.d(TAG, documentSnapshot.toString())
                 response.user = user
             } else {
+                Log.e(TAG, "Couldnt find current user!")
                 response.exception = RuntimeException("User document not found")
             }
         } catch (e: Exception) {
+            Log.e(TAG, "Error getting current user: ${e}")
             response.exception = e
         }
         return response
@@ -669,8 +680,8 @@ class FirebaseManager() : DBManager {
         val chat = Chat(
             ChatUser("karnedo@proton.me", "Karim"),
             listOf<Message>(
-                Message(ChatUser("karnedo@proton.me", "Karim"), "Holiwis"),
-                Message(ChatUser("karnedo@proton.me", "Karim"), "qui tal")
+                Message(user = ChatUser("karnedo@proton.me", "Karim"), content = "Holiwis"),
+                Message(user = ChatUser("karnedo@proton.me", "Karim"), content = "qui tal")
             )
         )
 
@@ -714,4 +725,10 @@ class FirebaseManager() : DBManager {
         messageRef.setValue(message)
         Log.d("FireabseManager", "Message sent.")
     }
+
+    /* BACKEND */
+    override suspend fun submitReport(report: Report) {
+        firestore.collection(REPORTS).add(report).await()
+    }
+
 }

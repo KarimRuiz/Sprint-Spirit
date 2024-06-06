@@ -45,4 +45,8 @@ class Preferences(val context: Context) {
         get() = sharedPreferences.getLong(context.getString(R.string.sprint_spirit_location_refresh_rate), LocationRefreshRate.NORMAL.getMilli())
         set(value) = sharedPreferences.edit{ putLong(context.getString(R.string.sprint_spirit_location_refresh_rate), value) }
 
+    var isAdmin: Boolean
+        get() = sharedPreferences.getBoolean(context.getString(R.string.sprint_spirit_is_administrator), false)
+        set(value) = sharedPreferences.edit{ putBoolean(context.getString(R.string.sprint_spirit_is_administrator), value) }
+
 }

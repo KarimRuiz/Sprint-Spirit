@@ -127,9 +127,12 @@ class ChatFragment : BaseFragment() {
                 viewModel.chatResponse.collect{response ->
                     logd("collected chat")
                     response.chat?.messages?.forEach {
-                        if(!messages.contains(MessageUI(it))){
-                            messages.add(MessageUI(it))
-                            adapter.addToStart(MessageUI(it), true)
+                        if(it != null && !it.isBanned){
+                            logd("Message: ${it}")
+                            if(!messages.contains(MessageUI(it))){
+                                messages.add(MessageUI(it))
+                                adapter.addToStart(MessageUI(it), true)
+                            }
                         }
                     }
                 }
@@ -147,7 +150,9 @@ class ChatFragment : BaseFragment() {
 
     private fun sendMessageListener() = object : MessageInput.InputListener{
         override fun onSubmit(p0: CharSequence?): Boolean {
+            val id = (messages.maxByOrNull { it.message.id }?.message?.id ?: 0) + 1
             val message = Message(
+                id = id,
                 user = ChatUser(
                     sharedPreferences.email ?: "",
                     user.username ?: "",
@@ -157,7 +162,7 @@ class ChatFragment : BaseFragment() {
                 date = Date().time
             )
             viewModel.message = message
-            viewModel.messagePos = messages.size
+            viewModel.messagePos = id
             viewModel.sendMessage()
 
             return true

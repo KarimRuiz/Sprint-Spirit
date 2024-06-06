@@ -49,6 +49,7 @@ class SignInFragment : BaseFragment() {
                 binding.edtEmail.text.toString(),
                 binding.edtPassword.text.toString(),
                 { sharedPreferences.email = binding.edtEmail.text.toString()
+                    sharedPreferences.email = binding.edtEmail.text.toString()
                     showHome()
                 },
                 { context?.let { it1 -> showAlert(it1.getString(R.string.Sign_in_error)) } }

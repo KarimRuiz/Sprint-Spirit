@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sprintspirit.R
+import com.example.sprintspirit.database.DBManager
 import com.example.sprintspirit.database.filters.LocationFilter
 import com.example.sprintspirit.database.filters.OrderFilter
 import com.example.sprintspirit.database.filters.TimeFilter
@@ -77,7 +78,18 @@ class HomeFragment : BaseFragment() {
 
         viewModel.user = sharedPreferences.email ?: ""
         viewModel.currentUser.observe(viewLifecycleOwner){
+            sharedPreferences.isAdmin = it?.isAdmin ?: false
+            logd("Is user ${it} banned? ${it?.isBanned}")
+            if(it?.isBanned ?: false){
+                sharedPreferences.email =null
+                sharedPreferences.username = null
+                DBManager.getCurrentDBManager().signOut()
+                navigator.navigateToLogIn(activity, false)
+            }
+
             following = if(it != null){
+                sharedPreferences.email = it.email
+                sharedPreferences.username = it.username
                 it.following.keys.toList()
             }else{
                 listOf()

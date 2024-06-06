@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="onReport"
+            type="android.view.View.OnClickListener" />
+        <variable
+            name="onCancel"
+            type="android.view.View.OnClickListener" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <EditText
+            android:id="@+id/edt_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="250dp"
+            android:maxHeight="500dp"
+            android:maxLines="10"
+            android:ems="10"
+            android:gravity="start|top"
+            android:hint="Escribe aquí el motivo por el que crees que viola nuestros términos. (opcional)" android:inputType="textMultiLine" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#CA5F25"
+                android:onClick="@{onReport}"
+                android:text="Reportar"/>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="0dp"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{onCancel}"
+                android:text="Cancelar"
+                />
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+</layout>
