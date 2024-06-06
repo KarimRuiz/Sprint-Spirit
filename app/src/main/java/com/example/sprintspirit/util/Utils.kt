@@ -10,8 +10,13 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.text.Editable
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.example.sprintspirit.database.DBManager
+import com.example.sprintspirit.database.FirebaseManager
 import com.google.firebase.firestore.GeoPoint
 import com.google.type.LatLng
+import kotlinx.coroutines.CoroutineScope
 import java.text.Normalizer
 import java.util.regex.Pattern
 import kotlin.math.atan2
@@ -20,6 +25,8 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 object Utils{
+
+    val dbManager: DBManager = DBManager.getCurrentDBManager()
 
     fun isValidEmail(email: Editable): Boolean {
         val pattern = Pattern.compile(
@@ -103,6 +110,10 @@ object Utils{
         val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         val effect = VibrationEffect.createOneShot(milli, VibrationEffect.DEFAULT_AMPLITUDE)
         vibrator.vibrate(effect)
+    }
+
+    fun loadAvatar(view: ImageView, email: String, coroutineScope: CoroutineScope){
+        dbManager.loadAvatar(view, email, coroutineScope)
     }
 
 }

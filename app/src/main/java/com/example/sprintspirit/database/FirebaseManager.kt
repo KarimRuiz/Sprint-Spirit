@@ -4,7 +4,13 @@ package com.example.sprintspirit.database
 import android.location.Address
 import android.net.Uri
 import android.util.Log
+import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toIcon
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.example.sprintspirit.R
 import com.example.sprintspirit.database.filters.LocationFilter
 import com.example.sprintspirit.database.filters.OrderFilter
 import com.example.sprintspirit.database.filters.TimeFilter
@@ -28,7 +34,9 @@ import com.example.sprintspirit.features.chat.data.Message
 import com.example.sprintspirit.features.signin.data.User
 import com.example.sprintspirit.features.signin.data.UserChat
 import com.example.sprintspirit.features.signin.data.UserFollow
+import com.example.sprintspirit.util.Utils
 import com.example.sprintspirit.util.Utils.normalize
+import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
@@ -43,9 +51,14 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.messaging.messaging
 import com.google.firebase.storage.FirebaseStorage
 import com.mapbox.maps.logD
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.tasks.await
 import java.util.Date
 
@@ -200,6 +213,26 @@ class FirebaseManager() : DBManager {
         }catch(e: Exception){
             Log.e(TAG, "Error subscribing user to chat", e)
             return false
+        }
+    }
+
+    override fun getAvatarReference(email: String) = storage.child(IMAGES).child("$email.jpg")
+
+    override fun loadAvatar(
+        view: ImageView,
+        email: String,
+        coroutineScope: CoroutineScope,
+        placeholder: Int){
+        coroutineScope.launch(Dispatchers.Main) {
+            val ref = storage.child(IMAGES).child("$email.jpg").downloadUrl.await()
+            Glide.with(view.context)
+                .load(ref)
+                .apply(
+                    RequestOptions().placeholder(R.drawable.ic_account).diskCacheStrategy(
+                        DiskCacheStrategy.ALL)
+                )
+                .into(view)
+                .onLoadFailed(ContextCompat.getDrawable(view.context, placeholder))
         }
     }
 
@@ -772,7 +805,6 @@ class FirebaseManager() : DBManager {
         chatRef.addValueEventListener(listener)
 
         awaitClose {
-            Log.d("Cagaste", "Cagaste")
             chatRef.removeEventListener(listener)
         }
     }
@@ -863,6 +895,30 @@ class FirebaseManager() : DBManager {
         }
 
         return reports.toList()
+    }
+
+    override suspend fun deleteReport(rep: Report) {
+        var id: String = ""
+        var reason: String = ""
+        if(rep is UserReport){
+            id = rep.itemId
+            reason = rep.reason
+        }else if(rep is MessageReport){
+            id = rep.itemId
+            reason = rep.reason
+        }else if(rep is PostReport){
+            id = rep.itemId
+            reason = rep.reason
+        }
+
+        val query = firestore.collection(REPORTS)
+            .whereEqualTo(ITEMID, id)
+            .whereEqualTo(REASON, reason)
+            .get().await()
+        for(repSnap in query.documents){
+            repSnap.reference.delete().await()
+        }
+
     }
 
 }

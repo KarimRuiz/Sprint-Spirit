@@ -42,6 +42,8 @@ class UsersRepository{
         return manager.getProfilePicture(user)
     }
 
+    fun getAvatarReference(user: String) = manager.getAvatarReference(user)
+
     suspend fun saveRun(run: RunResponse){
         manager.saveRun(run)
     }

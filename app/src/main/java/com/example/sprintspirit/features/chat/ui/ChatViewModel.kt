@@ -121,4 +121,6 @@ class ChatViewModel(
         }
     }
 
+    fun getAvatarReference(user: String) = usersRepository.getAvatarReference(user)
+
 }

@@ -63,6 +63,7 @@ dependencies {
     implementation("com.mapbox.maps:android:11.3.0")
 
     //Firebase
+    implementation("com.firebaseui:firebase-ui-storage:7.2.0")
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
     implementation("com.firebaseui:firebase-ui-auth:7.2.0")
     implementation("com.google.firebase:firebase-firestore:24.11.1")
@@ -73,7 +74,8 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics:")
 
     //Glide
-    implementation("com.github.bumptech.glide:glide:4.16.0")
+    //implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("com.github.bumptech.glide:glide:4.x.x")
 
     //Gson
     implementation("com.google.code.gson:gson:2.8.8")

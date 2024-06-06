@@ -15,4 +15,8 @@ class AdminRepository {
         return manager.getPost(postId)
     }
 
+    suspend fun deleteReport(report: Report) {
+        manager.deleteReport(report)
+    }
+
 }

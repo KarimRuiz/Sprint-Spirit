@@ -2,6 +2,8 @@ package com.example.sprintspirit.database
 
 import android.location.Address
 import android.net.Uri
+import android.widget.ImageView
+import com.example.sprintspirit.R
 import com.example.sprintspirit.database.filters.LocationFilter
 import com.example.sprintspirit.database.filters.OrderFilter
 import com.example.sprintspirit.database.filters.TimeFilter
@@ -19,6 +21,7 @@ import com.example.sprintspirit.features.run.data.RunsResponse
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.storage.StorageReference
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 
 interface DBManager {
@@ -51,7 +54,14 @@ interface DBManager {
         onSuccess: () -> Unit,
         onFailure: () -> Unit)
 
+    fun loadAvatar(view: ImageView,
+                   email: String,
+                   coroutineScope: CoroutineScope,
+                   placeholder: Int = R.drawable.ic_account)
+
     suspend fun getProfilePicture(user: String): ProfilePictureResponse
+
+    fun getAvatarReference(email: String): StorageReference
 
     fun getProfilePictureTask(user: String): Task<Uri>
 
@@ -115,6 +125,6 @@ interface DBManager {
     suspend fun unBanUser(userId: String?)
 
     suspend fun getReports(): List<Report>
-
+    suspend fun deleteReport(report: Report)
 
 }

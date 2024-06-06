@@ -28,6 +28,7 @@ import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessageInput
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import java.util.Date
 
 class ChatFragment : BaseFragment() {
@@ -122,6 +123,7 @@ class ChatFragment : BaseFragment() {
         }
 
         CustomOutcomingMessageViewHolder.highlightMessageId = highlightMessageId.toString()
+        CustomOutcomingMessageViewHolder.coroutineScope = viewLifecycleOwner.lifecycleScope
         val holdersConfig = MessagesListAdapter.HoldersConfig()
         holdersConfig.setIncomingHolder(
             CustomOutcomingMessageViewHolder::class.java,
@@ -144,7 +146,15 @@ class ChatFragment : BaseFragment() {
                     response.chat?.messages?.forEach {
                         if(it != null && !it.isBanned){
                             logd("Message: ${it}")
-                            var message = MessageUI(it)
+                            val avatarUrl = try{
+                                viewModel.getAvatarReference(it.user.email).downloadUrl.await()
+                            }catch (e: Exception){
+                                "no.image.found"
+                            }
+                            var messageWithAvatar = it.also{message->
+                                message.user.picture = avatarUrl.toString()
+                            }
+                            var message = MessageUI(messageWithAvatar)
                             if(!messages.contains(message)){
                                 if(it.id == highlightMessageId){
                                     message.highlight = true
