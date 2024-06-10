@@ -7,6 +7,7 @@ import android.content.Intent
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.sprintspirit.R
+import com.example.sprintspirit.data.Preferences
 import com.example.sprintspirit.features.chat.ChatActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -33,10 +34,14 @@ class PushNotificationsService : FirebaseMessagingService() {
         val chatId = data.get("chatId")
         val sender = data.get("sender")
         val content = data.get("content")
+        val senderEmail = data.get("sender_email")
 
         val title = "Nuevo mensaje de $sender"
 
-        createNotification(title, content, chatId)
+        Log.d("NotificationService", "Your email: ${Preferences(this).email}, their email: ${senderEmail}")
+        if(Preferences(this).email != senderEmail){
+            createNotification(title, content, chatId)
+        }
     }
 
     private fun createNotification(title: String, content: String?, chatId: String?){

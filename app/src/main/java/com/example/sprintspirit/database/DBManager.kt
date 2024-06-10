@@ -87,6 +87,8 @@ interface DBManager {
 
     suspend fun getPost(id: String): Post?
 
+    suspend fun getPostRunById(runId: String): Post?
+
     suspend fun deletePost(post: Post)
 
     fun deleteRun(run: RunData)

@@ -6,17 +6,21 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.example.sprintspirit.database.DBManager
+import com.example.sprintspirit.features.dashboard.home.data.Post
 import com.example.sprintspirit.features.dashboard.profile.data.UserResponse
 import com.example.sprintspirit.features.dashboard.profile.data.UsersRepository
+import com.example.sprintspirit.features.post.data.PostRepository
 import com.example.sprintspirit.features.run.data.RunData
 import com.example.sprintspirit.features.run.data.RunResponse
 import com.example.sprintspirit.ui.BaseViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class DashboardViewModel(
-    private val repository: UsersRepository = UsersRepository()
+    private val repository: UsersRepository = UsersRepository(),
+    private val postsRepository: PostRepository = PostRepository()
 ) : BaseViewModel() {
 
     var email: String? = null
@@ -59,5 +63,13 @@ class DashboardViewModel(
         CoroutineScope(Dispatchers.IO).launch {
             repository.deletePostByRunId(runId)
         }
+    }
+
+    fun getPostByRunId(runId: String): Post? {
+        var result: Post? = null
+        runBlocking {
+            result = postsRepository.getPostByRunId(runId)
+        }
+        return result
     }
 }

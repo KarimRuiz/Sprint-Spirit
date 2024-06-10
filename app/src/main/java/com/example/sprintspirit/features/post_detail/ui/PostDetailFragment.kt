@@ -2,6 +2,7 @@ package com.example.sprintspirit.features.post_detail.ui
 
 import android.graphics.Color
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -85,6 +86,7 @@ class PostDetailFragment : BaseFragment(), OnMapReadyCallback {
         }
         binding.tvUsername.text = post.userData.username
         binding.tvTitle.text = post.title
+        binding.tvDescription.movementMethod = ScrollingMovementMethod.getInstance()
         binding.tvDescription.text = post.description
         binding.tvDate.text = SimpleDateFormat("dd-MM-yy").format(post.startTime)
 

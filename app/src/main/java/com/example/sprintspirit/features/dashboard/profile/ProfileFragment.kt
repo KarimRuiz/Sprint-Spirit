@@ -186,6 +186,9 @@ class ProfileFragment : BaseFragment() {
                 },
                 deletePostCallback = {
                     deletePost(it, adapter.getPosOfRun(it))
+                },
+                goToPost = {
+                    goToPost(it)
                 }
             )
             (binding as FragmentProfileBinding).runProfileRv.adapter = adapter
@@ -204,8 +207,7 @@ class ProfileFragment : BaseFragment() {
         showDeletePostConfirmationDialog(onConfirm = {
             viewModel.deletePost(run.id)
             run.public = false
-            adapter.runlist[position] = run
-            adapter.notifyItemChanged(position)
+            adapter.unPost(run)
         }, onCancel = {
             adapter.notifyItemChanged(position)
         })
@@ -218,6 +220,16 @@ class ProfileFragment : BaseFragment() {
         }, onCancel = {
             adapter.notifyItemChanged(position)
         })
+    }
+
+    private fun goToPost(run: RunData){
+        val post = viewModel.getPostByRunId(run.id)
+        post?.let{
+            navigator.navigateToPostDetail(
+                activity = activity,
+                post = post
+            )
+        }
     }
 
     private fun showDeleteConfirmationDialog(onConfirm: () -> Unit, onCancel: () -> Unit){

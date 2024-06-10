@@ -40,10 +40,10 @@
                 <LinearLayout
                     android:id="@+id/profile_info"
                     android:layout_width="wrap_content"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_big"
                     android:orientation="vertical"
                     app:layout_constraintBottom_toBottomOf="@+id/profile_fragment_card_view"
-                    android:layout_margin="@dimen/margin_big"
                     app:layout_constraintStart_toEndOf="@+id/profile_fragment_card_view"
                     app:layout_constraintTop_toTopOf="@+id/profile_fragment_card_view">
 

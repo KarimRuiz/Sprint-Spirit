@@ -24,14 +24,16 @@ class ProfileRunAdapter(
     var runlist: MutableList<RunData>,
     var deleteCallback : (RunData) -> Unit,
     var postCallback : (RunData) -> Unit,
-    var deletePostCallback : (RunData) -> Unit
+    var deletePostCallback : (RunData) -> Unit,
+    var goToPost: (RunData) -> Unit
 ) : RecyclerView.Adapter<ProfileRunAdapter.ProfileRunHolder>(){
 
 
     class ProfileRunHolder(val binding: CardUserRunBinding,
                            val deleteCallback: (RunData) -> Unit,
                            var postCallback : (RunData) -> Unit,
-                           var deletePostCallback: (RunData) -> Unit
+                           var deletePostCallback: (RunData) -> Unit,
+                           var goToPost: (RunData) -> Unit
     ) : RecyclerView.ViewHolder(binding.root), OnMapReadyCallback{
 
         private val mapView: MapView = binding.mapView
@@ -139,6 +141,10 @@ class ProfileRunAdapter(
                         deletePostCallback(run)
                         true
                     }
+                    R.id.post_menu_go_to_post -> {
+                        goToPost(run)
+                        true
+                    }
                     else -> {
                         false
                     }
@@ -164,7 +170,7 @@ class ProfileRunAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileRunHolder {
         val binding = CardUserRunBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ProfileRunHolder(binding, deleteCallback, postCallback, deletePostCallback)
+        return ProfileRunHolder(binding, deleteCallback, postCallback, deletePostCallback, goToPost)
     }
 
     override fun onBindViewHolder(holder: ProfileRunHolder, position: Int) {
@@ -185,5 +191,12 @@ class ProfileRunAdapter(
 
     fun getRunAt(position: Int) = runlist[position]
     fun getPosOfRun(run: RunData) = runlist.indexOf(run)
+    fun unPost(run: RunData) {
+        val position = runlist.indexOf(run)
+        if(position != -1){
+            runlist[position].public = false
+            notifyItemChanged(position)
+        }
+    }
 
 }

@@ -94,4 +94,11 @@
     <string name="Route_will_upload_when_internet">No tienes conexión a Internet. La ruta será guardada cuando recuperes la conexión.</string>
     <string name="Record">Grabar</string>
     <string name="Enable_location">Por favor, activa la ubicación para comenzar a grabar la ruta.</string>
+    <string name="Go_to_post">Ir a la publicación</string>
+    <string name="Delete_post">Eliminar publicación</string>
+    <string name="Delete">Eliminar</string>
+    <string name="Post">Publicación</string>
+    <string name="Post_already_deleted">La publicación ya ha sido eliminada.</string>
+    <string name="Delete_report">Eliminar informe</string>
+    <string name="Are_you_sure_delete_report">¿Estás seguro de que quieres eliminar este informe?</string>
 </resources>
