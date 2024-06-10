@@ -23,8 +23,6 @@ class RunViewModel(
         val MIN_DISTANCE = 0.1 //min distance in kilometers that a route can have
     }
 
-    private val dbManager: DBManager = DBManager.getCurrentDBManager()
-
     lateinit var run: RunData
     private var isRunning = false
 
