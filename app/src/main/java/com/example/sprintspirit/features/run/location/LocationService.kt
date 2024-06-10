@@ -10,6 +10,7 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.example.sprintspirit.R
 import com.example.sprintspirit.data.Preferences
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -43,7 +44,7 @@ class LocationService: Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channelName = "Running Channel"
             val channelDescription = "Channel for running notifications"
-            val importance = NotificationManager.IMPORTANCE_LOW
+            val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(CHANNEL_ID, channelName, importance).apply {
                 description = channelDescription
                 vibrationPattern = longArrayOf(0L)

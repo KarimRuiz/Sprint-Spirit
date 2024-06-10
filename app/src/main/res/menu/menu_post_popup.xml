@@ -3,12 +3,12 @@
 
     <item
         android:id="@+id/post_menu_go_to_post"
-        android:title="Ir a la publicación"/>
+        android:title="@string/Go_to_post"/>
     <item
         android:id="@+id/post_menu_delete_post"
-        android:title="Eliminar publicación"/>
+        android:title="@string/Delete_post"/>
     <item
         android:id="@+id/post_menu_delete"
-        android:title="Eliminar"/>
+        android:title="@string/Delete"/>
 
 </menu>

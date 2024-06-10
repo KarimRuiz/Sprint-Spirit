@@ -4,9 +4,9 @@
 
     <item
         android:id="@+id/post_menu_switch"
-        android:title="Publicar"/>
+        android:title="@string/Post"/>
     <item
         android:id="@+id/post_menu_delete"
-        android:title="Eliminar"/>
+        android:title="@string/Delete"/>
 
 </menu>

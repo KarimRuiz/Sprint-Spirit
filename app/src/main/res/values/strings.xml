@@ -104,4 +104,11 @@
     <string name="Route_will_upload_when_internet">You don\'t have Internet connection. Route will be uploaded when you recover connection.</string>
     <string name="Record">Record</string>
     <string name="Enable_location">Please, enable location to record your route.</string>
+    <string name="Go_to_post">Go to post</string>
+    <string name="Delete_post">Delete post</string>
+    <string name="Delete">Delete</string>
+    <string name="Post">Post</string>
+    <string name="Post_already_deleted">Post is already deleted</string>
+    <string name="Delete_report">Delete report</string>
+    <string name="Are_you_sure_delete_report">Are you sure you want to delete this report?</string>
 </resources>

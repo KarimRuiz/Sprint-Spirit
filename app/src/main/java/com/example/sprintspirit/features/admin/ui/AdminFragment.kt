@@ -92,7 +92,7 @@ class AdminFragment : BaseFragment() {
                         }else{
                             Toast.makeText(
                                 activity,
-                                "La publicación ya ha sido eliminada.",
+                                requireContext().getString(R.string.Post_already_deleted),
                                 Toast.LENGTH_LONG
                             ).show()
                         }
@@ -178,8 +178,8 @@ class AdminFragment : BaseFragment() {
 
     private fun showDeleteConfirmationDialog(onConfirm: () -> Unit){
         val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Eliminar reporte")
-        builder.setMessage("Estás seguro de que quieres eliminar este reporte?")
+        builder.setTitle(requireContext().getString(R.string.Delete_report))
+        builder.setMessage(requireContext().getString(R.string.Are_you_sure_delete_report))
 
         builder.setPositiveButton(ContextCompat.getString(requireContext(), R.string.Confirm)) { dialog, which ->
             onConfirm()
