@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.example.sprintspirit.R
 import com.example.sprintspirit.databinding.CardHomeRunBinding
 import com.example.sprintspirit.features.dashboard.home.data.Post
+import com.example.sprintspirit.util.Utils
 import com.example.sprintspirit.util.Utils.kphToMinKm
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -51,7 +52,7 @@ class HomeRunAdapter(var postList:List<Post>,
             post = get
             //Path
             path = mutableListOf()
-            val geoPoints = get.points!!
+            val geoPoints = Utils.shortenList(get.points!!)
             for(pos in geoPoints){
                 for((date, geoPoint) in pos){
                     path.add(LatLng(geoPoint.latitude, geoPoint.longitude))

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.sprintspirit.R
 import com.example.sprintspirit.databinding.CardUserRunBinding
 import com.example.sprintspirit.features.run.data.RunData
+import com.example.sprintspirit.util.Utils
 import com.example.sprintspirit.util.Utils.kphToMinKm
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -53,7 +54,8 @@ class ProfileRunAdapter(
             run = get
             //Path
             path = mutableListOf()
-            for(pos in get.points!!){
+            val points = Utils.shortenList(get.points!!)
+            for(pos in points){
                 for((date, geoPoint) in pos){
                     path.add(LatLng(geoPoint.latitude, geoPoint.longitude))
                 }
