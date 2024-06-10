@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import com.example.sprintspirit.R
+import com.example.sprintspirit.data.Preferences
 import com.example.sprintspirit.databinding.ActivitySettingsBinding
 import com.example.sprintspirit.features.settings.ui.main.SettingsFragment
 import com.example.sprintspirit.ui.BaseActivity
@@ -32,6 +33,12 @@ class SettingsActivity : BaseActivity() {
     private fun subscribeUi() {
         binding.toolbar.goBackListener = View.OnClickListener {
             navigator.goBack(this)
+        }
+        if(sharedPreferences.isRunning){
+            binding.toolbar.toolbarRecIndicator.visibility = View.VISIBLE
+            binding.toolbar.onRecClick = View.OnClickListener {
+                navigator.navigateToRecordRoute(activity = this)
+            }
         }
     }
 }

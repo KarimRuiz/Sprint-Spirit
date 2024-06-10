@@ -40,6 +40,12 @@ class ProfileDetailActivity : BaseActivity() {
         binding.toolbar.goBackListener = View.OnClickListener {
             navigator.goBack(this)
         }
+        if(sharedPreferences.isRunning){
+            binding.toolbar.toolbarRecIndicator.visibility = View.VISIBLE
+            binding.toolbar.onRecClick = View.OnClickListener {
+                navigator.navigateToRecordRoute(activity = this)
+            }
+        }
     }
 
 }

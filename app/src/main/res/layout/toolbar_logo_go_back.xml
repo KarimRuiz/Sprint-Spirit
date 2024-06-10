@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
             name="goBackListener"
+            type="android.view.View.OnClickListener" />
+        <variable
+            name="onRecClick"
             type="android.view.View.OnClickListener" />
     </data>
 
@@ -35,6 +39,38 @@
             android:layout_gravity="end"
             android:layout_margin="4dp"
             app:srcCompat="@drawable/ic_logo_no_text" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/toolbar_rec_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClickListener="@{onRecClick}"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_gravity="center">
+
+            <View
+                android:id="@+id/run_red_dot"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/record_red_dot"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_large"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:text="REC"
+                app:layout_constraintStart_toEndOf="@id/run_red_dot"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/run_red_dot"
+                android:layout_marginStart="@dimen/margin_normal"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 
 </layout>
