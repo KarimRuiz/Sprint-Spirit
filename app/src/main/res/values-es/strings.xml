@@ -90,7 +90,7 @@
     <string name="Save_run_when_internet">Tu ruta será guardada cuando recuperes la conexión a internet</string>
     <string name="Accept_location_permissions">Acepta los permisos de ubicación si quieres empezar a grabar una ruta...</string>
     <string name="Tracking_route">Grabando ruta...</string>
-    <string name="Tracking_location">"Grabando ruta: "</string>
+    <string name="Tracking_location">Grabando ruta...</string>
     <string name="Route_will_upload_when_internet">No tienes conexión a Internet. La ruta será guardada cuando recuperes la conexión.</string>
     <string name="Record">Grabar</string>
     <string name="Enable_location">Por favor, activa la ubicación para comenzar a grabar la ruta.</string>

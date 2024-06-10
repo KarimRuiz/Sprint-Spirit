@@ -30,6 +30,12 @@ class DashboardActivity : BaseActivity() {
             logd("There is no user logged in, going to login screen...")
             navigator.navigateToLogIn(this, false)
         }
+        if(sharedPreferences.isRunning){
+            navigator.navigateToRecordRoute(
+                activity = this,
+                preserveStack = false
+            )
+        }
 
         binding = ActivityDashboardBinding.inflate(layoutInflater)
         setContentView(binding.root)

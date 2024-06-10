@@ -23,59 +23,16 @@ class RunViewModel(
         val MIN_DISTANCE = 0.1 //min distance in kilometers that a route can have
     }
 
-    lateinit var run: RunData
-    private var isRunning = false
-
-    fun saveRun(){
-        isRunning = false
-        if(runCanBeUploaded()) {
-            CoroutineScope(Dispatchers.IO).launch {
-                repository.saveRun(RunResponse(run))
-            }
-        }else{
-            throw RuntimeException("Could not upload run; points: ${run.points?.size}; distance: ${run.distance}")
-        }
-    }
-
-    fun startRun() {
-        isRunning = true
-        run = RunData(
+    fun saveRun(points: List<Map<String, GeoPoint>>, distance: Double){
+        val run = RunData(
             user = "/users/" + prefs.email,
             startTime = Date(),
-            public = false
+            public = false,
+            points = points
         )
-
-    }
-
-    fun addCoord(coord: GeoPoint, time: Long){
-        val runPoint: Map<String, GeoPoint> = mapOf(time.toString() to coord)
-
-        val mutablePoints = run.points?.toMutableList() ?: mutableListOf()
-
-        val distanceToPreviousPoint = if(mutablePoints.isNotEmpty()){
-            val previousPoint = mutablePoints.last().values.first()
-            Utils.distanceBetween(previousPoint, coord)
-        }else{
-            0.0
+        CoroutineScope(Dispatchers.IO).launch {
+           repository.saveRun(RunResponse(run))
         }
-        run.distance += distanceToPreviousPoint
-
-        mutablePoints.add(runPoint)
-        run.points = mutablePoints
     }
-
-    fun runCanBeUploaded(): Boolean{
-        return this::run.isInitialized && (run.points?.size ?: 0) > 2 && (run.distance > MIN_DISTANCE)
-    }
-
-    fun runCannotUploadReason(): Int{
-        logd("Run distance: ${run.distance}, min distance: ${MIN_DISTANCE}")
-        if(run.distance < MIN_DISTANCE){
-            return R.string.Run_min_distance
-        }
-        return -1
-    }
-
-    fun isRunning() = isRunning
 
 }

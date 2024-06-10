@@ -13,6 +13,7 @@ import com.example.sprintspirit.features.post.ui.PostActivity
 import com.example.sprintspirit.features.post_detail.PostDetailActivity
 import com.example.sprintspirit.features.profile_detail.ProfileDetailActivity
 import com.example.sprintspirit.features.run.data.RunData
+import com.example.sprintspirit.features.run.ui.RunActivity
 import com.example.sprintspirit.features.settings.SettingsActivity
 import com.example.sprintspirit.features.signin.ui.signin.SignInActivity
 
@@ -37,6 +38,13 @@ class SprintSpiritNavigator(val context: Context) {
         preserveStack: Boolean? = true
     ){
         navigateTo(activity, Intent(activity, SettingsActivity::class.java), preserveStack)
+    }
+
+    fun navigateToRecordRoute(
+        activity: FragmentActivity?,
+        preserveStack: Boolean? = true
+    ){
+        navigateTo(activity, Intent(activity, RunActivity::class.java), preserveStack)
     }
 
     fun navigateToPostRun(

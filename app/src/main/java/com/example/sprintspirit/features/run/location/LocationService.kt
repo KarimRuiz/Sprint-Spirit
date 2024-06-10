@@ -2,6 +2,7 @@ package com.example.sprintspirit.features.run.location
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -10,6 +11,7 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.example.sprintspirit.R
 import com.example.sprintspirit.data.Preferences
+import com.example.sprintspirit.features.run.ui.RunActivity
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.CoroutineScope
@@ -65,10 +67,21 @@ class LocationService: Service() {
     }
 
     private fun start() {
+        val runActivityIntent = Intent(this, RunActivity::class.java).apply {
+            putExtra(RunActivity.CAME_FROM_NOTIFICATION, true)
+        }
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            runActivityIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(applicationContext.getString(R.string.Tracking_route))
             .setContentText(applicationContext.getString(R.string.Tracking_location))
             .setSmallIcon(R.drawable.ic_logo_no_text)
+            .setContentIntent(pendingIntent)
             .setOngoing(true)
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -77,10 +90,10 @@ class LocationService: Service() {
         locationClient.getLocationUpdates(refreshRate)
             .catch { e -> e.printStackTrace() }
             .onEach { location ->
-                val lat = location.latitude.toString().takeLast(3)
-                val long = location.longitude.toString().takeLast(3)
+                val lat = location.latitude.toString()
+                val long = location.longitude.toString()
                 val updatedNotification = notification.setContentText(
-                    "${applicationContext.getString(R.string.Tracking_location)} ($lat, $long)"
+                    "${applicationContext.getString(R.string.Tracking_location)}"
                 )
                 notificationManager.notify(1, updatedNotification.build())
 

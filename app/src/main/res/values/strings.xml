@@ -8,6 +8,8 @@
     <string name="sprint_spirit_user_username" translatable="false">sprint_spirit_user_username</string>
     <string name="sprint_spirit_location_refresh_rate" translatable="false">sprint_spirit_location_refresh_rate</string>
     <string name="sprint_spirit_is_administrator" translatable="false">sprint_spirit_is_administrator</string>
+    <string name="sprint_spirit_is_running" translatable="false">sprint_spirit_is_running</string>
+    <string name="sprint_spirit_route_path" translatable="false">sprint_spirit_route_path</string>
     <string name="Error">Error</string>
     <string name="Accept">Accept</string>
     <string name="Sign_in_error">An error ocurred while singing in</string>
@@ -100,7 +102,7 @@
     <string name="Save_run_when_internet">Your route will be saved when you recover Internet connection</string>
     <string name="Accept_location_permissions">Accept location permissions if you want to start recording an activity...</string>
     <string name="Tracking_route">Tracking route...</string>
-    <string name="Tracking_location">Tracking location:</string>
+    <string name="Tracking_location">Tracking location...</string>
     <string name="Route_will_upload_when_internet">You don\'t have Internet connection. Route will be uploaded when you recover connection.</string>
     <string name="Record">Record</string>
     <string name="Enable_location">Please, enable location to record your route.</string>

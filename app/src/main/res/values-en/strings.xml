@@ -90,7 +90,7 @@
     <string name="Save_run_when_internet">Your route will be saved when you recover Internet connection</string>
     <string name="Accept_location_permissions">Accept location permissions if you want to start recording an activity...</string>
     <string name="Tracking_route">Tracking route...</string>
-    <string name="Tracking_location">Tracking route:</string>
+    <string name="Tracking_location">Tracking route...</string>
     <string name="Route_will_upload_when_internet">You don\'t have Internet connection. Route will be uploaded when you recover connection.</string>
     <string name="Record">Record</string>
     <string name="Enable_location">Please, enable location to record your route.</string>
