@@ -10,6 +10,7 @@ import android.location.LocationRequest
 import android.os.Looper
 import androidx.core.app.ActivityCompat
 import androidx.core.content.getSystemService
+import com.example.sprintspirit.data.Preferences
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
@@ -37,7 +38,19 @@ class DefaultLocationClient(
                 throw LocationClient.LocationException("GPS is disabled!")
             }
 
-            val request = com.google.android.gms.location.LocationRequest.Builder(Priority.PRIORITY_BALANCED_POWER_ACCURACY, interval).build()
+            val prefs = Preferences(context)
+            val refreshRate = prefs.locationRefreshRate
+            val request = if(refreshRate >= LocationRefreshRate.HIGH.getMilli()) {
+                                com.google.android.gms.location.LocationRequest
+                                    .Builder(Priority.PRIORITY_HIGH_ACCURACY, interval).build()
+                            }else if(refreshRate >= LocationRefreshRate.NORMAL.getMilli()){
+                                com.google.android.gms.location.LocationRequest
+                                    .Builder(Priority.PRIORITY_BALANCED_POWER_ACCURACY, interval).build()
+                            }else{
+                                com.google.android.gms.location.LocationRequest
+                                    .Builder(Priority.PRIORITY_LOW_POWER, interval).build()
+                            }
+
 
             val locationCallback = object : LocationCallback(){
                 override fun onLocationResult(result: LocationResult) {

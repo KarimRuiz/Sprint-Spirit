@@ -26,6 +26,7 @@ class ProfileRunAdapter(
     var deleteCallback : (RunData) -> Unit,
     var postCallback : (RunData) -> Unit,
     var deletePostCallback : (RunData) -> Unit,
+    var goToRunDetail: (RunData) -> Unit,
     var goToPost: (RunData) -> Unit
 ) : RecyclerView.Adapter<ProfileRunAdapter.ProfileRunHolder>(){
 
@@ -34,6 +35,7 @@ class ProfileRunAdapter(
                            val deleteCallback: (RunData) -> Unit,
                            var postCallback : (RunData) -> Unit,
                            var deletePostCallback: (RunData) -> Unit,
+                           var goToRunDetail: (RunData) -> Unit,
                            var goToPost: (RunData) -> Unit
     ) : RecyclerView.ViewHolder(binding.root), OnMapReadyCallback{
 
@@ -100,7 +102,17 @@ class ProfileRunAdapter(
                 val pathColor = ContextCompat.getColor(binding.root.context, R.color.run_path)
                 val options = PolylineOptions().addAll(path).color(pathColor)
                 map.addPolyline(options)
-                // setOnMapClickListener {}
+                setOnMapClickListener {
+                    if(!run.public){
+                        this.setOnMapClickListener {
+                            goToRunDetail(run)
+                        }
+                    }else{
+                        this.setOnMapClickListener {
+                            goToPost(run)
+                        }
+                    }
+                }
             }
         }
 
@@ -168,7 +180,7 @@ class ProfileRunAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileRunHolder {
         val binding = CardUserRunBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        val holder = ProfileRunHolder(binding, deleteCallback, postCallback, deletePostCallback, goToPost)
+        val holder = ProfileRunHolder(binding, deleteCallback, postCallback, deletePostCallback, goToRunDetail, goToPost)
         holder.setIsRecyclable(false)
         return holder
     }

@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -49,7 +50,7 @@ class ProfileFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         navigator = SprintSpiritNavigator(requireContext())
-        viewModel = DashboardViewModel()
+        viewModel = ViewModelProvider(this).get(DashboardViewModel::class.java)
         viewModel.email = Preferences(requireContext()).email
 
         getRuns()
@@ -186,6 +187,9 @@ class ProfileFragment : BaseFragment() {
                 },
                 deletePostCallback = {
                     deletePost(it, adapter.getPosOfRun(it))
+                },
+                goToRunDetail = {
+                    navigator.navigateToRunDetail(activity, it, true)
                 },
                 goToPost = {
                     goToPost(it)

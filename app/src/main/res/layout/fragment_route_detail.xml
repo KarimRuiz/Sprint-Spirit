@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="onPost"
+            type="android.view.View.OnClickListener" />
+        <variable
+            name="onDelete"
+            type="android.view.View.OnClickListener" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:padding="@dimen/margin_bigger">
+
+            <!-- Title & Description -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tv_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/font_small"
+                        android:layout_gravity="end"
+                        android:textAlignment="textEnd"
+                        tools:visibility="visible"
+                        android:layout_weight="1"
+                        tools:text="23-05-24"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="@dimen/margin_small"/>
+
+            <!-- Data -->
+            <View
+                android:layout_width="1dp"
+                android:layout_height="@dimen/margin_normal"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#43646464"/>
+            <View
+                android:layout_width="1dp"
+                android:layout_height="@dimen/margin_normal"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="2"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <!-- Distance -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/Distance"/>
+
+                        <TextView
+                            android:id="@+id/post_detail_distance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/font_normal"
+                            tools:text="5.34km"/>
+
+                    </LinearLayout>
+
+                    <!-- Pace -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/Pace"/>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/margin_godzilla"
+                            android:layout_marginEnd="@dimen/margin_godzilla"
+                            android:weightSum="3"
+                            android:orientation="horizontal">
+
+
+                            <!-- max pace -->
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="@dimen/font_small"
+                                    android:text="Avg (min/km)"/>
+
+                                <TextView
+                                    android:id="@+id/tv_pace_avg"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="@dimen/font_normal"
+                                    tools:text="20"/>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Time -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/Time"/>
+
+                        <TextView
+                            android:id="@+id/post_detail_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/font_normal"
+                            tools:text="5h:34min"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Map -->
+            <View
+                android:layout_width="1dp"
+                android:layout_height="@dimen/margin_normal"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#43646464"/>
+            <View
+                android:layout_width="1dp"
+                android:layout_height="@dimen/margin_normal"/>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.google.android.gms.maps.MapView
+                    android:id="@+id/post_detail_map"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="Map"
+                    android:outlineAmbientShadowColor="#C13B3B"
+                    android:outlineSpotShadowColor="#7B3A3A"
+                    app:cameraZoom="8"
+                    app:mapType="hybrid" />
+
+                <Button
+                    android:id="@+id/btn_delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Delete"
+                    android:onClick="@{onDelete}"
+                    android:layout_marginStart="@dimen/margin_big"
+                    android:layout_marginBottom="@dimen/margin_normal"
+                    android:backgroundTint="#CA5F25"
+                    android:layout_gravity="bottom|start"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{onPost}"
+                    android:layout_gravity="bottom|end"
+                    android:layout_marginBottom="@dimen/margin_normal"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:text="Publicar"
+                    />
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <com.github.ybq.android.spinkit.SpinKitView
+            android:id="@+id/skv_loading_view"
+            android:layout_width="@dimen/loading_indicator"
+            android:layout_height="@dimen/loading_indicator"
+            android:layout_gravity="center"
+            app:SpinKit_Color="@color/primary"
+            android:visibility="visible"
+            android:padding="10dp"
+            style="@style/SpinKitView.Large.Circle"
+            tools:visibility="visible"/>
+
+    </FrameLayout>
+</layout>
