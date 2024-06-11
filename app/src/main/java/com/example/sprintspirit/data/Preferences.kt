@@ -45,7 +45,7 @@ class Preferences(val context: Context) {
         }
 
     var locationRefreshRate: Long //in miliseconds
-        get() = sharedPreferences.getLong(context.getString(R.string.sprint_spirit_location_refresh_rate), LocationRefreshRate.NORMAL.getMilli())
+        get() = sharedPreferences.getLong(context.getString(R.string.sprint_spirit_location_refresh_rate), LocationRefreshRate.HIGH.getMilli())
         set(value) = sharedPreferences.edit{ putLong(context.getString(R.string.sprint_spirit_location_refresh_rate), value) }
 
     var isRunning: Boolean
