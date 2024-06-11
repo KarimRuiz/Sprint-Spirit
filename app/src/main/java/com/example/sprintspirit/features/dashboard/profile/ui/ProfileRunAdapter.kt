@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.sprintspirit.R
 import com.example.sprintspirit.databinding.CardUserRunBinding
 import com.example.sprintspirit.features.run.data.RunData
+import com.example.sprintspirit.util.Utils
 import com.example.sprintspirit.util.Utils.kphToMinKm
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -25,6 +26,7 @@ class ProfileRunAdapter(
     var deleteCallback : (RunData) -> Unit,
     var postCallback : (RunData) -> Unit,
     var deletePostCallback : (RunData) -> Unit,
+    var goToRunDetail: (RunData) -> Unit,
     var goToPost: (RunData) -> Unit
 ) : RecyclerView.Adapter<ProfileRunAdapter.ProfileRunHolder>(){
 
@@ -33,6 +35,7 @@ class ProfileRunAdapter(
                            val deleteCallback: (RunData) -> Unit,
                            var postCallback : (RunData) -> Unit,
                            var deletePostCallback: (RunData) -> Unit,
+                           var goToRunDetail: (RunData) -> Unit,
                            var goToPost: (RunData) -> Unit
     ) : RecyclerView.ViewHolder(binding.root), OnMapReadyCallback{
 
@@ -53,7 +56,8 @@ class ProfileRunAdapter(
             run = get
             //Path
             path = mutableListOf()
-            for(pos in get.points!!){
+            val points = Utils.shortenList(get.points!!)
+            for(pos in points){
                 for((date, geoPoint) in pos){
                     path.add(LatLng(geoPoint.latitude, geoPoint.longitude))
                 }
@@ -98,7 +102,17 @@ class ProfileRunAdapter(
                 val pathColor = ContextCompat.getColor(binding.root.context, R.color.run_path)
                 val options = PolylineOptions().addAll(path).color(pathColor)
                 map.addPolyline(options)
-                // setOnMapClickListener {}
+                setOnMapClickListener {
+                    if(!run.public){
+                        this.setOnMapClickListener {
+                            goToRunDetail(run)
+                        }
+                    }else{
+                        this.setOnMapClickListener {
+                            goToPost(run)
+                        }
+                    }
+                }
             }
         }
 
@@ -164,13 +178,11 @@ class ProfileRunAdapter(
 
     }
 
-    fun deleteListener(callback: (RunData) -> Unit){
-        deleteCallback = callback
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileRunHolder {
         val binding = CardUserRunBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ProfileRunHolder(binding, deleteCallback, postCallback, deletePostCallback, goToPost)
+        val holder = ProfileRunHolder(binding, deleteCallback, postCallback, deletePostCallback, goToRunDetail, goToPost)
+        holder.setIsRecyclable(false)
+        return holder
     }
 
     override fun onBindViewHolder(holder: ProfileRunHolder, position: Int) {
@@ -185,7 +197,7 @@ class ProfileRunAdapter(
         val position = runlist.indexOf(run)
         if(position != -1){
             runlist.removeAt(position)
-            notifyItemChanged(position)
+            notifyItemRemoved(position)
         }
     }
 

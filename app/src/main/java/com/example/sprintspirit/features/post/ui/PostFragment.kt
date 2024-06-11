@@ -55,6 +55,8 @@ class PostFragment : BaseFragment(), OnMapReadyCallback {
         viewModel.email = sharedPreferences.email ?: ""
         viewModel.run = run
         viewModel.address = Utils.addressFromLocation(requireContext(), run.points?.firstOrNull()?.values?.firstOrNull()!!)
+        logd("FirstPoint: ${run.points?.firstOrNull()?.values?.firstOrNull()!!}")
+        logd("Address: ${viewModel.address}")
 
         with(binding.mapPostRun){
             onCreate(null)

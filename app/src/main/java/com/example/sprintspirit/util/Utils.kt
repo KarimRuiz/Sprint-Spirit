@@ -101,7 +101,6 @@ object Utils{
         }.joinToString("")
     }
 
-
     fun String.normalize() : String{
         return this.lowercase().removeNonSpacingMarks()
     }
@@ -110,6 +109,18 @@ object Utils{
         val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         val effect = VibrationEffect.createOneShot(milli, VibrationEffect.DEFAULT_AMPLITUDE)
         vibrator.vibrate(effect)
+    }
+
+    fun shortenList(list: List<Map<String, GeoPoint>>): List<Map<String, GeoPoint>>{
+        return if(list.size > 500){
+            list.filterIndexed { index, _ -> index % 8 == 0 }
+        }else if(list.size > 250){
+            list.filterIndexed { index, _ -> index % 4 == 0 }
+        }else if(list.size > 150){
+            list.filterIndexed { index, _ -> index % 2 == 0 }
+        }else{
+            list
+        }
     }
 
     fun loadAvatar(view: ImageView, email: String, coroutineScope: CoroutineScope){

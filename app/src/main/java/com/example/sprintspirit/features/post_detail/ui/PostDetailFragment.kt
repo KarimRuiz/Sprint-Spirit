@@ -25,6 +25,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.example.sprintspirit.util.Utils.toGeoPoint
+import com.github.ybq.android.spinkit.style.ChasingDots
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
@@ -64,6 +65,9 @@ class PostDetailFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     private fun subscribeUi(binding: FragmentPostDetailBinding) {
+        val loadingAnim = ChasingDots()
+        binding.skvLoadingView.setIndeterminateDrawable(loadingAnim)
+
         createPathList()
 
         binding.goToChat = View.OnClickListener {
@@ -117,7 +121,7 @@ class PostDetailFragment : BaseFragment(), OnMapReadyCallback {
             binding.btnDelete.visibility = View.VISIBLE
         }
 
-        if(!viewModel.postExists(post.id)){
+        if(!viewModel.postExistsByRun(post.sessionId)){
             Toast.makeText(
                 activity,
                 "Esta publicación ya no existe",
@@ -149,6 +153,9 @@ class PostDetailFragment : BaseFragment(), OnMapReadyCallback {
             drawColoredPath()
 
             setOnMapClickListener {}
+            setOnMapLoadedCallback {
+                (binding as FragmentPostDetailBinding).skvLoadingView.visibility = View.GONE
+            }
         }
     }
 
@@ -196,7 +203,8 @@ class PostDetailFragment : BaseFragment(), OnMapReadyCallback {
     private fun createPathList() {
         path = mutableListOf()
         speeds = mutableListOf()
-        val geoPoints = post.points!!
+        logd("Total points: ${post.points!!.size}")
+        val geoPoints = Utils.shortenList(post.points!!)
         var lastLatLng: LatLng? = null
         var lastTime: Long? = null
 

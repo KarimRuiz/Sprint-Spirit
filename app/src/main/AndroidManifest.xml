@@ -78,6 +78,10 @@
             android:name=".features.post_detail.PostDetailActivity"
             android:screenOrientation="portrait"
             android:exported="false" />
+        <activity
+            android:name=".features.route_detail.RouteDetailActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
         <activity android:name=".features.profile_detail.ProfileDetailActivity"
             android:screenOrientation="portrait"
             android:exported="false" />

@@ -12,7 +12,9 @@ import com.example.sprintspirit.features.dashboard.home.data.Post
 import com.example.sprintspirit.features.post.ui.PostActivity
 import com.example.sprintspirit.features.post_detail.PostDetailActivity
 import com.example.sprintspirit.features.profile_detail.ProfileDetailActivity
+import com.example.sprintspirit.features.route_detail.RouteDetailActivity
 import com.example.sprintspirit.features.run.data.RunData
+import com.example.sprintspirit.features.run.ui.RunActivity
 import com.example.sprintspirit.features.settings.SettingsActivity
 import com.example.sprintspirit.features.signin.ui.signin.SignInActivity
 
@@ -39,6 +41,13 @@ class SprintSpiritNavigator(val context: Context) {
         navigateTo(activity, Intent(activity, SettingsActivity::class.java), preserveStack)
     }
 
+    fun navigateToRecordRoute(
+        activity: FragmentActivity?,
+        preserveStack: Boolean? = true
+    ){
+        navigateTo(activity, Intent(activity, RunActivity::class.java), preserveStack)
+    }
+
     fun navigateToPostRun(
         activity: FragmentActivity?,
         run: RunData,
@@ -58,6 +67,17 @@ class SprintSpiritNavigator(val context: Context) {
         PostDetailActivity.post = post
         navigateTo(activity,
             Intent(activity, PostDetailActivity::class.java),
+            preserveStack)
+    }
+
+    fun navigateToRunDetail(
+        activity: FragmentActivity?,
+        run: RunData,
+        preserveStack: Boolean? = true
+    ){
+        RouteDetailActivity.route = run
+        navigateTo(activity,
+            Intent(activity, RouteDetailActivity::class.java),
             preserveStack)
     }
 

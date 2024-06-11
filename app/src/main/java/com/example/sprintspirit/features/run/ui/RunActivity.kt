@@ -6,6 +6,7 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
@@ -64,6 +65,8 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
         private const val STOP_VIBRATION_TIME = 100L
         private const val START_VIBRATION_TIME = 1000L
 
+        const val CAME_FROM_NOTIFICATION = "RunActivityCameFromNotification"
+
         private var coordinates: MutableList<Map<String, GeoPoint>> = mutableListOf()
 
         private lateinit var routeSource: GeoJsonSource
@@ -74,15 +77,8 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
     private lateinit var mapView: MapView
     private lateinit var binding: ActivityRunBinding
 
-    private val locatonService = LocationServiceFactory.getOrCreate()
     private var locationProvider: DeviceLocationProvider? = null
     private var isReceiverRegistered = false
-
-    val request = LocationProviderRequest.Builder()
-        .interval(IntervalSettings.Builder().interval(0L).minimumInterval(0L).maximumInterval(0L).build())
-        .displacement(0F)
-        .accuracy(AccuracyLevel.HIGH)
-        .build()
 
     val locationObserver = LocationObserver { locations ->
         logd("GOT LOCATION")
@@ -100,7 +96,7 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
     val locationReceiver = object : BroadcastReceiver(){
         override fun onReceive(context: Context?, intent: Intent?) {
             intent?.let{
-                if(viewModel.isRunning()){
+                if(sharedPreferences.isRunning){
                     val location =
                         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                             intent.getParcelableExtra(LocationService.LOCATION_INTENT, android.location.Location::class.java)
@@ -113,6 +109,7 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
                         it.plus(Pair(timeStamp.toString(), runPoint))
                     }
                     coordinates.add(map)
+                    sharedPreferences.addCoord(timeStamp.toString(), runPoint)
                     logd("Location added to run: " + runPoint)
 
                     val point = Point.fromLngLat(location.longitude, location.latitude)
@@ -130,12 +127,12 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
      }
 
     private val onIndicatorPositionChangedListener = OnIndicatorPositionChangedListener {
-        // Jump to the current indicator position
+        //jump to the current indicator position
         val cameraOptions = CameraOptions.Builder()
             .center(it)
             .build()
         binding.mapView.mapboxMap.setCamera(cameraOptions)
-        // Set the gestures plugin's focal point to the current indicator location.
+        //set the gestures plugin's focal point to the current indicator location.
         binding.mapView.gestures.focalPoint = binding.mapView.mapboxMap.pixelForCoordinate(it)
     }
 
@@ -156,6 +153,19 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
         subscribeUi(binding)
 
         setContentView(binding.root)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        logd("onResume(): ${sharedPreferences.isRunning}")
+        setButtonRecording(binding, sharedPreferences.isRunning)
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        binding.mapView.location
+            .removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener)
     }
 
     private fun checkLocationEnabled() {
@@ -190,7 +200,6 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
                 grantResults.getOrNull(permissions.indexOf(Manifest.permission.ACCESS_FINE_LOCATION))
             if (fineLocationPermission == PackageManager.PERMISSION_GRANTED) {
                 logd("Got permissions")
-                setUpMap()
                 checkLocationEnabled()
             } else {
                 logd("Didn't get permissions")
@@ -204,57 +213,9 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
     }
 
     private fun subscribeUi(binding: ActivityRunBinding) {
-        binding.recordRunButton.setOnClickListener {
-            logd("viewModel.isRunning(): ${viewModel.isRunning()}")
-            if(viewModel.isRunning()){
-                showStopConfirmationDialog(onConfirm = {
-                    Intent(applicationContext, LocationService::class.java).apply {
-                        action = LocationService.ACTION_STOP
-                        startService(this)
-                    }
-                    // Unregister receiver if registered
-                    if (isReceiverRegistered) {
-                        unregisterReceiver(locationReceiver)
-                        isReceiverRegistered = false
-                    }
+        binding.recordRunButton.setOnClickListener(recordListener(this))
 
-                    binding.flRunRecordRedDot.visibility = View.GONE
-                    binding.recordRunStatus.setTextColor(ContextCompat.getColor(this, R.color.white))
-                    binding.recordRunStatus.text = ContextCompat.getString(this, R.string.Record)
-                    binding.recordRunButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.record_button))
-                    postRun()
-
-                    Utils.vibrate(this, STOP_VIBRATION_TIME)
-
-                    if(!isInternetAvailable()){
-                        showNoInternetWarningOnUpload()
-                    }
-                    routeCoordinates.clear()
-                    binding.mapView.mapboxMap.getStyle { style ->
-                        style.removeStyleSource("route-source")
-                        style.removeStyleLayer("route-layer")
-                    }
-                }, onCancel = {
-
-                })
-            }else{
-                Intent(applicationContext, LocationService::class.java).apply{
-                    action = LocationService.ACTION_START
-                    startService(this)
-                    val filter = IntentFilter(LocationService.LOCATION_INTENT)
-                    ContextCompat.registerReceiver(this@RunActivity, locationReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
-                    isReceiverRegistered = true
-                }
-
-                Utils.vibrate(this, START_VIBRATION_TIME)
-
-                binding.flRunRecordRedDot.visibility = View.VISIBLE
-                binding.recordRunStatus.setTextColor(ContextCompat.getColor(this, R.color.stop))
-                binding.recordRunStatus.text = "STOP"
-                binding.recordRunButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.record_button_running))
-                viewModel.startRun()
-            }
-        }
+        setUpMap()
     }
 
     private fun showStopConfirmationDialog(onConfirm: () -> Unit, onCancel: () -> Unit){
@@ -272,27 +233,29 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
         builder.show()
     }
 
-    private fun showNoInternetWarningOnUpload(){
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle(ContextCompat.getString(this, R.string.No_internet))
-        builder.setMessage(ContextCompat.getString(this, R.string.Route_will_upload_when_internet))
-
-        builder.setNeutralButton(ContextCompat.getString(this, R.string.Confirm)){_, _ ->}
-
-        builder.show()
-    }
-
     private fun postRun() {
         try{
-            viewModel.run.points = coordinates
-            viewModel.run.distance = calculateDistance()
-            viewModel.saveRun()
+            if(canRunBeUploaded()){
+                viewModel.saveRun(sharedPreferences.routePath, calculateDistance())
 
-            navigator.navigateToHome(
-                activity = this
-            )
+                sharedPreferences.isRunning = false
+                navigator.navigateToHome(
+                    activity = this
+                )
+            }else{
+                sharedPreferences.isRunning = false
+                val reason = getReasonNotUpload()
+                if(reason != -1){
+                    logd("run cannot be uploaded")
+                    val minDistance = (RunViewModel.MIN_DISTANCE * 1000).toInt()
+                    ErrorDialog(this.getString(reason, minDistance)).show(supportFragmentManager, "ERROR_DIALOG")
+                }else{
+                    ErrorDialog("Error subiendo la ruta.").show(supportFragmentManager, "ERROR_DIALOG")
+                }
+            }
         }catch(e: Exception){
-            val reason = viewModel.runCannotUploadReason()
+            sharedPreferences.isRunning = false
+            val reason = getReasonNotUpload()
             if(reason != -1){
                 logd("run cannot be uploaded")
                 val minDistance = (RunViewModel.MIN_DISTANCE * 1000).toInt()
@@ -300,6 +263,69 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
             }else{
                 ErrorDialog(e.message?: "").show(supportFragmentManager, "ERROR_DIALOG")
             }
+        }
+    }
+
+    private fun recordListener(context: Context) = object : View.OnClickListener {
+        override fun onClick(v: View?) {
+            logd("iSRunning: ${sharedPreferences.isRunning}")
+            if(sharedPreferences.isRunning){
+                showStopConfirmationDialog(onConfirm = {
+                    Intent(applicationContext, LocationService::class.java).apply {
+                        action = LocationService.ACTION_STOP
+                        startService(this)
+                    }
+                    // Unregister receiver if registered
+                    if (isReceiverRegistered) {
+                        unregisterReceiver(locationReceiver)
+                        isReceiverRegistered = false
+                    }
+
+                    logd("Posting run...")
+                    postRun()
+
+                    Utils.vibrate(context, STOP_VIBRATION_TIME)
+
+                    if(!isInternetAvailable()){
+                        showNoInternetWarningOnUpload()
+                    }
+                    routeCoordinates.clear()
+                    sharedPreferences.routePath = mutableListOf()
+                    locationProvider?.removeLocationObserver(locationObserver)
+                    binding.mapView.mapboxMap.getStyle { style ->
+                        style.removeStyleSource("route-source")
+                        style.removeStyleLayer("route-layer")
+                    }
+                }, onCancel = { })
+            }else{
+                Intent(applicationContext, LocationService::class.java).apply{
+                    action = LocationService.ACTION_START
+                    startService(this)
+                    val filter = IntentFilter(LocationService.LOCATION_INTENT)
+                    ContextCompat.registerReceiver(this@RunActivity, locationReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
+                    isReceiverRegistered = true
+                }
+
+                Utils.vibrate(context, START_VIBRATION_TIME)
+
+                sharedPreferences.isRunning = true
+            }
+            setButtonRecording(binding, sharedPreferences.isRunning)
+        }
+    }
+
+    private fun setButtonRecording(binding: ActivityRunBinding, recording: Boolean){
+        logd("Is recording? $recording")
+        if(!recording){
+            binding.flRunRecordRedDot.visibility = View.GONE
+            binding.recordRunStatus.setTextColor(ContextCompat.getColor(this, R.color.white))
+            binding.recordRunStatus.text = ContextCompat.getString(this, R.string.Record)
+            binding.recordRunButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.record_button))
+        }else{
+            binding.flRunRecordRedDot.visibility = View.VISIBLE
+            binding.recordRunStatus.setTextColor(ContextCompat.getColor(this, R.color.stop))
+            binding.recordRunStatus.text = "STOP"
+            binding.recordRunButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.record_button_running))
         }
     }
 
@@ -336,26 +362,37 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
         binding.mapView.addView(mapView)
     }
 
+    private fun pathToCoords(): List<GeoPoint>{
+        val coords: MutableList<GeoPoint> = mutableListOf()
+        sharedPreferences.routePath.forEach {
+            coords.add(it.values.first())
+        }
+        return coords.toList()
+    }
+
+    private fun showNoInternetWarningOnUpload(){
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle(ContextCompat.getString(this, R.string.No_internet))
+            builder.setMessage(ContextCompat.getString(this, R.string.Route_will_upload_when_internet))
+
+            builder.setNeutralButton(ContextCompat.getString(this, R.string.Confirm)){_, _ ->}
+
+            builder.show()
+        }
+
     override fun onStart() {
         super.onStart()
         binding.mapView.location
             .addOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener)
     }
 
-    override fun onStop() {
-        super.onStop()
-        locationProvider?.removeLocationObserver(locationObserver)
-        binding.mapView.location
-            .removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener)
-    }
-
     override fun onAbsentPermissionsNeutralClick(dialog: DialogFragment) {
         finish()
     }
 
-        private fun calculateDistance(): Double {
+    private fun calculateDistance(): Double {
             val points = mutableListOf<GeoPoint>()
-            coordinates.forEach {
+            sharedPreferences.routePath.forEach {
                 points.add(it.values.first())
             }
             if (points.size < 2) return 0.0
@@ -365,7 +402,21 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
                 totalDistance += Utils.distanceBetween(points[i], points[i + 1])
             }
             return totalDistance
+    }
+
+    fun canRunBeUploaded(): Boolean{
+        return sharedPreferences.routePath.size > 2
+                && calculateDistance() > RunViewModel.MIN_DISTANCE
+    }
+
+    fun getReasonNotUpload(): Int{
+        val distance = calculateDistance()
+        logd("Run distance: ${distance}, min distance: ${RunViewModel.MIN_DISTANCE}")
+        if(distance < RunViewModel.MIN_DISTANCE){
+            return R.string.Run_min_distance
         }
+        return -1
+    }
 
 }
 
@@ -418,6 +469,11 @@ class EnableLocationDialog(
                 }
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        activity.finish()
     }
 }
 
