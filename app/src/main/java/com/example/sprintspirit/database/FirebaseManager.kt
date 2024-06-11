@@ -695,7 +695,41 @@ class FirebaseManager() : DBManager {
         }
 
         val documentSnapshot = query.documents.first()
-        return documentSnapshot.toObject(Post::class.java)
+        var post = documentSnapshot.toObject(Post::class.java) ?: return null
+
+        val userId = post.user.removePrefix("/users/")
+        val userDocRef = firestore.collection(USERS).document(userId)
+        val userData = userDocRef.get().await().toObject(User::class.java)
+
+        try {
+            val ref = storage.child(IMAGES).child("$userId.jpg")
+            userData?.profilePictureUrl = ref.downloadUrl.await()
+        } catch (e: Exception) {
+            Log.d(TAG, "error getting profile image for user $userId: $e")
+        }
+
+        if(userData == null) Log.d(TAG, "userData is null")
+        userData?.let {
+            post = Post(
+                id = post.id,
+                user = userId,
+                userData = it,
+                distance = post.distance,
+                startTime = post.startTime,
+                minutes = post.minutes,
+                description = post.description,
+                sessionId = post.sessionId,
+                publishDate = post.publishDate,
+                title = post.title,
+                town = post.town,
+                city = post.city,
+                state = post.state,
+                country = post.country,
+                points = post.points
+            )
+        }
+
+        return post
     }
 
     override suspend fun deletePost(post: Post) {
@@ -734,9 +768,9 @@ class FirebaseManager() : DBManager {
                 startTime = run.startTime,
                 minutes = run.minutes(),
                 title = title,
-                town = address.locality.normalize(),
-                city = address.subAdminArea.normalize(),
-                state = address.adminArea.normalize(),
+                town = (address.locality ?: "").normalize(),
+                city = (address.subAdminArea ?: "").normalize(),
+                state = (address.adminArea ?: "").normalize(),
                 country = address.countryCode,
                 description = description,
                 sessionId = run.id,

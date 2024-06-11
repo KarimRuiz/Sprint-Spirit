@@ -212,11 +212,6 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
     }
 
     private fun subscribeUi(binding: ActivityRunBinding) {
-        if(sharedPreferences.isRunning){
-            //Continue recording?...
-            //if not: sharedPreferences.isRunning = false
-        }
-
         binding.recordRunButton.setOnClickListener(recordListener(this))
 
         setUpMap()

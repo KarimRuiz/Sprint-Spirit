@@ -113,6 +113,10 @@ class HomeFragment : BaseFragment() {
         binding.runsHomeRv.addOnChildAttachStateChangeListener(postAttacherListener())
 
         //Stats
+        binding.homeFragmentStats.distance = "0"
+        binding.homeFragmentStats.hours = "0"
+        binding.homeFragmentStats.minutes = "0"
+        binding.homeFragmentStats.pace = "0"
         viewModel.stats.observe(viewLifecycleOwner, observeStats(binding))
 
         //Buttons
@@ -209,7 +213,7 @@ class HomeFragment : BaseFragment() {
         binding.homeFragmentStats.hours = hours.toString()
         binding.homeFragmentStats.minutes = minutes.toString()
 
-        binding.homeFragmentStats.pace = String.format("%.2f", it.stats?.pace)
+        binding.homeFragmentStats.pace = String.format("%.2f", it.stats?.pace ?: 0.0)
     }
 
     private fun postAttacherListener() = object : RecyclerView.OnChildAttachStateChangeListener {

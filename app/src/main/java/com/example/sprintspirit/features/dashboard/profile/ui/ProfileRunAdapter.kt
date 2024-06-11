@@ -166,13 +166,11 @@ class ProfileRunAdapter(
 
     }
 
-    fun deleteListener(callback: (RunData) -> Unit){
-        deleteCallback = callback
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileRunHolder {
         val binding = CardUserRunBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ProfileRunHolder(binding, deleteCallback, postCallback, deletePostCallback, goToPost)
+        val holder = ProfileRunHolder(binding, deleteCallback, postCallback, deletePostCallback, goToPost)
+        holder.setIsRecyclable(false)
+        return holder
     }
 
     override fun onBindViewHolder(holder: ProfileRunHolder, position: Int) {
@@ -187,7 +185,7 @@ class ProfileRunAdapter(
         val position = runlist.indexOf(run)
         if(position != -1){
             runlist.removeAt(position)
-            notifyItemChanged(position)
+            notifyItemRemoved(position)
         }
     }
 

@@ -28,6 +28,7 @@ class RunViewModel(
             user = "/users/" + prefs.email,
             startTime = Date(),
             public = false,
+            distance = distance,
             points = points
         )
         CoroutineScope(Dispatchers.IO).launch {

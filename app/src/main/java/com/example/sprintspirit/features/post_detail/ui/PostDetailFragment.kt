@@ -121,7 +121,7 @@ class PostDetailFragment : BaseFragment(), OnMapReadyCallback {
             binding.btnDelete.visibility = View.VISIBLE
         }
 
-        if(!viewModel.postExists(post.id)){
+        if(!viewModel.postExistsByRun(post.sessionId)){
             Toast.makeText(
                 activity,
                 "Esta publicación ya no existe",
