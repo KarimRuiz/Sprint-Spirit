@@ -589,17 +589,12 @@ class FirebaseManager() : DBManager {
                 query = query.whereIn(USER, listOfUsers)
             }
 
-            Log.d(TAG, "ordering by publish date")
             query = query.orderBy(orderBy.columnName(), Query.Direction.DESCENDING)
 
             val posts = query.limit(limit).get().await().documents.mapNotNull { snapShot ->
                 snapShot.toObject(Post::class.java)?.apply {
                     id = snapShot.id
                 }
-            }
-
-            posts.forEach {
-                Log.d(TAG, it.distance.toString())
             }
 
             val postsRes: MutableList<Post> = mutableListOf()
