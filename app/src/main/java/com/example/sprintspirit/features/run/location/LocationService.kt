@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.location.LocationManager
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
@@ -36,26 +37,30 @@ class LocationService: Service() {
 
         createNotificationChannel()
 
-        locationClient = DefaultLocationClient(
+        /* THIS IS THE OLD LOCATION HANDLER. IT WAS REMOVED AS IT PRODUCES LOTS OF NOISE */
+        /*locationClient = DefaultLocationClient(
             applicationContext,
             LocationServices.getFusedLocationProviderClient(applicationContext)
+        )*/
+
+        locationClient = LocalLocationClient(
+            applicationContext,
+            getSystemService(Context.LOCATION_SERVICE) as LocationManager
         )
     }
 
     private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channelName = "Running Channel"
-            val channelDescription = "Channel for running notifications"
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel(CHANNEL_ID, channelName, importance).apply {
-                description = channelDescription
-                vibrationPattern = longArrayOf(0L)
-                enableVibration(false)
-            }
-
-            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
+        val channelName = "Running Channel"
+        val channelDescription = "Channel for running notifications"
+        val importance = NotificationManager.IMPORTANCE_HIGH
+        val channel = NotificationChannel(CHANNEL_ID, channelName, importance).apply {
+            description = channelDescription
+            vibrationPattern = longArrayOf(0L)
+            enableVibration(false)
         }
+
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
