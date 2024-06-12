@@ -51,6 +51,8 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
+    fun isInternetAvailable() = !(activity as BaseActivity).isInternetAvailable()
+
     fun showAlert(
         message: String,
         title: String = requireContext().getString(R.string.Error),

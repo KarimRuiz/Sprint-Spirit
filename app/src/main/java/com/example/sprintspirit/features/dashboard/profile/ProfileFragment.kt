@@ -193,7 +193,8 @@ class ProfileFragment : BaseFragment() {
                 },
                 goToPost = {
                     goToPost(it)
-                }
+                },
+                showMap = !isInternetAvailable()
             )
             (binding as FragmentProfileBinding).runProfileRv.adapter = adapter
             if(runs.runs!!.isEmpty()){
