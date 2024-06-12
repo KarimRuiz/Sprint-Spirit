@@ -46,6 +46,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.messaging.messaging
@@ -88,6 +89,7 @@ class FirebaseManager() : DBManager {
         val START_TIME = "startTime"
         val PUBLISH_DATE = "publishDate"
         val FOLLOWING = "following"
+        val FOLLOWERS = "followers"
         val DISTANCE = "distance"
         val MINUTES = "minutes"
         val IS_PUBLIC = "public"
@@ -163,6 +165,11 @@ class FirebaseManager() : DBManager {
                     chats = documentSnapshot.get(USER_CHATS) as? Map<String, UserChat>,
                     following = if(documentSnapshot.get(FOLLOWING) != null){
                         documentSnapshot.get(FOLLOWING) as Map<String, UserFollow>
+                    }else{
+                        mapOf()
+                    },
+                    followers = if(documentSnapshot.get(FOLLOWERS) != null){
+                        documentSnapshot.get(FOLLOWERS) as Map<String, UserFollow>
                     }else{
                         mapOf()
                     },
@@ -275,6 +282,7 @@ class FirebaseManager() : DBManager {
 
             if(!followerSnap.exists() || !followedSnap.exists()) return false
 
+            //set following
             val followingUsers = followerSnap.get(FOLLOWING) as? MutableMap<String, UserFollow> ?: mutableMapOf()
             val followedUsername = followedSnap.get(USERNAME) as String
             if(followedUsername.isBlank()) return false
@@ -283,7 +291,17 @@ class FirebaseManager() : DBManager {
                 username = followedUsername
             )
 
+            //set follower
+            val followersUsers = followedSnap.get(FOLLOWERS) as? MutableMap<String, UserFollow> ?: mutableMapOf()
+            val followerUsername = followerSnap.get(USERNAME) as String
+            if(followerUsername.isBlank()) return false
+
+            followersUsers[followerId] = UserFollow(
+                username = followerUsername
+            )
+
             firestore.collection(USERS).document(followerId).update(FOLLOWING, followingUsers).await()
+            firestore.collection(USERS).document(followedId).update(FOLLOWERS, followersUsers).await()
 
             return true
         }catch(e: Exception){
@@ -295,12 +313,17 @@ class FirebaseManager() : DBManager {
     override suspend fun unFollowUser(unfollowerId: String, unfollowedId: String): Boolean {
         try{
             val unfollowerSnap = firestore.collection(USERS).document(unfollowerId).get().await()
-            if(!unfollowerSnap.exists()) return false
+            val unfollowedSnap = firestore.collection(USERS).document(unfollowedId).get().await()
+            if(!unfollowerSnap.exists() || !unfollowedSnap.exists()) return false
 
             val followingUsers = unfollowerSnap.get(FOLLOWING) as? MutableMap<String, UserFollow> ?: mutableMapOf()
             followingUsers.remove(unfollowedId)
 
+            val followersUsers = unfollowedSnap.get(FOLLOWERS) as? MutableMap<String, UserFollow> ?: mutableMapOf()
+            followersUsers.remove(unfollowerId)
+
             firestore.collection(USERS).document(unfollowerId).update(FOLLOWING, followingUsers).await()
+            firestore.collection(USERS).document(unfollowedId).update(FOLLOWING, followersUsers).await()
 
             return true
         }catch(e: Exception){

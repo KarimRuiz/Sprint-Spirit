@@ -230,6 +230,20 @@ class ProfileDetailFragment : BaseFragment() {
                 it.text = getString(R.string.User_doesnt_follow_anyone)
             }
         }
+        if(user != null && user.followers.isNotEmpty()){
+            val followers = user.followers
+            (binding as FragmentProfileDetailBinding).tvFollowers.let{
+                it.text = getString(R.string.Followers, followers.size)
+                it.setOnClickListener {
+                    popUpFollows.showFollowers(requireContext(), user) { email ->
+                        navigator.navigateToProfileDetail(
+                            activity = activity,
+                            userId = email
+                        )
+                    }
+                }
+            }
+        }
     }
 
     private fun setProfilePicture(it: ProfilePictureResponse?) {

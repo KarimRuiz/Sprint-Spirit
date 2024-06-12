@@ -102,4 +102,7 @@
     <string name="Delete_report">Delete report</string>
     <string name="Are_you_sure_delete_report">Are you sure you want to delete this report?</string>
     <string name="You_need_internet_for_map">You need Internet conection to visualise the map.</string>
+    <string name="User_iesnt_followed">No one follows this user</string>
+    <string name="Followers">Followers: %1$d</string>
+    <string name="You_dont_have_followers">You don\'t have followers</string>
 </resources>
