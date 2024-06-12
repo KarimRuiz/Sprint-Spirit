@@ -207,7 +207,7 @@ class ProfileRunAdapter(
         val position = runlist.indexOf(run)
         if(position != -1){
             runlist.removeAt(position)
-            notifyItemRemoved(position)
+            notifyDataSetChanged()
         }
     }
 
@@ -217,7 +217,7 @@ class ProfileRunAdapter(
         val position = runlist.indexOf(run)
         if(position != -1){
             runlist[position].public = false
-            notifyItemChanged(position)
+            notifyDataSetChanged()
         }
     }
 
