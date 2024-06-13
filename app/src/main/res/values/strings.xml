@@ -117,4 +117,8 @@
     <string name="User_iesnt_followed">No one follows this user</string>
     <string name="Followers">Followers: %1$d</string>
     <string name="You_dont_have_followers">You don\'t have followers</string>
+    <string name="Check_out_this_route">Check out this route:</string>
+    <string name="Share_via">Share via</string>
+    <string name="Route_doesnt_existe">Route does not exist</string>
+    <string name="Invalid_link">Invalid link</string>
 </resources>

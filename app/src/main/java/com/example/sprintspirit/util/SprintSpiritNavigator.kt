@@ -2,6 +2,7 @@ package com.example.sprintspirit.util
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import com.example.sprintspirit.data.Preferences
 import com.example.sprintspirit.features.admin.ui.AdminActivity

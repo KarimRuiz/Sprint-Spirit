@@ -105,4 +105,8 @@
     <string name="User_iesnt_followed">No tiene seguidores</string>
     <string name="Followers">Seguidores: %1$d</string>
     <string name="You_dont_have_followers">No tienes seguidores</string>
+    <string name="Check_out_this_route">"Echa un vistazo a esta ruta: "</string>
+    <string name="Share_via">Compartir por</string>
+    <string name="Route_doesnt_existe">La ruta no existe</string>
+    <string name="Invalid_link">Enlace inválido</string>
 </resources>
