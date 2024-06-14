@@ -63,113 +63,114 @@
                 android:layout_width="1dp"
                 android:layout_height="@dimen/margin_normal"/>
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="wrap_content">
 
+                <!-- Distance -->
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:id="@+id/distance_layout"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:weightSum="2"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_marginStart="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
 
-                    <!-- Distance -->
-                    <LinearLayout
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:layout_weight="1">
+                        android:text="@string/Distance"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/Distance"/>
+                    <TextView
+                        android:id="@+id/post_detail_distance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/font_normal"
+                        tools:text="5.34km"/>
 
-                        <TextView
-                            android:id="@+id/post_detail_distance"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="@dimen/font_normal"
-                            tools:text="5.34km"/>
+                </LinearLayout>
 
-                    </LinearLayout>
+                <!-- Pace -->
+                <LinearLayout
+                    android:id="@+id/pace_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/distance_layout"
+                    app:layout_constraintEnd_toStartOf="@id/time_layout"
+                    app:layout_constraintHorizontal_bias="0.5">
 
-                    <!-- Pace -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/Pace"/>
+
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:orientation="vertical">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/Pace"/>
-
+                        <!-- Avg Pace -->
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/margin_godzilla"
-                            android:layout_marginEnd="@dimen/margin_godzilla"
-                            android:weightSum="3"
-                            android:orientation="horizontal">
+                            android:gravity="center"
+                            android:orientation="vertical">
 
-
-                            <!-- max pace -->
-                            <LinearLayout
+                            <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                android:orientation="vertical">
+                                android:textSize="@dimen/font_small"
+                                android:text="Avg (min/km)"/>
 
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textSize="@dimen/font_small"
-                                    android:text="Avg (min/km)"/>
-
-                                <TextView
-                                    android:id="@+id/tv_pace_avg"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textSize="@dimen/font_normal"
-                                    tools:text="20"/>
-
-                            </LinearLayout>
+                            <TextView
+                                android:id="@+id/tv_pace_avg"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/font_normal"
+                                tools:text="20"/>
 
                         </LinearLayout>
 
                     </LinearLayout>
 
-                    <!-- Time -->
-                    <LinearLayout
+                </LinearLayout>
+
+                <!-- Time -->
+                <LinearLayout
+                    android:id="@+id/time_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
+                        android:text="@string/Time"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/Time"/>
-
-                        <TextView
-                            android:id="@+id/post_detail_time"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="@dimen/font_normal"
-                            tools:text="5h:34min"/>
-
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/post_detail_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/font_normal"
+                        tools:text="5h:34min"/>
 
                 </LinearLayout>
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <!-- Map -->
             <View
