@@ -109,4 +109,14 @@
     <string name="Share_via">Compartir por</string>
     <string name="Route_doesnt_existe">La ruta no existe</string>
     <string name="Invalid_link">Enlace inválido</string>
+    <string name="Enter_account_email">Introduce el email de tu cuenta</string>
+    <string name="Send">Enviar</string>
+    <string name="Email_sent">Corro enviado</string>
+    <string name="I_forgot_my_password">He olvidado mi contraseña</string>
+    <string name="ERROR_INVALID_EMAIL">Correo electrónico no válido.</string>
+    <string name="ERROR_INVALID_CREDENTIALS">Credenciales inválidas.</string>
+    <string name="ERROR_INCORRECT_PASSWORD">Contraseña incorrecta.</string>
+    <string name="ERROR_USER_DISABLED">Usuario dehabilitado.</string>
+    <string name="Username_min_length">Al menos 5 caracteres.</string>
+    <string name="Passwords_do_not_match">Las contraseñas no coinciden.</string>
 </resources>

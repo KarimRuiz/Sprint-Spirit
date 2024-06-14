@@ -41,6 +41,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -340,17 +341,25 @@ class FirebaseManager() : DBManager {
         email: String,
         password: String,
         onSuccess: () -> Unit,
-        onFailure: () -> Unit
+        onFailure: (Int) -> Unit
     ){
+        val errorMessages = mapOf(
+            "ERROR_INVALID_EMAIL" to R.string.ERROR_INVALID_EMAIL,
+            "ERROR_INVALID_CREDENTIAL" to R.string.ERROR_INVALID_CREDENTIALS,
+            "ERROR_WRONG_PASSWORD" to R.string.ERROR_INCORRECT_PASSWORD,
+            "ERROR_USER_DISABLED" to R.string.ERROR_USER_DISABLED
+        )
+
         auth.signInWithEmailAndPassword(
             email,
             password
-        ).addOnCompleteListener {
-            if(it.isSuccessful){
-                onSuccess()
-            }else{
-                onFailure()
-            }
+        ).addOnSuccessListener {
+            onSuccess()
+        }.addOnFailureListener {exception ->
+            val errorCode = (exception as FirebaseAuthException).errorCode
+            Log.d(TAG, "Error: $errorCode")
+            val error = errorMessages[errorCode] ?: R.string.Sign_in_error //else: R.string.Sign_in_error
+            onFailure(error)
         }
     }
 

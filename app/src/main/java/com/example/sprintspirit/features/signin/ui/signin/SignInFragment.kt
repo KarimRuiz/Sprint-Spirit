@@ -12,6 +12,7 @@ import com.example.sprintspirit.database.DBManager
 import com.example.sprintspirit.databinding.FragmentSignInBinding
 import com.example.sprintspirit.features.signin.ui.signup.SignUpActivity
 import com.example.sprintspirit.ui.BaseFragment
+import com.example.sprintspirit.ui.custom.ForgotPasswordDialog
 import com.example.sprintspirit.util.SprintSpiritNavigator
 import com.example.sprintspirit.util.Utils
 
@@ -52,7 +53,9 @@ class SignInFragment : BaseFragment() {
                     sharedPreferences.email = binding.edtEmail.text.toString()
                     showHome()
                 },
-                { context?.let { it1 -> showAlert(it1.getString(R.string.Sign_in_error)) } }
+                { cause ->
+                    context?.let { it1 -> showAlert(getString(cause)) }
+                }
             )
         }
 
@@ -64,6 +67,11 @@ class SignInFragment : BaseFragment() {
         binding.goToSignUp = View.OnClickListener {
             val signUpIntent = Intent(activity, SignUpActivity::class.java)
             startActivity(signUpIntent)
+        }
+
+        binding.onResetPassword = View.OnClickListener {
+            ForgotPasswordDialog(requireContext())
+                .show()
         }
     }
 
