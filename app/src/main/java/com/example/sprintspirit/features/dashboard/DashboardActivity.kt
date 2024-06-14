@@ -1,15 +1,22 @@
 package com.example.sprintspirit.features.dashboard
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import com.example.sprintspirit.R
 import com.example.sprintspirit.database.DBManager
 import com.example.sprintspirit.databinding.ActivityDashboardBinding
+import com.example.sprintspirit.features.dashboard.home.HomeViewModel
 import com.example.sprintspirit.ui.BaseActivity
 import com.example.sprintspirit.util.SprintSpiritNavigator
+import com.google.firebase.Firebase
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData
+import com.google.firebase.dynamiclinks.dynamicLinks
 
 class DashboardActivity : BaseActivity() {
 
@@ -21,10 +28,12 @@ class DashboardActivity : BaseActivity() {
         const val CHATS_SECTION = "DashBoardActivity_NavigateTo_ChatsSection"
     }
 
+    private lateinit var viewModel: DashboardViewModel
     private lateinit var binding: ActivityDashboardBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(DashboardViewModel::class.java)
         navigator = SprintSpiritNavigator(this)
         if(!DBManager.getCurrentDBManager().isUserLoggedIn()){
             logd("There is no user logged in, going to login screen...")
@@ -43,6 +52,8 @@ class DashboardActivity : BaseActivity() {
         setupBottomNavBar()
 
         handleIntent(intent)
+
+        handleDynamicLink()
 
         subscribeUi()
     }
@@ -63,6 +74,39 @@ class DashboardActivity : BaseActivity() {
                 }
             }
         }
+    }
+
+    private fun handleDynamicLink() {
+        Firebase.dynamicLinks
+            .getDynamicLink(intent)
+            .addOnSuccessListener(this) { pendingDynamicLinkData: PendingDynamicLinkData? ->
+                var deepLink: Uri? = null
+                if (pendingDynamicLinkData != null) {
+                    deepLink = pendingDynamicLinkData.link
+                    val query = deepLink?.query
+                    try{
+                        logd("query: $query")
+                        val sessionId = query?.split("=")?.get(1)
+                        logd("sessionId: $sessionId")
+                        sessionId?.let {
+                            val post = viewModel.getPostByRunId(it)
+                            logd("postTitle: ${post?.title}")
+                            if(post == null){
+                                Toast.makeText(this, getString(R.string.Route_doesnt_existe), Toast.LENGTH_LONG).show()
+                            }else{
+                                navigator.navigateToPostDetail(
+                                    activity = this,
+                                    post = post
+                                )
+                            }
+                        }
+                    }catch(e: Exception){
+                        Toast.makeText(this, getString(R.string.Invalid_link), Toast.LENGTH_LONG).show()
+                    }
+
+                }
+            }
+            .addOnFailureListener(this) { e -> logw("getDynamicLink:onFailure: ${e}") }
     }
 
     private fun subscribeUi() {

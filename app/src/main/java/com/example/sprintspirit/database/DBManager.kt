@@ -43,7 +43,7 @@ interface DBManager {
         email: String,
         password: String,
         onSuccess: () -> Unit,
-        onFailure: () -> Unit)
+        onFailure: (Int) -> Unit)
 
     fun signUpWithEmail(
         username: String,

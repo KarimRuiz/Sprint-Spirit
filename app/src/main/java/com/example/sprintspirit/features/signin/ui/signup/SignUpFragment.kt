@@ -78,6 +78,14 @@ class SignUpFragment : BaseFragment() {
             }
         }
 
+        binding.edtConfirmPassword.doAfterTextChanged {
+            val password = binding.edtPassword.text.toString()
+            val confirmPassword = it.toString()
+            if(confirmPassword.length > 6 && password != confirmPassword){
+                binding.edtConfirmPassword.error = getString(R.string.Passwords_do_not_match)
+            }
+        }
+
         binding.edtEmail.doAfterTextChanged {
             if(!it.isNullOrBlank() and !Utils.isValidEmail(it!!)){
                 binding.edtEmail.error = getString(R.string.Email_not_valid)
@@ -86,7 +94,7 @@ class SignUpFragment : BaseFragment() {
 
         binding.edtUsername.doAfterTextChanged {
             if((!it.isNullOrBlank()) and (it.toString().length < 5)){
-                binding.edtUsername.error = getString(R.string.Username)
+                binding.edtUsername.error = getString(R.string.Username_min_length)
             }
         }
 

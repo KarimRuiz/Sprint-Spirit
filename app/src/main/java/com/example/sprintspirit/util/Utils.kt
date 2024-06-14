@@ -17,6 +17,8 @@ import com.example.sprintspirit.database.FirebaseManager
 import com.google.firebase.firestore.GeoPoint
 import com.google.type.LatLng
 import kotlinx.coroutines.CoroutineScope
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.text.Normalizer
 import java.util.regex.Pattern
 import kotlin.math.atan2
@@ -122,6 +124,8 @@ object Utils{
             list
         }
     }
+
+    fun encodeUrl(url: String) = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
 
     fun loadAvatar(view: ImageView, email: String, coroutineScope: CoroutineScope){
         dbManager.loadAvatar(view, email, coroutineScope)

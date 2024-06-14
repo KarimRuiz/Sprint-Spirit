@@ -101,4 +101,22 @@
     <string name="Post_already_deleted">La publicación ya ha sido eliminada.</string>
     <string name="Delete_report">Eliminar informe</string>
     <string name="Are_you_sure_delete_report">¿Estás seguro de que quieres eliminar este informe?</string>
+    <string name="You_need_internet_for_map">Necesitas conexión a internet para visualizar el mapa.</string>
+    <string name="User_iesnt_followed">No tiene seguidores</string>
+    <string name="Followers">Seguidores: %1$d</string>
+    <string name="You_dont_have_followers">No tienes seguidores</string>
+    <string name="Check_out_this_route">"Echa un vistazo a esta ruta: "</string>
+    <string name="Share_via">Compartir por</string>
+    <string name="Route_doesnt_existe">La ruta no existe</string>
+    <string name="Invalid_link">Enlace inválido</string>
+    <string name="Enter_account_email">Introduce el email de tu cuenta</string>
+    <string name="Send">Enviar</string>
+    <string name="Email_sent">Corro enviado</string>
+    <string name="I_forgot_my_password">He olvidado mi contraseña</string>
+    <string name="ERROR_INVALID_EMAIL">Correo electrónico no válido.</string>
+    <string name="ERROR_INVALID_CREDENTIALS">Credenciales inválidas.</string>
+    <string name="ERROR_INCORRECT_PASSWORD">Contraseña incorrecta.</string>
+    <string name="ERROR_USER_DISABLED">Usuario dehabilitado.</string>
+    <string name="Username_min_length">Al menos 5 caracteres.</string>
+    <string name="Passwords_do_not_match">Las contraseñas no coinciden.</string>
 </resources>

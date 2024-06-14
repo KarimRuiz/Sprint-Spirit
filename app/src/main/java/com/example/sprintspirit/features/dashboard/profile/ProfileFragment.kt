@@ -30,6 +30,7 @@ import com.example.sprintspirit.features.run.data.RunData
 import com.example.sprintspirit.features.run.data.RunsResponse
 import com.example.sprintspirit.features.signin.data.User
 import com.example.sprintspirit.ui.BaseFragment
+import com.example.sprintspirit.ui.custom.popUpFollows.showFollowers
 import com.example.sprintspirit.ui.custom.popUpFollows.showFollows
 import com.example.sprintspirit.util.SprintSpiritNavigator
 import com.example.sprintspirit.util.Utils.isInternetAvailable
@@ -174,6 +175,20 @@ class ProfileFragment : BaseFragment() {
                 it.text = getString(R.string.You_dont_follow_anyone)
             }
         }
+        if(user != null && user.followers.isNotEmpty()){
+            val followers = user.followers
+            (binding as FragmentProfileBinding).tvFollowers.let{
+                it.text = getString(R.string.Followers, followers.size)
+                it.setOnClickListener {
+                    showFollowers(requireContext(), user){ email ->
+                        navigator.navigateToProfileDetail(
+                            activity = activity,
+                            userId = email
+                        )
+                    }
+                }
+            }
+        }
     }
 
     private fun fillRuns(runs: RunsResponse?) {
@@ -193,7 +208,8 @@ class ProfileFragment : BaseFragment() {
                 },
                 goToPost = {
                     goToPost(it)
-                }
+                },
+                showMap = !isInternetAvailable()
             )
             (binding as FragmentProfileBinding).runProfileRv.adapter = adapter
             if(runs.runs!!.isEmpty()){

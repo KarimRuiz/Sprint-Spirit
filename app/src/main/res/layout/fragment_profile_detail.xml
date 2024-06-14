@@ -39,9 +39,9 @@
                     android:layout_height="50dp"
                     android:layout_marginStart="@dimen/margin_big"
                     android:foregroundGravity="top"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@+id/ll_username"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/ll_username"
                     app:cardCornerRadius="45dp">
 
                     <ImageView
@@ -58,10 +58,11 @@
                     android:layout_height="0dp"
                     android:orientation="vertical"
                     android:layout_marginStart="@dimen/font_small"
-                    app:layout_constraintBottom_toBottomOf="@+id/profile_fragment_card_view"
+                    android:gravity="center_vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/profile_fragment_card_view"
-                    app:layout_constraintTop_toTopOf="@+id/profile_fragment_card_view">
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
                         android:id="@+id/tv_name"
@@ -69,6 +70,14 @@
                         android:layout_height="wrap_content"
                         android:text=""
                         tools:text="Karim"
+                        android:textSize="@dimen/font_normal" />
+
+                    <TextView
+                        android:id="@+id/tv_followers"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/User_iesnt_followed"
+                        android:textColor="?attr/colorAccent"
                         android:textSize="@dimen/font_normal" />
 
                     <TextView
@@ -116,7 +125,7 @@
                         android:id="@+id/btn_follow"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:maxWidth="100dp"
+                        android:maxWidth="110dp"
                         android:text="Seguir"
                         android:layout_gravity="end"
                         android:onClick="@{onClickFollow}"

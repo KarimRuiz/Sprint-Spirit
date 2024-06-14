@@ -113,4 +113,22 @@
     <string name="Post_already_deleted">Post is already deleted</string>
     <string name="Delete_report">Delete report</string>
     <string name="Are_you_sure_delete_report">Are you sure you want to delete this report?</string>
+    <string name="You_need_internet_for_map">You need Internet conection to visualise the map.</string>
+    <string name="User_iesnt_followed">No one follows this user</string>
+    <string name="Followers">Followers: %1$d</string>
+    <string name="You_dont_have_followers">You don\'t have followers</string>
+    <string name="Check_out_this_route">Check out this route:</string>
+    <string name="Share_via">Share via</string>
+    <string name="Route_doesnt_existe">Route does not exist</string>
+    <string name="Invalid_link">Invalid link</string>
+    <string name="Enter_account_email">Enter your account email</string>
+    <string name="Send">Send</string>
+    <string name="Email_sent">Email sent</string>
+    <string name="I_forgot_my_password">I forgot my password</string>
+    <string name="ERROR_INVALID_EMAIL">Email not valid.</string>
+    <string name="ERROR_INVALID_CREDENTIALS">Invalid credentials.</string>
+    <string name="ERROR_INCORRECT_PASSWORD">Incorrect password.</string>
+    <string name="ERROR_USER_DISABLED">User is disabled.</string>
+    <string name="Username_min_length">At least 5 characters.</string>
+    <string name="Passwords_do_not_match">Passwords do not match.</string>
 </resources>

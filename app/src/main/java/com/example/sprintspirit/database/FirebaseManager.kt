@@ -41,11 +41,13 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.messaging.messaging
@@ -88,6 +90,7 @@ class FirebaseManager() : DBManager {
         val START_TIME = "startTime"
         val PUBLISH_DATE = "publishDate"
         val FOLLOWING = "following"
+        val FOLLOWERS = "followers"
         val DISTANCE = "distance"
         val MINUTES = "minutes"
         val IS_PUBLIC = "public"
@@ -163,6 +166,11 @@ class FirebaseManager() : DBManager {
                     chats = documentSnapshot.get(USER_CHATS) as? Map<String, UserChat>,
                     following = if(documentSnapshot.get(FOLLOWING) != null){
                         documentSnapshot.get(FOLLOWING) as Map<String, UserFollow>
+                    }else{
+                        mapOf()
+                    },
+                    followers = if(documentSnapshot.get(FOLLOWERS) != null){
+                        documentSnapshot.get(FOLLOWERS) as Map<String, UserFollow>
                     }else{
                         mapOf()
                     },
@@ -275,6 +283,7 @@ class FirebaseManager() : DBManager {
 
             if(!followerSnap.exists() || !followedSnap.exists()) return false
 
+            //set following
             val followingUsers = followerSnap.get(FOLLOWING) as? MutableMap<String, UserFollow> ?: mutableMapOf()
             val followedUsername = followedSnap.get(USERNAME) as String
             if(followedUsername.isBlank()) return false
@@ -283,7 +292,17 @@ class FirebaseManager() : DBManager {
                 username = followedUsername
             )
 
+            //set follower
+            val followersUsers = followedSnap.get(FOLLOWERS) as? MutableMap<String, UserFollow> ?: mutableMapOf()
+            val followerUsername = followerSnap.get(USERNAME) as String
+            if(followerUsername.isBlank()) return false
+
+            followersUsers[followerId] = UserFollow(
+                username = followerUsername
+            )
+
             firestore.collection(USERS).document(followerId).update(FOLLOWING, followingUsers).await()
+            firestore.collection(USERS).document(followedId).update(FOLLOWERS, followersUsers).await()
 
             return true
         }catch(e: Exception){
@@ -295,12 +314,17 @@ class FirebaseManager() : DBManager {
     override suspend fun unFollowUser(unfollowerId: String, unfollowedId: String): Boolean {
         try{
             val unfollowerSnap = firestore.collection(USERS).document(unfollowerId).get().await()
-            if(!unfollowerSnap.exists()) return false
+            val unfollowedSnap = firestore.collection(USERS).document(unfollowedId).get().await()
+            if(!unfollowerSnap.exists() || !unfollowedSnap.exists()) return false
 
             val followingUsers = unfollowerSnap.get(FOLLOWING) as? MutableMap<String, UserFollow> ?: mutableMapOf()
             followingUsers.remove(unfollowedId)
 
+            val followersUsers = unfollowedSnap.get(FOLLOWERS) as? MutableMap<String, UserFollow> ?: mutableMapOf()
+            followersUsers.remove(unfollowerId)
+
             firestore.collection(USERS).document(unfollowerId).update(FOLLOWING, followingUsers).await()
+            firestore.collection(USERS).document(unfollowedId).update(FOLLOWING, followersUsers).await()
 
             return true
         }catch(e: Exception){
@@ -317,17 +341,25 @@ class FirebaseManager() : DBManager {
         email: String,
         password: String,
         onSuccess: () -> Unit,
-        onFailure: () -> Unit
+        onFailure: (Int) -> Unit
     ){
+        val errorMessages = mapOf(
+            "ERROR_INVALID_EMAIL" to R.string.ERROR_INVALID_EMAIL,
+            "ERROR_INVALID_CREDENTIAL" to R.string.ERROR_INVALID_CREDENTIALS,
+            "ERROR_WRONG_PASSWORD" to R.string.ERROR_INCORRECT_PASSWORD,
+            "ERROR_USER_DISABLED" to R.string.ERROR_USER_DISABLED
+        )
+
         auth.signInWithEmailAndPassword(
             email,
             password
-        ).addOnCompleteListener {
-            if(it.isSuccessful){
-                onSuccess()
-            }else{
-                onFailure()
-            }
+        ).addOnSuccessListener {
+            onSuccess()
+        }.addOnFailureListener {exception ->
+            val errorCode = (exception as FirebaseAuthException).errorCode
+            Log.d(TAG, "Error: $errorCode")
+            val error = errorMessages[errorCode] ?: R.string.Sign_in_error //else: R.string.Sign_in_error
+            onFailure(error)
         }
     }
 
@@ -589,17 +621,12 @@ class FirebaseManager() : DBManager {
                 query = query.whereIn(USER, listOfUsers)
             }
 
-            Log.d(TAG, "ordering by publish date")
             query = query.orderBy(orderBy.columnName(), Query.Direction.DESCENDING)
 
             val posts = query.limit(limit).get().await().documents.mapNotNull { snapShot ->
                 snapShot.toObject(Post::class.java)?.apply {
                     id = snapShot.id
                 }
-            }
-
-            posts.forEach {
-                Log.d(TAG, it.distance.toString())
             }
 
             val postsRes: MutableList<Post> = mutableListOf()

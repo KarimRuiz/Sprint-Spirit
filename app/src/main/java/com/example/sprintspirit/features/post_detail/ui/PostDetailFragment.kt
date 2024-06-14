@@ -1,5 +1,6 @@
 package com.example.sprintspirit.features.post_detail.ui
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
@@ -8,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.sprintspirit.R
@@ -21,16 +21,16 @@ import com.example.sprintspirit.util.SprintSpiritNavigator
 import com.example.sprintspirit.util.Utils
 import com.example.sprintspirit.util.Utils.distanceBetween
 import com.example.sprintspirit.util.Utils.kphToMinKm
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapView
 import com.example.sprintspirit.util.Utils.toGeoPoint
 import com.github.ybq.android.spinkit.style.ChasingDots
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
 import java.text.SimpleDateFormat
+
 
 class PostDetailFragment : BaseFragment(), OnMapReadyCallback {
 
@@ -133,6 +133,9 @@ class PostDetailFragment : BaseFragment(), OnMapReadyCallback {
         binding.onReport = onReportPost()
         binding.onDelete = onDeletePost()
 
+        binding.onShare = View.OnClickListener {
+            sharePost()
+        }
     }
 
     private fun setUpMap() {
@@ -250,6 +253,30 @@ class PostDetailFragment : BaseFragment(), OnMapReadyCallback {
             ).show()
             navigator.goBack(activity)
         }
+    }
+
+    private fun sharePost() {
+        val deepLinkUrl = generateLink(post.sessionId)
+
+        val shareIntent = Intent()
+        shareIntent.setAction(Intent.ACTION_SEND)
+        val message = getString(R.string.Check_out_this_route)
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "$message $deepLinkUrl")
+        shareIntent.setType("text/plain")
+
+        val shareVia = getString(R.string.Share_via)
+        startActivity(Intent.createChooser(shareIntent, shareVia))
+    }
+
+    private fun generateLink(sessionId: String): String{
+        val appLink = "https://sprintspirit.page.link/"
+        val routeLink = Utils.encodeUrl("https://sprintspirit.page/route?id=${sessionId}")
+        val packageLink = "com.example.sprintspirit"
+        val repoLink = Utils.encodeUrl("https://gitlab.com/dam973715/sprint-spirits")
+
+        val deepLink = "${appLink}?link=${routeLink}&apn=${packageLink}&afl=${repoLink}"
+
+        return deepLink
     }
 
     override fun onMapReady(googleMap: GoogleMap) {

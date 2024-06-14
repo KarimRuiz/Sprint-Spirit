@@ -27,7 +27,8 @@ class ProfileRunAdapter(
     var postCallback : (RunData) -> Unit,
     var deletePostCallback : (RunData) -> Unit,
     var goToRunDetail: (RunData) -> Unit,
-    var goToPost: (RunData) -> Unit
+    var goToPost: (RunData) -> Unit,
+    val showMap: Boolean = true,
 ) : RecyclerView.Adapter<ProfileRunAdapter.ProfileRunHolder>(){
 
 
@@ -36,7 +37,8 @@ class ProfileRunAdapter(
                            var postCallback : (RunData) -> Unit,
                            var deletePostCallback: (RunData) -> Unit,
                            var goToRunDetail: (RunData) -> Unit,
-                           var goToPost: (RunData) -> Unit
+                           var goToPost: (RunData) -> Unit,
+                           val showMap: Boolean
     ) : RecyclerView.ViewHolder(binding.root), OnMapReadyCallback{
 
         private val mapView: MapView = binding.mapView
@@ -61,6 +63,14 @@ class ProfileRunAdapter(
                 for((date, geoPoint) in pos){
                     path.add(LatLng(geoPoint.latitude, geoPoint.longitude))
                 }
+            }
+
+            if(showMap){
+                binding.mapView.visibility = View.VISIBLE
+                binding.tvYouNeedInternet.visibility = View.GONE
+            }else{
+                binding.mapView.visibility = View.GONE
+                binding.tvYouNeedInternet.visibility = View.VISIBLE
             }
 
             //Time
@@ -102,7 +112,6 @@ class ProfileRunAdapter(
                 val pathColor = ContextCompat.getColor(binding.root.context, R.color.run_path)
                 val options = PolylineOptions().addAll(path).color(pathColor)
                 map.addPolyline(options)
-                setOnMapClickListener {
                     if(!run.public){
                         this.setOnMapClickListener {
                             goToRunDetail(run)
@@ -112,13 +121,12 @@ class ProfileRunAdapter(
                             goToPost(run)
                         }
                     }
-                }
             }
         }
 
         override fun onMapReady(googleMap: GoogleMap) {
             map = googleMap ?: return
-            setMapLocation()
+            if(showMap) setMapLocation()
         }
 
         private fun showRunMenu(v: View){
@@ -180,7 +188,7 @@ class ProfileRunAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileRunHolder {
         val binding = CardUserRunBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        val holder = ProfileRunHolder(binding, deleteCallback, postCallback, deletePostCallback, goToRunDetail, goToPost)
+        val holder = ProfileRunHolder(binding, deleteCallback, postCallback, deletePostCallback, goToRunDetail, goToPost, showMap)
         holder.setIsRecyclable(false)
         return holder
     }
@@ -197,7 +205,7 @@ class ProfileRunAdapter(
         val position = runlist.indexOf(run)
         if(position != -1){
             runlist.removeAt(position)
-            notifyItemRemoved(position)
+            notifyDataSetChanged()
         }
     }
 
@@ -207,7 +215,7 @@ class ProfileRunAdapter(
         val position = runlist.indexOf(run)
         if(position != -1){
             runlist[position].public = false
-            notifyItemChanged(position)
+            notifyDataSetChanged()
         }
     }
 

@@ -26,12 +26,14 @@
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="225dp">
+                android:layout_height="wrap_content">
 
                 <com.google.android.gms.maps.MapView
                     android:id="@+id/mapView"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="225dp"
+                    android:visibility="visible"
+                    tools:visibility="gone"
                     card_view:cameraZoom="8"
                     card_view:liteMode="true"
                     card_view:mapType="hybrid" />
@@ -85,6 +87,15 @@
                     android:textColor="@color/black"/>
 
             </FrameLayout>
+
+            <TextView
+                android:id="@+id/tv_you_need_internet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:text="@string/You_need_internet_for_map"/>
 
             <LinearLayout
                 android:layout_width="match_parent"

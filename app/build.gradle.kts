@@ -71,6 +71,7 @@ dependencies {
     implementation("com.google.firebase:firebase-database")
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.firebase:firebase-dynamic-links")
     implementation("com.google.firebase:firebase-analytics:")
 
     //Glide

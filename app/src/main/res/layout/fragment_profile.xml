@@ -56,6 +56,14 @@
                         android:layout_marginBottom="@dimen/margin_small"/>
 
                     <TextView
+                        android:id="@+id/tv_followers"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/You_dont_have_followers"
+                        android:textColor="?attr/colorAccent"
+                        android:textSize="@dimen/font_normal" />
+
+                    <TextView
                         android:id="@+id/tv_following"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

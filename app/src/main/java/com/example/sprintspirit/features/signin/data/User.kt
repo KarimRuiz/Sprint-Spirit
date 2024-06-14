@@ -13,6 +13,7 @@ data class User(
     var isBanned: Boolean? = false,
     val chats: Map<String, UserChat>? = mapOf(), //chat id - role(op, nop)
     val following: Map<String, UserFollow> = mapOf(),
+    val followers: Map<String, UserFollow> = mapOf(),
     var profilePictureUrl: Uri? = null
 ){
     fun follows(userId: String) = following.containsKey(userId)
@@ -56,6 +57,19 @@ data class User(
         val map = mutableMapOf<String, UserFollow>()
 
         following.forEach {
+            val follow = it.value as HashMap<String, String>
+            val username = follow["username"] ?: ""
+
+            map[it.key] = UserFollow(username)
+        }
+
+        return map
+    }
+
+    fun getFollowersList(): Map<String, UserFollow>{
+        val map = mutableMapOf<String, UserFollow>()
+
+        followers.forEach {
             val follow = it.value as HashMap<String, String>
             val username = follow["username"] ?: ""
 
