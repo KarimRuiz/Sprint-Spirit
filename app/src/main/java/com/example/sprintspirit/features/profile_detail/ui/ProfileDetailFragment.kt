@@ -1,6 +1,8 @@
 package com.example.sprintspirit.features.profile_detail.ui
 
 import android.app.AlertDialog
+import android.app.Dialog
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.sprintspirit.R
+import com.example.sprintspirit.databinding.DialogImageViewerBinding
 import com.example.sprintspirit.databinding.FragmentPostDetailBinding
 import com.example.sprintspirit.databinding.FragmentProfileBinding
 import com.example.sprintspirit.databinding.FragmentProfileDetailBinding
@@ -253,10 +256,34 @@ class ProfileDetailFragment : BaseFragment() {
                 Glide.with(requireContext())
                     .load(it.picture?.uri)
                     .into((binding as FragmentProfileDetailBinding).ivProfilePicture)
+
+                (binding as FragmentProfileDetailBinding).onImageClick = View.OnClickListener {view ->
+                    showImageDialog(it.picture?.uri!!)
+                }
             }
         }else{
             logd("Coudln't retrieve ${userId} picture")
         }
+    }
+
+    private fun showImageDialog(image: Uri) {
+        val dialogBinding = DialogImageViewerBinding.inflate(layoutInflater)
+        val dialog = Dialog(requireContext())
+        dialog.setContentView(dialogBinding.root)
+
+        val window = dialog.window
+        window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        Glide.with(requireContext())
+            .load(image)
+            .into(dialogBinding.ivDialogImageViewer)
+
+        dialogBinding.root.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     private fun onReportUser() = object : View.OnClickListener {

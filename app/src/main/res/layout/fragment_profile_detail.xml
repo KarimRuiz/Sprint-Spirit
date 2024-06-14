@@ -16,6 +16,9 @@
         <variable
             name="onBan"
             type="android.view.View.OnClickListener" />
+        <variable
+            name="onImageClick"
+            type="android.view.View.OnClickListener" />
     </data>
 
     <FrameLayout
@@ -39,6 +42,7 @@
                     android:layout_height="50dp"
                     android:layout_marginStart="@dimen/margin_big"
                     android:foregroundGravity="top"
+                    android:onClick="@{onImageClick}"
                     app:layout_constraintBottom_toBottomOf="@+id/ll_username"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/ll_username"
