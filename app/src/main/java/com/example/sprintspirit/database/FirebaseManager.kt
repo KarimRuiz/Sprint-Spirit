@@ -136,6 +136,11 @@ class FirebaseManager() : DBManager {
                     }else{
                         mapOf()
                     },
+                    followers = if(documentSnapshot.get(FOLLOWERS) != null){
+                        documentSnapshot.get(FOLLOWERS) as Map<String, UserFollow>
+                    }else{
+                        mapOf()
+                    },
                     isBanned = documentSnapshot.get(IS_BANNED) as Boolean? ?: false,
                     isAdmin = documentSnapshot.get(IS_ADMIN) as Boolean? ?: false
                 )
