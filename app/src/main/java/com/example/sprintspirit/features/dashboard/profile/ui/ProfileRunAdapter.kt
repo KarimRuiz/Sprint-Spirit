@@ -112,7 +112,6 @@ class ProfileRunAdapter(
                 val pathColor = ContextCompat.getColor(binding.root.context, R.color.run_path)
                 val options = PolylineOptions().addAll(path).color(pathColor)
                 map.addPolyline(options)
-                setOnMapClickListener {
                     if(!run.public){
                         this.setOnMapClickListener {
                             goToRunDetail(run)
@@ -122,7 +121,6 @@ class ProfileRunAdapter(
                             goToPost(run)
                         }
                     }
-                }
             }
         }
 
