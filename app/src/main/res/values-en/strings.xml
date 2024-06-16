@@ -122,4 +122,6 @@
     <string name="To_report">Report</string>
     <string name="Upload_report">Upload a report</string>
     <string name="Report_reason">Write here the reason why you believe it violates our terms (optional).</string>
+    <string name="Dont_close_the_app">Don\'t close the app!</string>
+    <string name="Record_route_recommendation">Due to power saving restrictions on most phones, we recommend that you do not close the application while recording a route. You can leave it minimized, but do not close it if your phone has any power savings present.</string>
 </resources>

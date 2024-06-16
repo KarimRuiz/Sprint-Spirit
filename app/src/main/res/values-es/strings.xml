@@ -122,4 +122,6 @@
     <string name="To_report">Reportar</string>
     <string name="Upload_report">Subir un reporte</string>
     <string name="Report_reason">Escribe aquí el motivo por el que crees que viola nuestros términos. (opcional)</string>
+    <string name="Dont_close_the_app">No cierres la aplicación</string>
+    <string name="Record_route_recommendation">Debido a las restricciones para el ahorro de energía que aplican la mayoría de teléfonos, le recomendamos que no cierre la aplicación mientras graba una ruta. Puede dejarla minimizada, pero no la cierre si su teléfono tiene algún ahorro de energía presente.</string>
 </resources>
