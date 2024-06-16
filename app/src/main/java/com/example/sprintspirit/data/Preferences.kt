@@ -73,4 +73,8 @@ class Preferences(val context: Context) {
         get() = sharedPreferences.getBoolean(context.getString(R.string.sprint_spirit_is_administrator), false)
         set(value) = sharedPreferences.edit{ putBoolean(context.getString(R.string.sprint_spirit_is_administrator), value) }
 
+    var isFreshlyInstalled: Boolean
+        get() = sharedPreferences.getBoolean(context.getString(R.string.sprint_spirit_is_freshly_installed), true)
+        set(value) = sharedPreferences.edit{ putBoolean(context.getString(R.string.sprint_spirit_is_freshly_installed), value) }
+
 }

@@ -113,6 +113,9 @@ class DashboardActivity : BaseActivity() {
         binding.toolbar.settingsListener = View.OnClickListener {
             navigator.navigateToSettings(this)
         }
+        binding.toolbar.goHomeClick = View.OnClickListener {
+            navigator.navigateToHome(activity = this)
+        }
     }
 
     private fun setupBottomNavBar() {

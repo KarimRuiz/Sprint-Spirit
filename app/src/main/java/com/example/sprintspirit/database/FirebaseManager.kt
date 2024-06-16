@@ -136,6 +136,11 @@ class FirebaseManager() : DBManager {
                     }else{
                         mapOf()
                     },
+                    followers = if(documentSnapshot.get(FOLLOWERS) != null){
+                        documentSnapshot.get(FOLLOWERS) as Map<String, UserFollow>
+                    }else{
+                        mapOf()
+                    },
                     isBanned = documentSnapshot.get(IS_BANNED) as Boolean? ?: false,
                     isAdmin = documentSnapshot.get(IS_ADMIN) as Boolean? ?: false
                 )
@@ -257,7 +262,7 @@ class FirebaseManager() : DBManager {
                 userDocumentRef.update(USER_CHATS, currentChats).await()
 
                 //unubscribe to this posts topic so it can receive notifications
-                Firebase.messaging.subscribeToTopic(chatId)
+                Firebase.messaging.unsubscribeFromTopic(chatId)
                     .addOnCompleteListener {task ->
                         var msg = "Unubscribed in GCM from topic: ${chatId}"
                         Log.d(TAG, msg)

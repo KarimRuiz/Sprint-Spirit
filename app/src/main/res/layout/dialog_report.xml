@@ -25,7 +25,7 @@
             android:maxLines="10"
             android:ems="10"
             android:gravity="start|top"
-            android:hint="Escribe aquí el motivo por el que crees que viola nuestros términos. (opcional)" android:inputType="textMultiLine" />
+            android:hint="@string/Report_reason" android:inputType="textMultiLine" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="#CA5F25"
                 android:onClick="@{onReport}"
-                android:text="Reportar"/>
+                android:text="@string/To_report"/>
 
             <View
                 android:layout_width="wrap_content"
@@ -48,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="@{onCancel}"
-                android:text="Cancelar"
+                android:text="@string/Cancel"
                 />
 
         </LinearLayout>

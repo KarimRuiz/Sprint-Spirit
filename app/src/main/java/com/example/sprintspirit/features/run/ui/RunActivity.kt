@@ -213,6 +213,12 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
     }
 
     private fun subscribeUi(binding: ActivityRunBinding) {
+        if(sharedPreferences.isFreshlyInstalled){
+            showDontCloseApp(){
+                sharedPreferences.isFreshlyInstalled = false
+            }
+        }
+
         binding.recordRunButton.setOnClickListener(recordListener(this))
 
         setUpMap()
@@ -417,6 +423,18 @@ class RunActivity : BaseActivity(), //PermissionsListener//,
         }
         return -1
     }
+
+        private fun showDontCloseApp(onConfirm: () -> Unit){
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle(ContextCompat.getString(this, R.string.Dont_close_the_app))
+            builder.setMessage(ContextCompat.getString(this, R.string.Record_route_recommendation))
+
+            builder.setPositiveButton(ContextCompat.getString(this, R.string.Confirm)) { dialog, which ->
+                onConfirm()
+            }
+
+            builder.show()
+        }
 
 }
 

@@ -10,6 +10,9 @@
         <variable
             name="onRecClick"
             type="android.view.View.OnClickListener" />
+        <variable
+            name="goHomeClick"
+            type="android.view.View.OnClickListener" />
     </data>
 
     <FrameLayout
@@ -38,6 +41,7 @@
             android:layout_height="30dp"
             android:layout_gravity="end"
             android:layout_margin="4dp"
+            android:onClick="@{goHomeClick}"
             app:srcCompat="@drawable/ic_logo_no_text" />
 
         <androidx.constraintlayout.widget.ConstraintLayout

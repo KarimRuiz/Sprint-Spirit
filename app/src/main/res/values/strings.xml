@@ -8,6 +8,7 @@
     <string name="sprint_spirit_user_username" translatable="false">sprint_spirit_user_username</string>
     <string name="sprint_spirit_location_refresh_rate" translatable="false">sprint_spirit_location_refresh_rate</string>
     <string name="sprint_spirit_is_administrator" translatable="false">sprint_spirit_is_administrator</string>
+    <string name="sprint_spirit_is_freshly_installed" translatable="false">sprint_spirit_is_freshly_installed</string>
     <string name="sprint_spirit_is_running" translatable="false">sprint_spirit_is_running</string>
     <string name="sprint_spirit_route_path" translatable="false">sprint_spirit_route_path</string>
     <string name="Error">Error</string>
@@ -131,4 +132,9 @@
     <string name="ERROR_USER_DISABLED">User is disabled.</string>
     <string name="Username_min_length">At least 5 characters.</string>
     <string name="Passwords_do_not_match">Passwords do not match.</string>
+    <string name="To_report">Report</string>
+    <string name="Upload_report">Upload a report</string>
+    <string name="Report_reason">Write here the reason why you believe it violates our terms (optional).</string>
+    <string name="Dont_close_the_app">Don\'t close the app!</string>
+    <string name="Record_route_recommendation">Due to power saving restrictions on most phones, we recommend that you do not close the application while recording a route. You can leave it minimized, but do not close it if your phone has any power savings present.</string>
 </resources>
