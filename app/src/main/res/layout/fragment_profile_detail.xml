@@ -104,7 +104,7 @@
                         android:id="@+id/btn_report"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Reportar"
+                        android:text="@string/To_report"
                         android:layout_gravity="end"
                         android:onClick="@{onReport}"
                         android:layout_marginEnd="@dimen/margin_big"

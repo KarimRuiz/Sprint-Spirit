@@ -28,7 +28,7 @@ class ReportDialog(
 ) {
     fun showDialog() {
         val builder = MaterialAlertDialogBuilder(context, R.style.CustomDialog)
-        builder.setTitle("Subir un reporte")
+        builder.setTitle(context.getString(R.string.Upload_report))
 
         val inflater = LayoutInflater.from(context)
         val binding: DialogReportBinding = DataBindingUtil.inflate(inflater, R.layout.dialog_report, null, false)

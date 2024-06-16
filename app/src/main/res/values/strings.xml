@@ -131,4 +131,7 @@
     <string name="ERROR_USER_DISABLED">User is disabled.</string>
     <string name="Username_min_length">At least 5 characters.</string>
     <string name="Passwords_do_not_match">Passwords do not match.</string>
+    <string name="To_report">Report</string>
+    <string name="Upload_report">Upload a report</string>
+    <string name="Report_reason">Write here the reason why you believe it violates our terms (optional).</string>
 </resources>

@@ -119,4 +119,7 @@
     <string name="ERROR_USER_DISABLED">Usuario dehabilitado.</string>
     <string name="Username_min_length">Al menos 5 caracteres.</string>
     <string name="Passwords_do_not_match">Las contraseñas no coinciden.</string>
+    <string name="To_report">Reportar</string>
+    <string name="Upload_report">Subir un reporte</string>
+    <string name="Report_reason">Escribe aquí el motivo por el que crees que viola nuestros términos. (opcional)</string>
 </resources>
