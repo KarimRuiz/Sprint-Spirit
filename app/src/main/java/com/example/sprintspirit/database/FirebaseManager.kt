@@ -262,7 +262,7 @@ class FirebaseManager() : DBManager {
                 userDocumentRef.update(USER_CHATS, currentChats).await()
 
                 //unubscribe to this posts topic so it can receive notifications
-                Firebase.messaging.subscribeToTopic(chatId)
+                Firebase.messaging.unsubscribeFromTopic(chatId)
                     .addOnCompleteListener {task ->
                         var msg = "Unubscribed in GCM from topic: ${chatId}"
                         Log.d(TAG, msg)
