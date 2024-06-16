@@ -37,6 +37,10 @@ class AdminActivity: BaseActivity() {
         binding.toolbar.goBackListener = View.OnClickListener {
             navigator.goBack(this)
         }
+
+        binding.toolbar.goHomeClick = View.OnClickListener {
+            navigator.navigateToHome(activity = this)
+        }
     }
 
 }

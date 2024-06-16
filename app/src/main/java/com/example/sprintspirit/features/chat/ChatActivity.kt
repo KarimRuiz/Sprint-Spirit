@@ -44,6 +44,9 @@ class ChatActivity : BaseActivity() {
         binding.toolbar.goBackListener = View.OnClickListener {
             navigator.goBack(this)
         }
+        binding.toolbar.goHomeClick = View.OnClickListener {
+            navigator.navigateToHome(activity = this)
+        }
         if(sharedPreferences.isRunning){
             binding.toolbar.toolbarRecIndicator.visibility = View.VISIBLE
             binding.toolbar.onRecClick = View.OnClickListener {
