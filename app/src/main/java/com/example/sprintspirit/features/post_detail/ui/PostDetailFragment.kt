@@ -272,9 +272,9 @@ class PostDetailFragment : BaseFragment(), OnMapReadyCallback {
         val appLink = "https://sprintspirit.page.link/"
         val routeLink = Utils.encodeUrl("https://sprintspirit.page/route?id=${sessionId}")
         val packageLink = "com.example.sprintspirit"
-        val repoLink = Utils.encodeUrl("https://gitlab.com/dam973715/sprint-spirits")
+        val repoLink = Utils.encodeUrl("https://github.com/KarimRuiz/Sprint-Spirit")
 
-        val deepLink = "${appLink}?link=${routeLink}&apn=${packageLink}&afl=${repoLink}"
+        val deepLink = "${appLink}?link=${routeLink}&apn=${packageLink}&afl=${repoLink}&ofl=${repoLink}"
 
         return deepLink
     }
