@@ -19,10 +19,6 @@ pueden moderar el contenido que no cumpla con las reglas.
 - **Más aspectos sociales**: Incluye funciones sociales adicionales como seguir a otros
 usuarios o buscar rutas por lugar de salida.
 
-### Capturas
-
-//CAPTURAS
-
 ### Uso
 
 1. Descargue la APK en releases.
@@ -41,3 +37,14 @@ y siga los siguientes pasos:
 
 Si no realiza este paso, las notificaciones no llegarán a ningún dispositivo, pero el resto de funciones
 de los chats seguirán funcionando correctamente.
+
+### Capturas
+
+![Inicio](https://i.imgur.com/K545B2y.jpeg)
+![Filtros](https://i.imgur.com/c6FQw4V.jpeg)
+
+![Perfil](https://i.imgur.com/gHaxdqm.jpeg)
+
+![Grabación de una ruta](https://i.imgur.com/JM6mhty.jpeg)
+
+![Chats](https://i.imgur.com/ognc4M3.jpegg)
